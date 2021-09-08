@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.css" rel="stylesheet">
+    
+    <style>
+        .game{
+            background-color: #087;
+            border-radius: 25px;
+            margin:1rem;
+            padding:1rem;
+
+        }
+        table, td,tr,th{
+            border: 1px solid black;
+            text-align: center;
+        }
+        td,th{
+            padding:0 .5rem;
+        }
+
+    </style>
+</head>
+<body class="p-2">
+<nav>
+    <button id="reset" > reset </button>
+    <button><a href="http://localhost:3000" target="_blank" > TAC </a></button>
+</nav>
+    <h1 class="font-bold text-2xl">Game Status</h1>
+    <h2 class="font-bold text-xl">Games on server(total: <%=games.length %>)</h2>
+        <% if(games.length>0) { %>
+        <%- include('includes/GameInfo.ejs', {games}) %>
+        
+    <% } else { %>
+        <h3>No games created yet.</h3>
+    <% }  %>
+
+</body>
+<script async>
+    let btnReset = document.querySelector('#reset')
+    btnReset.addEventListener('click', sendReset)
+    function sendReset() {
+        fetch("/resetState")
+    }
+    document.querySelectorAll("button").forEach(e => e.className = "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded")
+</script>
+</html>

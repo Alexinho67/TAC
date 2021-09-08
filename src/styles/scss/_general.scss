@@ -1,0 +1,78 @@
+
+
+nav{
+  color:white;
+  position:fixed;
+  display: flex;
+  top:0;
+  height:10vh;
+  width:100%;
+  background-color: #03400f;
+  border-bottom: 2px solid white;
+}
+
+i{
+  cursor: pointer;
+}
+
+a{
+  color:white;
+  font-weight: 900;
+  padding:0px;
+  text-decoration: none;
+  height:100%;
+  white-space: nowrap;
+}
+
+
+h1,h2, h3, h4{
+  text-align: center;
+  margin: 0 0 5px 0;
+}
+
+.container{
+  display: flex;
+  padding-left: 210px;
+  // justify-content: flex-start;  
+  margin-right: 1rem;
+  /* padding-top:2rem; */
+  
+}
+
+#table{
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: right;
+  flex-wrap: nowrap;
+  height:85vh; 
+  aspect-ratio: 1/1;
+  background-image: url(../../pics/table.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
+  border:1px solid black;
+  border-radius: 1rem;
+  box-shadow: 8px 8px 2px #222222b9;
+}
+
+#boardWrapper{
+  padding-top:13%;
+  width: 100%;
+  height: 70%;
+  display: flex;
+  justify-content: center;
+}
+
+#board{
+  position: relative;
+  width: 70%;
+  height: 100%;
+  /* background-image: '../../pics/TACboard.jpg'; */
+  background-image: url(../../pics/TACboard.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
+  border:1px solid black;
+  box-shadow: 5px 10px 25px rgb(37, 18, 1);
+}

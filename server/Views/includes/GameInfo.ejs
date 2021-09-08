@@ -1,0 +1,13 @@
+<% games.forEach(game => { %>
+    <div class="game flex">
+        <div class="flex-initial mr-4 ">
+            <p class="font-bold">ID:<%= game.id %></p>
+            <p>state: <%= game.state %></p>
+        </div>
+        <div class="flex-initial bg-red-500 rounded-md p-2 inline-block"> 
+            <ul>
+                <%- include('PlayerInfo.ejs', {players: game.players}) %>
+            </ul>   
+        </div>
+    </div>
+<% })  %>

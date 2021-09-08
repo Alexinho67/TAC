@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<hmtl>
+<body>
+    <h1>HOME</h1>
+    <h2>with socket</h2>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    console.log(`Execute script`);
+    let socket = io()
+    socket.on('connect',( )=>{
+        console.log(`You are connected. Your id is: %c${socket.id}`, 'color:#fa0');
+    })
+    console.log(`Finished script`);
+</script>
+</hmtl>

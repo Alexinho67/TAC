@@ -1,0 +1,76 @@
+#loginForm{
+
+    background-color:#fffd;
+    border-radius: 25px;
+    border: 1px solid black;
+    width: fit-content;
+    padding: 12px 25px;
+    margin: 100px auto 200px auto;
+
+    h3{
+        margin-left: -10px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+    label{
+        display: block;
+    }
+
+    input{
+        display:block;
+        margin-bottom: 5px;
+    }
+
+    select{
+        margin-bottom: 10px;
+    }
+
+    button{
+        font-size: 0.9rem;
+        display:block
+    }
+    
+    .d-flex{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .indent{
+        padding-left: 10px;
+    }
+
+    p{
+        margin: 5px 0;
+    }
+
+}
+
+.errorList{
+    position: absolute;
+    width: 100%;
+    text-align: center;
+}
+
+.error{
+    margin:10px auto;
+    color: darken(red, 25%);
+    background-color: lighten(red, 25%);
+    width:50%;
+    border-radius: 25px;
+    border: 2px solid darken(red,25%)
+}
+
+$colors : ('blue','yellow','red','black','green');
+@each $color in $colors{
+    option[value=#{$color}]{
+        background-color:#{$color};
+        @if($color =='yellow'){
+            color:black;
+        }@else{
+            color:white;
+        }
+    }
+}
+
+
