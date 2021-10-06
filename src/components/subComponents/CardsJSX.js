@@ -1,9 +1,9 @@
 import React from 'react'
 import CardSingle from './CardSingle'
 import CNST from '../../utils/Constants'
+import { v4 as uuidv4 } from 'uuid';
 
-
-const CardsJSX = ({ name,  cards, setCards, transitionCardHandToTray}) => {
+const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCardPlayed}) => {
 
     // const [isSelectedArray, setIsSelectedArray] = React.useState([])
     // const valRand = useRef(randomCards)
@@ -14,7 +14,7 @@ const CardsJSX = ({ name,  cards, setCards, transitionCardHandToTray}) => {
     * ================================================================================ */
 
     React.useEffect(( )=>{
-        console.log(`[CARDS] name=${name} - INIT useEffect`);
+        console.log(`%c[CARDS] name="${name}" - INIT useEffect`,'color:#999');
     },[])
 
     // React.useEffect(() => {
@@ -59,42 +59,31 @@ const CardsJSX = ({ name,  cards, setCards, transitionCardHandToTray}) => {
     }
 
     function toogleIsSelected(cardSlctd) {
-        // let cardSlctd = cards.filter(card => card.id === id)[0]
         console.log(`Toggling status of card #${cardSlctd.id}. Current state: %c${cardSlctd.isSelected}`,CNST.RED);
-        // setIsSelectedArray((list) => _calculateArrayIsSelected(list, id))
         setCards((cardsArray) => _updateCardsSelected(cardsArray, cardSlctd) )
     }
 
     function getCardsSingle(){
         let listCards = []
-        // console.log(`[Cards=>getCardsSingle] name=${name} create singleCards. NumCard: ${cards.length}`);
-        // console.log(`\t state:  ${cards.map(card => card.isSelected).join(" - ")}`);
         cards.forEach( (card) => {
-            // console.log(`\t new card with value = ${card.value} and state: ${card.isSelected}`);
-            listCards.push(<CardSingle key={card.id} card={card} 
+            listCards.push(<CardSingle key={card.id} card={card}
                                     toogleIsSelected={toogleIsSelected} 
+                                    triggerCardPlayed={triggerCardPlayed}
                                     transitionCardHandToTray={transitionCardHandToTray} />)
         })
         return listCards
     }
 
 
+
+
     /* ================================================================================
     --------------------------     RENDER      -----------------------------------------
     * ================================================================================ */
 
-    console.log(`RENDER [cards]`);
-
     return (<div name={name}> 
                 { cards.length ? getCardsSingle() : null }
             </div>
-        // <div className="fieldOwnCards">
-        //     {/* <div style={{backgroundColor:'yellow'}}>
-        //         <p>status: {isSelected.toString()}</p>
-        //         <p>cards : {cardValues}</p>
-        //     </div> */}
-        //     {cards.length ? getCardsSingle(): null}
-        // </div>
     )
     
 }

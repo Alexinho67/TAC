@@ -13,11 +13,11 @@ const PlayerStatus = ({ pos, data }) => {
         transform: 'translate(-50%,-50%)'
     }
     if (pos === 'left') {
-        Object.assign(styling, { left: '0', top: '50%' })
+        Object.assign(styling, { left: '-10%', top: '70%' })
     } else if (pos === 'front') {
-        Object.assign(styling, { left: '50%', top: '-10%' })
+        Object.assign(styling, { left: '30%', top: '-10%' })
     } else if (pos === 'right') {
-        Object.assign(styling, { left: '100%', top: '50%' })
+        Object.assign(styling, { left: '110%', top: '30%' })
     }
     return (<div style={styling}> <strong>{data.name}</strong> - #{data.posAbs} <br /> {data.status} </div>)
 }

@@ -4,6 +4,41 @@
   transform: translate(-50%,-50%);
 }
 
+%clickableFieldUser{
+  cursor: pointer;
+  color: hsl(120, 100%, 16%);
+  font-size: 2rem;
+  font-weight: 700;
+  padding:1.25rem;
+  position: absolute;
+  border-radius: 10px;
+  border: 2px solid hsl(120,100%,16%);;
+  background-color: #ddd;
+  opacity: 0.8;
+  min-width: 50px;
+  min-height: 2rem;
+  transform: translate(-50%,-50%);
+  transition: transform linear 120ms;
+  white-space: nowrap;
+
+  &:focus, &:hover{
+    transform:translate(-50%,-50%) scale(1.2);
+    border-width: 4px;
+  }
+}
+
+#fieldConfirmReady{
+  @extend %clickableFieldUser;
+  top:80%;
+  left:50%;
+}
+
+#fieldDealCards{
+  @extend %clickableFieldUser;
+  top:80%;
+  left:50%;
+}
+
 #dealerButton{
   position: absolute;
   top: 115%;

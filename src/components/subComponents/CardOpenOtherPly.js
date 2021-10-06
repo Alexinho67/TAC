@@ -1,7 +1,8 @@
 import React from 'react'
+import { GameModelContext } from '../../GameProvider'
 import {CARDS} from '../../utils/helper'
 
-const CardOpenOtherPly = ({ card, transitionCardHandToTray}) => {
+const CardOpenOtherPly = ({ card, setOpenCard}) => {
     // console.log(`[CardSingle]. received card:${JSON.stringify(card)}`);
     const initStyle = {
                     left: `${card.left}%`,
@@ -11,14 +12,13 @@ const CardOpenOtherPly = ({ card, transitionCardHandToTray}) => {
 
     // const styleCard = React.useRef(initStyle)
     const [styleCardState, setStyleCardState] = React.useState(initStyle)
-
+    const model = React.useContext(GameModelContext)
     
     /* ================================================================================
     --------------------------     HOOKS      -----------------------------------------
     * ================================================================================ */
 
     React.useEffect(() => {
-        console.log(`test`);
         let newStyle = {
             top: '50%',
             left: '50%',
@@ -40,6 +40,8 @@ const CardOpenOtherPly = ({ card, transitionCardHandToTray}) => {
         if (card.isPlayed === true){
             // transitionCardHandToTray()
         }
+        setOpenCard(undefined)
+        model.dispatcherTac({ type: 'resetCardPlayedByOther'})
     }
 
     const fileNameImage = `${CARDS[card.value]}`

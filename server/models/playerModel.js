@@ -7,11 +7,13 @@ let playerList = []
 class Player {
     constructor(name, color, position, gameId = undefined) {
         this.id = uuidv4()
+        this.cards = []
         this.gameId = gameId
         this.name = name
         this.color = color
         this.isReady = false
         this.position = position
+        this.socket = undefined
         this.balls =
             [new Ball(0, color),
             new Ball(1, color),
@@ -42,8 +44,12 @@ class Player {
         })
     }
 
-    toString(){
-        return `${this.name}- #${this.position} - ${this.color}`
+    toString(short = false){
+        if (short){
+            return `${this.name}#${this.position}`
+        } else{
+            return `${this.name}- #${this.position} - ${this.color}`
+        }
     }
 
     static findById(idPlayer){

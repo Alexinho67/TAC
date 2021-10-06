@@ -20,7 +20,7 @@ const CardsTest = ({setCnt}) => {
 
 
     useEffect(() => {
-        console.log(`[CARDS] - INIT useEffect`);
+        console.log(`%c[CARDS] - INIT useEffect`, 'color:#999');
     }, [])
 
 

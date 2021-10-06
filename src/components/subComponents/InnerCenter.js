@@ -9,7 +9,7 @@ const InnerCenter = ({ state, triggerCardPlayed}) => {
         state === 'active'? "highlight": ""
 
     function _handleClick(){
-        console.log(`clicked [innerCenter]`);
+        // console.log(`clicked [innerCenter]`);
         addMessage('juhuuuuuu', setDebugMsg)
         if (state === 'active'){
             triggerCardPlayed()

@@ -39,6 +39,22 @@ exports.createNewGame = (req, res, next) => {
     })
 }
 
+exports.handleDealRequest = (socket, callback ) => {
+    let game = GameTac.findById(socket.request.session.gameId)
+    game.dealCards()
+    game.players.forEach(p => {
+        let stringCards = p.cards.map(c => c.value).join("-")
+        console.log(`sending: io.to(${p.socket.id}).emit('newCards', {cards: ${stringCards}}))`);
+        let msgData = {
+            cards: p.cards.map(card => card.value),
+            numCardsShuffledRemain: game.deck.cards.length
+            }
+        io.to(p.socket.id).emit('newCards', msgData)
+    })
+    callback('ok')
+    io.to(game.id).emit('gameStart');
+}
+
 exports.reset = (req, res) => {
     while (games.length) {
         games.pop();
@@ -51,7 +67,7 @@ exports.displayAllGames = (req, res) => {
     res.render('GameStatus', {games: games})
 }
 
-exports.addPlayer = (req, res) =>{
+exports.addPlayer = async (req, res) =>{
     console.log(`[GameCtlr-AddPlayer]`);
     let { userName, userColor, userPosition } = req.body
     
@@ -71,11 +87,18 @@ exports.addPlayer = (req, res) =>{
         res.json({ room: null, msg: `Room with id ${gameIdJoining} not found` })
         return
     }
-    game.addPlayer(player)
-
-    req.session.playerId = player.id;
-    req.session.gameId = gameIdJoining;
-    req.session.save(() => {
-        res.json({ room: game.id, msg: `Joining room with id ${game.id}.` })
-    })
+    try{
+        let resp = await game.addPlayer(player)
+        console.log(`Adding player ${player.toString()} --> ${resp}`);
+        req.session.playerId = player.id;
+        req.session.gameId = gameIdJoining;
+        req.session.save(() => {
+            res.json({ room: game.id, msg: `Joining room with id ${game.id}.` })
+        })
+    } catch (err){
+        console.log(`Error: ${err}`);
+        res.status(404)
+        res.json({ room: null, msg: err })
+        return
+    }
 }

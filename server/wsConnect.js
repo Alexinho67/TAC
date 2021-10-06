@@ -23,6 +23,15 @@ class GameSocket{
         this.socket.on("readyToPlay",(callback)=>{ 
             playerController.handleReadyToPlay(callback, this.socket)
         })
+        this.socket.on('playingCard', (card)=>{
+            console.log(`received ${JSON.stringify(card)}`);
+            playerController.handlePlayingCard(card, this.socket)
+        })
+
+        this.socket.on('dealCards', (callback)=>{
+            console.log(`received DEALING request`);
+            gameController.handleDealRequest(this.socket, callback)
+        } )
     }
 }
 

@@ -1,4 +1,12 @@
-
+body {
+  margin: 11vh 0 0 0;
+  background-color: #78c15e;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 nav{
   color:white;
@@ -10,7 +18,6 @@ nav{
   background-color: #03400f;
   border-bottom: 2px solid white;
 }
-
 i{
   cursor: pointer;
 }
@@ -45,7 +52,7 @@ h1,h2, h3, h4{
   flex-direction: column;
   justify-content: right;
   flex-wrap: nowrap;
-  height:85vh; 
+  height:500px; 
   aspect-ratio: 1/1;
   background-image: url(../../pics/table.jpg);
   background-repeat: no-repeat;

@@ -13,10 +13,10 @@ const IconCopyPaste = ({gameId} )=>{
 function Game() {
 
   let {gameId} = useParams()
-  const model = React.useContext(GameModelContext)
+  const { stateGameReduce} = React.useContext(GameModelContext)
   return (<> 
             <h2 > game: <span id="gameId">{gameId} </span> &nbsp;       
-      <IconCopyPaste gameId={gameId} /> - {model.playerData.userName}/#{model.playerData.userPosition}</h2>
+      <IconCopyPaste gameId={gameId} /> - {stateGameReduce.self.userName}/#{stateGameReduce.self.userPosition}</h2>
             <div className="container">
                 <Table/>
             </div>

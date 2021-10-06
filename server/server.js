@@ -127,7 +127,7 @@ console.log(`calling "wsConnect(io)"`);
 wsConnect(io)
 console.log(`calling "gameController.setSocketConnection(io)"`);
 gameController.setSocketConnection(io)
-// playerController.setSocketConnection(io)
+playerController.setSocketConnection(io)
 
 // io.on('connection', (socket) => {
 //     console.log(`NEW connection. ID: ${socket.id}`);

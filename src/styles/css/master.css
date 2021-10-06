@@ -1,3 +1,11 @@
+body {
+  margin: 11vh 0 0 0;
+  background-color: #78c15e;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 nav {
   color: white;
   position: fixed;
@@ -40,7 +48,7 @@ h1, h2, h3, h4 {
   flex-direction: column;
   justify-content: right;
   flex-wrap: nowrap;
-  height: 85vh;
+  height: 500px;
   aspect-ratio: 1/1;
   background-image: url(../../pics/table.jpg);
   background-repeat: no-repeat;
@@ -74,6 +82,39 @@ h1, h2, h3, h4 {
 
 .center {
   transform: translate(-50%, -50%);
+}
+
+#fieldConfirmReady, #fieldDealCards {
+  cursor: pointer;
+  color: #005200;
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 1.25rem;
+  position: absolute;
+  border-radius: 10px;
+  border: 2px solid #005200;
+  background-color: #ddd;
+  opacity: 0.8;
+  min-width: 50px;
+  min-height: 2rem;
+  transform: translate(-50%, -50%);
+  transition: transform linear 120ms;
+  white-space: nowrap;
+}
+
+#fieldConfirmReady:focus, #fieldDealCards:focus, #fieldConfirmReady:hover, #fieldDealCards:hover {
+  transform: translate(-50%, -50%) scale(1.2);
+  border-width: 4px;
+}
+
+#fieldConfirmReady {
+  top: 80%;
+  left: 50%;
+}
+
+#fieldDealCards {
+  top: 80%;
+  left: 50%;
 }
 
 #dealerButton {

@@ -13,8 +13,10 @@ let CARDS = [
     '10_small.png',
     'doesNotExist',
     '12_small.png',
-    '13_small.png']
-
+    '13_small.png',
+    'Trickser_small.png', // 14 - Trickser
+    'TAC_small.png' // 15 - TAC
+    ]
 
 
 export {CARDS}

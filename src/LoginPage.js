@@ -1,7 +1,6 @@
 import React from 'react'
 import { nameList } from './components/utilities/nameList'
 import {ErrorList, addError} from './components/ErrorList'
-import { Link } from 'react-router-dom'
 import { useHistory } from "react-router-dom";
 import { GameModelContext } from './GameProvider';
 
@@ -32,7 +31,8 @@ const LoginPage = () => {
     function keyDownHandler(e) {
         // console.log(`ctrl: ${e.ctrlKey} - key: ${e.key}`)
         let ignoreCtrlKey = true
-        idGameRef.current.focus()
+        // console.log(`e.target.id:${e.target.id } `);
+        if (e.target.id === "userName"){return}
         if (ignoreCtrlKey || e.ctrlKey) {
             if (e.key === '1') {
                 // console.log('Selected player #1')
@@ -52,19 +52,22 @@ const LoginPage = () => {
                 setUserPosition(4)
                 setUserName('Dani')
             }
-        
- 
         }
+        // idGameRef.current.focus()
+        setTimeout(()=>{
+            idGameRef.current.focus()
+        }, 10)
     }
 
     async function handleJoinGame() {
-
         let data = { userName, userColor, userPosition, gameId }
         // let status;
+        console.log(`%c[LoginPage - handleJoinGame] data: ${JSON.stringify(data)}`,'color:red');
         let dataReactState = { userName:  data.userName,
                                userColor: data.userColor,
                                userPosition: data.userPosition }
-        model.setPlayerData(dataReactState)
+        model.dispatcherTac({type: 'updateSelfData', payload: dataReactState }) 
+        // model.setPlayerData(dataReactState)
         fetch('/api/joinGame',
             {
                 method: 'POST',
@@ -82,7 +85,9 @@ const LoginPage = () => {
                 if (status === 404){
                     throw resp.msg
                 } else {
-                    let newUrl = `/game/${resp.room}`
+                    let gameId = resp.room
+                    let newUrl = `/game/${gameId}`
+                    document.title = `TAC #${gameId}`
                     console.log(`going to : ${newUrl}`);
                     history.push(newUrl)
                     // window.location.href = newUrl
@@ -96,10 +101,10 @@ const LoginPage = () => {
 
     function handleCreateGame() {
         let data = { userName, userColor, userPosition}
-        console.log(`Fetching from server. Data:${data}`);
+        console.log(`%cFetching from server. Data:${JSON.stringify(data)}`,'color:red');
         // send a get request to the server to create a new game of TAC
-
-        model.setPlayerData(data)
+        model.dispatcherTac({ type: 'updateSelfData', payload: data })
+        // model.setPlayerData(data)
         fetch('/api/newGame',
             {method:'POST',
             headers: {
@@ -114,6 +119,7 @@ const LoginPage = () => {
                 console.log(`going to room : "${gameId}""`);
                 history.push(newUrl)
                 navigator.clipboard.writeText(gameId)
+                document.title = `TAC #${gameId}`
                 // window.location.href = newUrl
             }) 
             .catch(err =>{
@@ -130,6 +136,7 @@ const LoginPage = () => {
                 {errorList.length > 0 ? <ErrorList errors={errorList} setErrorList={setErrorList}/> : "" }
                 <form  id="loginForm" onSubmit={(e) => { e.preventDefault() }}>
                     <h3>LOGIN </h3>
+                    <p>{userName}, {userColor}, {userPosition}</p>
                     <label htmlFor="userName"> Name player: </label> 
                     <input id="userName" type="text" value={userName} 
                         onChange={(e) => { setUserName(e.target.value) }} ></input>

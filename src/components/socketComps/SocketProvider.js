@@ -1,5 +1,6 @@
 import React from 'react'
 import io from 'socket.io-client'
+// eslint-disable-next-line
 import {  URL, URLws, ORANGE, PINK, BOLD } from '../../utils/Constants';
 import { GameModelContext } from '../../GameProvider';
 import { addListenersForTac} from './TacListeners'
@@ -8,16 +9,13 @@ import { addListenersForTac} from './TacListeners'
 
 let urlFetchCookie
 let urlIoSocket
-// if (process.env.NODE_ENV === 'development') {
-//     urlFetchCookie = URL + '/initSession'
-//     urlIoSocket = URLws + '/socket.io'
-// } else {
-//     urlFetchCookie = '/initSession'
-//     urlIoSocket = '/socket.io'
-// }
-
-urlFetchCookie = URL + '/initSession'
-urlIoSocket = URLws + '/socket.io'
+if (process.env.NODE_ENV === 'development') {
+    urlFetchCookie = URL + '/initSession'
+    urlIoSocket = URLws + '/socket.io'
+} else {
+    urlFetchCookie = '/initSession'
+    urlIoSocket = '/socket.io'
+}
 
 
 
@@ -26,10 +24,6 @@ const SocketContext = React.createContext()
 const SocketProvider = (props) => {
     const [socket, setSocket] = React.useState(undefined)
     const [idSocket, setIdSocket] = React.useState(undefined)
-    // const [userName, setUserName] = React.useState()
-    const [roomName, setRoomName] = React.useState("")
-    const [count, setCount] = React.useState(0)
-
     const model = React.useContext(GameModelContext)
     
     /* ================================================================================
@@ -144,8 +138,8 @@ const SocketProvider = (props) => {
     * ================================================================================ */
 
     return (
-        <SocketContext.Provider value={{ count, setCount, socket, idSocket }}>
-            <h3>SocketContext.Provider. count: {count}</h3>
+        <SocketContext.Provider value={{ socket, idSocket }}>
+            {/* <h3>SocketContext.Provider</h3> */}
             {props.children}            
         </SocketContext.Provider>
     )

@@ -1,19 +1,39 @@
 import React from 'react'
+import { GameModelContext } from '../../GameProvider'
 import CardOpenOtherPly from './CardOpenOtherPly'
 import CardsOtherPly from './CardsOtherPly'
 
-const CardsAllOtherPlayers = ({ numCardsOthers, width, openCard}) => {
+const CardsAllOtherPlayers = ({ width}) => {
+    const [openCard, setOpenCard] = React.useState(undefined)
+
+    const { stateGameReduce} = React.useContext(GameModelContext)
+
+    React.useEffect(() => {
+        if (stateGameReduce.cardPlayedOther){
+            console.log(`[CardsAllOtherPlayers]-[UseEffect@stateGameReduce.cardPlayedOther]`);
+            let cardObjWithStyle = createCardPlaying(stateGameReduce.cardPlayedOther)
+            console.log(`...Created open card for visualization: ${JSON.stringify(cardObjWithStyle)}`);
+            setOpenCard(cardObjWithStyle)
+        }
+        // return () => {
+        //     cleanup
+        // }
+    }, [stateGameReduce.cardPlayedOther])
+
+
 
     const pos = {
-        left :  {top:50, left: -10},
-        front : {top:-10, left: 50},
-        right : {top:50, left: 110},
+        left :  {name:'left', top:50, left: -10, rotate: 0},
+        front:  {name:'front', top:-10, left: 50, rotate: 90},
+        right:  {name:'right', top:50, left: 110, rotate: 0},
 
     }
     
-    function createCardPlaying(){
-        let cardPlaying = openCard
-        switch (cardPlaying.player){
+    function createCardPlaying(cardPlaying){
+        // let cardPlaying = openCard
+        // let cardPlaying = openCard
+
+        switch (cardPlaying.posRel){
             case 'left':
                 cardPlaying = { ...cardPlaying, left:-10, top:50, width: width }
                 break
@@ -31,14 +51,12 @@ const CardsAllOtherPlayers = ({ numCardsOthers, width, openCard}) => {
 
     }
 
-    const cardPlaying = createCardPlaying()
-
     return (
         <div name="cardsOtherPlayer">
-            <CardsOtherPly width={width} rotate={0}  pos={pos.left}  numCards={numCardsOthers.left} />
-            <CardsOtherPly width={width} rotate={90}  pos={pos.front} numCards={numCardsOthers.front} />
-            <CardsOtherPly width={width} rotate={0}  pos={pos.right} numCards={numCardsOthers.right} />
-            {openCard ? <CardOpenOtherPly card={cardPlaying} /> : null}
+            <CardsOtherPly width={width} posObj={pos.left}  />
+            <CardsOtherPly width={width} posObj={pos.front} />
+            <CardsOtherPly width={width} posObj={pos.right} />
+            {openCard ? <CardOpenOtherPly card={openCard} setOpenCard={setOpenCard} /> : null}
         </div>
     )
 }

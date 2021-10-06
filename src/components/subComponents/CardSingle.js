@@ -1,7 +1,7 @@
 import React from 'react'
 import {CARDS} from '../../utils/helper'
 
-const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray}) => {
+const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerCardPlayed}) => {
     // console.log(`[CardSingle]. received card:${JSON.stringify(card)}`);
     const styleCard = React.useRef({
         left: `${card.left}%`,
@@ -21,16 +21,6 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray}) => {
     --------------------------     Fuctions      -----------------------------------------
     * ================================================================================ */
 
-
-    function _toogleIsSelected(e){
-        console.log(`clicked card with id= ${card.id}. Selected:  ${card.isSelected}`);
-        if (card.isPlayed === true) {
-            console.log(`cannot select that card`);
-        } else {    
-            toogleIsSelected(card)  // flipping only the specific card is not sufficient, 
-                                    // since all other cards need to be unselected
-        }
-    }
 
     function _calcStyling(){
         let stylingAddition = {}
@@ -57,16 +47,68 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray}) => {
         }
         styleCard.current = { ...styleCard.current, ...stylingAddition}
     }
+    
+    function getImagePath(value){
+        // console.log(`[CardSingle.js] Getting srcPath. card value: ${value}`);
+        let path
+        try{
+            path = require(`../../pics/${CARDS[value]}`).default
+        }catch{
+            console.error(`Coudn't find card source path`);
+            path = require(`../../pics/backside1.png`).default
+        }
+        return path
+    }
 
-    function _handleTransitionEnd(e){
-        console.log(`trigger "_handleTransitionEnd()"`);
-        e.target.style.opacity = '50%'
-        if (card.isPlayed === true){
-            transitionCardHandToTray()
+
+
+    function _toogleIsSelected() {
+        console.log(`clicked card with id= ${card.id}. Selected:  ${card.isSelected}`);
+        if (card.isPlayed === true) {
+            console.log(`cannot select that card`);
+        } else {
+            toogleIsSelected(card)  // flipping only the specific card is not sufficient, 
+            // since all other cards need to be unselected
         }
     }
 
-    const Imgage = <img height='100%' width='100%' src={`${require(`../../pics/${CARDS[card.value]}`).default}`} alt={`value=${card.value}`} />
+    function _playCardDblClicked(){
+        console.log(`[CardSingle/_playCardDblClicked]: ${JSON.stringify(card)}`);
+        triggerCardPlayed(card.id)
+    }
+
+    function _handleTransitionEnd(e){
+        // console.log(`trigger "_handleTransitionEnd()"`);
+        // e.target.style.opacity = '50%'
+        // if (card.isPlayed === true){
+        //     transitionCardHandToTray()
+        // }
+    }
+
+    let tof = undefined;
+
+    function handleButtonClick(e) {
+        // console.log(`DOM-event: SINGLE click`);
+        if (e.detail === 2) {
+            return
+        }
+        tof = setTimeout(() => _toogleIsSelected(), 200)
+        // console.log(`setTimer.tof=${tof}.t= ${performance.now()}`);
+        performance.now()
+        // console.log(`created tof=${tof}`);
+    }
+
+    function handleButtonDblClick(e) {
+        // console.log(`DOM-event: %cDOUBLE click`,'color:white;background-color:red');
+        if (tof) {
+            // console.log(`clearing tof=${tof}`);
+            clearTimeout(tof)
+            _playCardDblClicked();
+        }
+    }
+
+    const pathImg = getImagePath(card.value)
+    const Imgage = <img height='100%' width='100%' src={pathImg} alt={`value=${card.value}`} />
 
     /* ================================================================================
     --------------------------     RENDER      -----------------------------------------
@@ -76,7 +118,9 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray}) => {
             {Imgage}
         </div>)
     } else {
-        return (<div style={styleCard.current} className="card" onClick={_toogleIsSelected}>
+        return (<div style={styleCard.current} className="card" data-idExt={card.idExt} 
+            onClick={handleButtonClick}
+            onDoubleClick={handleButtonDblClick}>
                     {Imgage}
                 </div>) // close return ()
             }  // close else

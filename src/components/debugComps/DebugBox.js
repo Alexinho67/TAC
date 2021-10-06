@@ -1,10 +1,11 @@
 import React from 'react'
-
-const DebugBox = ({ cnt, idCardSelected, stateInnerCenter, cardsHand, cardsPlayed}) => {
+import { v4 as uuidv4 } from 'uuid';
+const DebugBox = ({ cnt, idCardPlayed,  idCardSelected, stateInnerCenter, cardsHand, cardsPlayed}) => {
 
     const styleTable = {
         textAlign: 'center',
-        border: '1px solid black'
+        border: '1px solid black',
+        fontSize:'.8rem',
     }
     
     return (
@@ -12,19 +13,21 @@ const DebugBox = ({ cnt, idCardSelected, stateInnerCenter, cardsHand, cardsPlaye
             {/* {test.current} */}
             <table><tbody>
                 <tr><td> cnt              </td><td> {cnt.current} </td></tr>
-                <tr><td> idCardSelected   </td><td> {idCardSelected !== -1 ? idCardSelected : 'none'}</td></tr>
+                <tr><td> idCardPlayed     </td><td> {idCardPlayed !== -1 ? idCardPlayed?.slice(0, 3) : 'none'}</td></tr>
+                <tr><td> idCardSelected   </td><td> {idCardSelected !== -1 ? idCardSelected?.slice(0, 3) : 'none'}</td></tr>
                 <tr><td> stateInnerCenter </td><td> {stateInnerCenter}</td></tr>
-                <tr><td> cardsHand        </td><td> {cardsHand.map(card => { return card.value })}</td></tr>
-                <tr><td> cardsPlayed      </td><td> {cardsPlayed.map(card => { return card.value })}</td></tr>
+                <tr><td> cardsHand        </td><td> {cardsHand.map(card => { return card.value }).join(",")}</td></tr>
+                {/* <tr><td> cardsPlayed      </td><td> {cardsPlayed.map(card => { return card.value })}</td></tr> */}
             </tbody></table>
             <h3> HAND CARDS</h3>
             <table style={styleTable} >
                 <tbody style={styleTable} >
-                    <tr style={styleTable}><td>id</td><td>selected</td><td> played yet</td></tr>
+                    <tr style={styleTable}><td>id</td><td>selected</td><td> value</td><td> played yet</td></tr>
                     {cardsHand.map(card => {
-                        return (<tr key={card.id} style={styleTable}>
-                            <td>{card.id}</td>
+                        return (<tr key={uuidv4()} style={styleTable}>
+                            <td>{card.id.slice(0, 3)} ..</td>
                             <td>{card.isSelected.toString()}</td>
+                            <td>{card.value}</td>
                             <td>{card.isPlayed.toString()} </td>
                         </tr>)
                     })}
@@ -32,10 +35,11 @@ const DebugBox = ({ cnt, idCardSelected, stateInnerCenter, cardsHand, cardsPlaye
             <h3> TRAY CARDS</h3>
             <table style={styleTable} >
                 <tbody style={styleTable} >
-                    <tr style={styleTable}><td>id</td><td>selected</td><td> played yet</td></tr>
+                    <tr style={styleTable}><td>id</td><td>value</td><td>selected</td><td> played yet</td></tr>
                     {cardsPlayed.map(card => {
-                        return (<tr key={card.id} style={styleTable}>
-                            <td>{card.id}</td>
+                        return (<tr key={uuidv4()} style={styleTable}>
+                            <td>{card.id.slice(0,3)} ..</td>
+                            <td>{card.value} ..</td>
                             <td>{card.isSelected.toString()}</td>
                             <td>{card.isPlayed.toString()} </td>
                         </tr>)

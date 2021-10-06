@@ -1,8 +1,24 @@
+<% function getDealerName(game){
+    let name = 'tbd'
+    // if (game.state === 'PLAYING'){
+    //     name = game.players[game.idxDealer].name
+    //     // name = 'somebody'
+    // }
+    return name
+
+} %>
+
 <% games.forEach(game => { %>
+    
     <div class="game flex">
         <div class="flex-initial mr-4 ">
             <p class="font-bold">ID:<%= game.id %></p>
             <p>state: <%= game.state %></p>
+            <p>subState: <%= game.subState %></p>
+            <p>dealer(idx:<%= game.idxDealer%>) <%= getDealerName(game) %> </p>
+            <p style="word-wrap:anywhere;max-width: 260px;">
+            cards(total:<%= game.deck.cards.length %>): <%= game.deck.cards.join("-") %></p>
+            <div>cards played:<div><ol style="list-style: decimal; overflow-y: scroll; max-height: 7rem;" type="1"> <%- game.cardsTrash.map(c => {return `<li>${c.value} - ${c.playedBy}</li>`}).join("") %> </ol></div></div>
         </div>
         <div class="flex-initial bg-red-500 rounded-md p-2 inline-block"> 
             <ul>

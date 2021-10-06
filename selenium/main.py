@@ -1,116 +1,37 @@
-
+import sys
 from random import random
 from random import seed
 import time
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from random import seed
 from random import random
+
+ZOOMFACTOR = 55
 
 # seed random number generator
 seed(1)
 
+def clickElem(drvr, el):
+    drvr.execute_script("arguments[0].click();", el)
 
-def loginPage(driver):
-    inputEmail = driver.find_element_by_name('username')
-    inputPw = driver.find_element_by_name('password')
-    inputEmail.send_keys(MAIL)
-    inputPw.send_keys(PW)
-    spanElements = driver.find_elements_by_tag_name('span')
-    # print('spans: ', spanElements)
-    for span in spanElements:
-        if (span.text == 'LOGIN'):
-            btnLogin = span.find_element_by_xpath('./..')
-            break
-    print(btnLogin)
-    btnLogin.click()
-    
-def enter_first_lecture_of_course(driver, scrollDown=True):
-    
-    if (scrollDown == True):
-        containerScroll = driver.find_element_by_class_name("jss77")
-        driver.execute_script(
-            "arguments[0].scrollTo(0,arguments[1]);", containerScroll, 1000)
-
-
-    headingFirstChapter = driver.find_element_by_xpath(
-        f"//h3[contains(text(),'{NAME_FIRST_CHAPTER}')]")
-
-    firstMainUnit = headingFirstChapter.find_element_by_xpath('./../../..')
-
-    time.sleep(1)
-
-    list_ul_elements = firstMainUnit.find_elements_by_tag_name('ul')
-    if (len(list_ul_elements) == 0):
-        print('Need to expand ', NAME_FIRST_CHAPTER)
-        # first main unit is currently collapsed. Expand it by clicking on the first link
-        # driver.execute_script("arguments[0].click();", firstMainUnit)
-        # firstMainUnit.click()
-        ActionChains(driver).move_to_element(firstMainUnit).click().perform()
-
-
-    time.sleep(1)
-
-    # findFirstLecture = driver.find_element_by_xpath(f"//ul[@class='{CLASS_SUB_UNITS_ULIST}']/li[1]/div/a")
-    findFirstLecture = firstMainUnit.find_element_by_link_text(NAME_FIRST_UNIT)
-    time.sleep(1)
-    driver.execute_script("arguments[0].click();", findFirstLecture)
-    # findFirstLecture.click()
-
-    time.sleep(1)
-
-def loop_through_all_units(driver):
-    continueLearning = True
-    while continueLearning == True:
-        currentUrl = driver.current_url
-        print('    Currently on url:', currentUrl)
-
-        # unit pages have current url pattern: https://portal.bitacademy.at/module/366/phase/7198/
-        if ('phase' not in currentUrl):
-            # back on the main page
-            print('Reached main page: ', currentUrl)
-            continueLearning = False
-            break
-        time.sleep(2)
-        # thema = driver.find_element_by_xpath("//h1 | //h2").text
-        # print('    Topic: ', thema)
-        # driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-
-        scrollDown = False
-        if (scrollDown == True):
-            print('Scrolling down')
-            containerScroll = driver.find_element_by_class_name("jss579")
-            h = int(containerScroll.get_attribute('scrollHeight'))
-            driver.execute_script(
-                "arguments[0].scrollTo(0,arguments[1]);", containerScroll, h)
-
-        list_matches = driver.find_elements_by_xpath("//span[contains(text(), 'Weiter')]")
-        if (len(list_matches)==0):
-            print("Couldn't find 'Weiter'. Looking for 'Überspringen' now.")
-            list_matches = driver.find_elements_by_xpath("//span[contains(text(), 'Überspringen')]")
-        btnNext = list_matches[-1]
-        
-        learn_time = max(5, TIME_PER_PAGE + (random()-0.5)*15)
-        # print('Sleeping ', learn_time,' seconds.')
-        time.sleep(learn_time)
-        # print('Clicking  button with text: ', btnNext.text)
-        # ActionChains(driver).click(btnNext).perform()
-        driver.execute_script("arguments[0].click();", btnNext)
-        # btnNext.click()
-        # actions = ActionChains(driver)
-        # # actions.move_to_element(btnNext)
-        # actions.click(btnNext)
-        # actions.perform()
-
-        time.sleep(1)
-
+def dblClickElem(drvr, el):
+    drvr.execute_script("arguments[0].dbclick();", el)
 
 def createNewGame(driver, name):
     global idGame
-
+    global ZOOMFACTOR   
     actions = ActionChains(driver)
     driver.get(url_0)
+    time.sleep(2)
+
+    # driver.execute_script(f"document.body.style.zoom='50%'")
+    changeZoom(driver, ZOOMFACTOR)
+    htlmElm = driver.find_element_by_tag_name('html')
+    htlmElm.send_keys(Keys.CONTROL, '-')
 
     inputUserName = driver.find_element_by_id('userName')
     inputUserName.clear()
@@ -125,20 +46,31 @@ def createNewGame(driver, name):
 
     btnCreate = driver.find_element_by_id('btnCreateGame')
     print(f'Clicking button with text: {btnCreate.text}')
-    btnCreate.click()
+    # actionCreate = ActionChains(driver)
+    # actionCreate.click(btnCreate).perform()
+    # btnCreate.click()
+    clickElem(driver, btnCreate)
+    
+
+
     idGame = driver.find_element_by_id('gameId').text
     print(f'game created. ID {idGame} ')
     print('end')
+    
 
 def joinGame(driver,idxPlayer,idxColor, name):
     global idGame
+    global ZOOMFACTOR
     print(f"Joining game {idGame} as player {name}#{idxPlayer}")
     driver.get(url_0)
-    time.sleep(1)
+    time.sleep(2)
+    changeZoom(driver, ZOOMFACTOR)
 
     selectNrPlayer = Select(driver.find_element_by_id('nrPlayer'))
+    
+
     selectColor = Select(driver.find_element_by_id('colorPlayer'))
-    inputUserName = driver.find_element_by_id('userName')
+  
     btnJoinGame = driver.find_element_by_id('btnJoinGame')
     fieldIdGame = driver.find_element_by_id('inputGameId')
 
@@ -146,54 +78,92 @@ def joinGame(driver,idxPlayer,idxColor, name):
     # the player Number selection (keys: 1,2,3 or 4)
     fieldIdGame.send_keys(idGame)
 
-    selectNrPlayer.select_by_index(idxPlayer)
     selectColor.select_by_index(idxColor)
+    inputUserName = driver.find_element_by_id('userName')
     inputUserName.clear()
     inputUserName.send_keys(name)
     
-    btnJoinGame.click()
+    selectNrPlayer.select_by_index(idxPlayer)
+    clickElem(driver, btnJoinGame)
+    
     
 def clickReady(driver):
-    time.sleep(1)
-    driver.find_element_by_id('btnReady').click()
+    try:
+        fieldReady = driver.find_element_by_id('fieldConfirmReady')
+        clickElem(driver, fieldReady)
+    except:
+        pass
+
+def clickDeal(driver):
+    try:
+        btnDeal = driver.find_element_by_id("fieldDealCards")
+        clickElem(driver, btnDeal)
+    except:
+        print('dealer button not found')
+        pass
+
+
+def playSingleCard(driver):
+    try:
+        handcard_first = driver.find_element_by_xpath(
+            "//div[@name='handCards']/div[1]")
+        clickElem(driver, handcard_first)
+        time.sleep(0.150)
+        innerCircle = driver.find_element_by_xpath(
+            '//div[@id = "innerCenter"]')
+        clickElem(driver, innerCircle)
+        return True
+    except:
+        print('no more cards')
+        return False
+        
+    
+        # dblClickElem(driver, driver.find_element_by_id("fieldDealCards"))
+
+def changeZoom(driver, factor):
+    driver.execute_script(f"document.body.style.zoom='{factor}%'")
+    print('finished')
+
+
 # -----------------------  main  -----------------------
 
 chrome_options = webdriver.ChromeOptions()
 print(chrome_options.experimental_options)
 url_0 = 'http://localhost:3000'
 
-chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
-# chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+# chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
 
 PATH_CHROME = "C:\\Users\\alexinho\\Downloads\\chromedriver_win32\\chromedriver.exe"
 WIDTH = 700
 HEIGHT = 830
+HEIGHT = 400
 OFFSET = 40
+
+
 
 try:
     driverCreateGame = webdriver.Chrome(executable_path=PATH_CHROME, options=chrome_options)
-    driverCreateGame.implicitly_wait(20)
+    driverCreateGame.implicitly_wait(1)
     time.sleep(1)
+    
     driverCreateGame.set_window_position(0, 0)
     driverCreateGame.set_window_size(WIDTH, HEIGHT)
 
     listDriversJoin = [None, None, None]
+    posWin = [[0, HEIGHT], [WIDTH + 100, 0], [WIDTH + 100, HEIGHT]]
     NUM_PLAYER_JOIN = 3
     for  i in range(0,NUM_PLAYER_JOIN):  
         listDriversJoin[i] = webdriver.Chrome(
             executable_path=PATH_CHROME, options=chrome_options)
-        listDriversJoin[i] .implicitly_wait(20)
-        listDriversJoin[i] .set_window_position(WIDTH + 120 - i*OFFSET, i*OFFSET)
-        listDriversJoin[i] .set_window_size(WIDTH, HEIGHT - i*OFFSET)
+        listDriversJoin[i].implicitly_wait(1)
+        listDriversJoin[i].set_window_size(WIDTH, HEIGHT)
+        x = posWin[i][0]
+        y = posWin[i][1]
+        listDriversJoin[i].set_window_position(x, y)
 
         
-
-
-    # driverJoinGame = webdriver.Chrome(executable_path=PATH_CHROME, options=chrome_options)
-    # driverJoinGame.implicitly_wait(20)
-    # driverJoinGame.set_window_position(WIDTH, 0)
-    # driverJoinGame.set_window_size(WIDTH, HEIGHT)
-    
+   
     createNewGame(driverCreateGame,'Ax')
     names = ['Bx','Cx','Dx']
     for j in range(0, len(listDriversJoin)):
@@ -203,13 +173,45 @@ try:
     allDrivers = listDriversJoin
     allDrivers.insert(0, driverCreateGame)
 
-    ans = input('Send ready (y/n)?')
-    print(f'User send "{ans}"')
+    sendReadyAsDefault = True
+    if not sendReadyAsDefault:
+        ans = input('Send ready (y/n)?')
+        print(f'User send "{ans}"')
 
-    if (ans =='y'):
+        if (ans !='y'):
+            quit()
+
+    # print('Click "ready"')
+    # for i in range(0, 4):
+    #     print('\t player ',i+1)
+    #     clickReady(allDrivers[i])
+    
+    runGame = True
+    while runGame:
+        # click Deal button
+        time.sleep(5)
+        print('Click "Deal cards"')
         for i in range(0, 4):
-            clickReady(allDrivers[i])
+            print('\t player ',i+1)
+            clickDeal(allDrivers[i])
 
+        # play cards
+        existHandCards = True
+        while existHandCards:
+            for i in range(0,4):
+                time.sleep(1)
+                existHandCards = playSingleCard(allDrivers[i])
+            if (existHandCards == False):
+                print('all cards played')
+
+    while True:
+        pass        
+
+except :
+    e = sys.exc_info()[0]
+    print('error:')
+    print(e)
+    
 finally:
     pass
     driverCreateGame.quit()

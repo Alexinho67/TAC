@@ -13,6 +13,7 @@
     "cypress": "^8.3.1",
     "express-session": "^1.17.2",
     "http-proxy-middleware": "^2.0.1",
+    "lodash": "^4.17.21",
     "nodemon": "^2.0.12",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -24,10 +25,12 @@
     "web-vitals": "^1.1.2"
   },
   "nodemonConfig": {
-    "ignore": [ "ORGsrc/*" ]
+    "ignore": [
+      "ORGsrc/*"
+    ]
   },
   "scripts": {
-    "server": "clear & nodemon server/server --ignore 'src/*",
+    "server": "clear & nodemon server/server --ignore ./src/*",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test-react": "react-scripts test",
