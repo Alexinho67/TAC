@@ -1,28 +1,48 @@
 import React from 'react'
 import Ball from './BallSingle'
 
-const Balls = ({numBalls}) => {
-    const [isSelectedBall, setIsSelectedBall] = React.useState(Array(numBalls).fill(false))
+const Balls = ({ setResetTimer , ballsData, setBallsAllData}) => {
 
-    function _calculateArrayIsSelected(list, id) {
-        /* toggles value of element at pos=id and ensures, that all others are false.
-        */
-        return list.map((elem, i) => { return (i === id) ? !elem : false })
+
+    function toogleIsSelected(idBallClicked) {
+        console.log(`Toggling status of ball #${idBallClicked}. Current state: ${ballsData.find(ball => ball.id === idBallClicked).isSelected}`);
+        let ballSelectedOld = ballsData.find(ball => ball.isSelected)
+        if ((ballSelectedOld) && (ballSelectedOld.id !== idBallClicked)){
+            setResetTimer(true)
+        }
+
+        setBallsAllData((list) => {
+            /* toggles value of element at pos=id and ensures,
+            /   that all others are false.
+            */
+            return list.map(ballData => {
+                if (ballData.id !== idBallClicked){
+                    return { ...ballData, isSelected: false} // if ball not clicked -> set selected to false
+                } else {
+                    return {...ballData, isSelected: !ballData.isSelected} // for clicked ball -> toggle flag
+                }
+            })
+        })
     }
 
-    function toogleIsSelected(id) {
-        console.log(`Toggling status of ball #${id}. Current state: ${isSelectedBall[id]}`);
-        setIsSelectedBall((list) => _calculateArrayIsSelected(list, id))
-    }
+    /* ================================================================================
+    --------------------------     RENDER      -----------------------------------------
+    * ================================================================================ */
 
+    console.log(`%c[Balls.js] Render`,'color:#fa0');
 
     return ( 
         <div name="balls">  
-        {/* <p style={{ backgroundColor: 'yellow' }} >status: {isSelectedBall.toString()}</p> */}
-        <Ball id={0} color={'red'} isSelected={isSelectedBall} toogleIsSelected={toogleIsSelected}/>
-        <Ball id={1} color={'red'} isSelected={isSelectedBall} toogleIsSelected={toogleIsSelected}/>
-        <Ball id={2} color={'red'} isSelected={isSelectedBall} toogleIsSelected={toogleIsSelected}/>
-        <Ball id={3} color={'red'} isSelected={isSelectedBall} toogleIsSelected={toogleIsSelected}/>
+            {ballsData.map(ballDataSingle => {
+                // console.log(`...idBall:${ballDataSingle.id} - top:${ballDataSingle.top} - left:${ballDataSingle.left}`);
+                if (!ballDataSingle.show) {return null}
+                else {
+                    return <Ball  key={ballDataSingle.id}
+                            // id = {ballSingleData.id}
+                            ballDataSingle={ballDataSingle}
+                            toogleIsSelected={toogleIsSelected} />
+                }
+            })}
     </div>)
 }
 

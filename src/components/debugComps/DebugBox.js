@@ -9,10 +9,9 @@ const DebugBox = ({ cnt, idCardPlayed,  idCardSelected, stateInnerCenter, cardsH
     }
     
     return (
-        <div className="debug" style={{ zIndex: 1, position: 'fixed', left: '0%', top: '10%' }}>
+        <div className="debug" style={{ zIndex: 1, position: 'fixed', left: '0%', top: '30%' }}>
             {/* {test.current} */}
             <table><tbody>
-                <tr><td> cnt              </td><td> {cnt.current} </td></tr>
                 <tr><td> idCardPlayed     </td><td> {idCardPlayed !== -1 ? idCardPlayed?.slice(0, 3) : 'none'}</td></tr>
                 <tr><td> idCardSelected   </td><td> {idCardSelected !== -1 ? idCardSelected?.slice(0, 3) : 'none'}</td></tr>
                 <tr><td> stateInnerCenter </td><td> {stateInnerCenter}</td></tr>

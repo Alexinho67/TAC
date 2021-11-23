@@ -13,9 +13,6 @@ exports.sendPlayerStatus = (idGame) =>{
     let sockets = ioDebug.getSocketsInRoom(io, idGame)
     console.log(`Sockets in room "${idGame}":${sockets}`);
 
-    let message = game.getStatusAllPlayers()
-    console.log(`Sending: ${JSON.stringify(message)}`);
-    
     let socketsInRoom = io.sockets.adapter.rooms.get(idGame)
     console.log(`Sockets in room:"${idGame}": ${Array.from(socketsInRoom)}`);
 
@@ -67,6 +64,18 @@ exports.displayAllGames = (req, res) => {
     res.render('GameStatus', {games: games})
 }
 
+
+exports.displaySingleGame = (req, res) => {
+    // res.render('GameStatus', { games: games })
+    let idGame = req.params.idgame
+    let game = games.find(game => game.id === idGame)
+    let stringOut = ''
+
+    game.players.forEach(p => stringOut += p.toString())
+    // res.send(stringOut)
+    res.render('SingleGame', {game})
+}   
+
 exports.addPlayer = async (req, res) =>{
     console.log(`[GameCtlr-AddPlayer]`);
     let { userName, userColor, userPosition } = req.body
@@ -80,7 +89,7 @@ exports.addPlayer = async (req, res) =>{
         gameIdJoining = req.session.gameId
     }
     
-    let player = new Player(userName, userColor, userPosition, gameIdJoining)
+    let player = new Player(userName, userColor, parseInt(userPosition), gameIdJoining)
     let game = GameTac.findById(gameIdJoining)
     if (game === undefined) {
         res.status(404)

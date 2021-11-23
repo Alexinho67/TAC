@@ -12,6 +12,12 @@ export function addListenersForTac(socket, model) {
     socket.on('gameStart', () => handleGameStart(model) )
     socket.on('serverPlayedCard', (card)=>{handleCardPlayed(model, card)})
     socket.on('newDealer', (dealer) => { handleNewDealer(model, dealer)})
+    socket.on('serverMovedBallByOther', (ballMoved) => { handleBallMovedByOther(model, ballMoved)})
+}
+
+function handleBallMovedByOther(model, ballMoved) {
+    console.log(`[handleBallMovedByOther]: "${ballMoved.namePlayedBy} moved ball to posGlobal: ${ballMoved.pos}"`);
+    model.dispatcherTac({ type: 'ballMovedByOther', payload: ballMoved })
 }
 
 function handleCardPlayed(model, card){

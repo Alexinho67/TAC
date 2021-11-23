@@ -9,6 +9,8 @@ router.get('/initSession', (req, res) => {
     res.json({ msg: `hello from MAIN SERVER (PORT:${PORT})` })
 })
 
+router.get('/admin/:idgame', gameController.displaySingleGame )
+
 router.get('/admin', gameController.displayAllGames)
 router.get('/resetState', gameController.reset)
 

@@ -13,16 +13,22 @@ const PlayerStatus = ({ pos, data }) => {
         transform: 'translate(-50%,-50%)'
     }
     if (pos === 'left') {
-        Object.assign(styling, { left: '-10%', top: '70%' })
+        Object.assign(styling, { left: '-30%', top: '70%' })
     } else if (pos === 'front') {
         Object.assign(styling, { left: '30%', top: '-10%' })
     } else if (pos === 'right') {
-        Object.assign(styling, { left: '110%', top: '30%' })
+        Object.assign(styling, { left: '130%', top: '30%' })
     }
-    return (<div style={styling}> <strong>{data.name}</strong> - #{data.posAbs} <br /> {data.status} </div>)
+    return (
+        <div style={styling}> 
+            <strong>{data.name}</strong> - #{data.posAbs} - {data.color} <br /> {data.status} <br/>
+            <ul style={{fontSize:'0.5rem', marginLeft:'1rem'}}>
+                {data.balls.map(ball=> <li>{JSON.stringify(ball)}</li> )}
+            </ul>
+        </div>)
 }
 
-const StatusOtherPlayer = ({ stateGameReduce }) => {
+const StatusOtherPlayer = (  { stateGameReduce } ) => {
     // const userData = React.useContext(UserDataContext)
 
     return (<>

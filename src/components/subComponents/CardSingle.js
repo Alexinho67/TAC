@@ -108,7 +108,7 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
     }
 
     const pathImg = getImagePath(card.value)
-    const Imgage = <img height='100%' width='100%' src={pathImg} alt={`value=${card.value}`} />
+    const Imgage = <img name="imgCard" height='100%' width='100%' src={pathImg} alt={`value=${card.value}`} />
 
     /* ================================================================================
     --------------------------     RENDER      -----------------------------------------
@@ -118,7 +118,7 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
             {Imgage}
         </div>)
     } else {
-        return (<div style={styleCard.current} className="card" data-idExt={card.idExt} 
+        return (<div style={styleCard.current} className="card" data-idext={card.idExt} 
             onClick={handleButtonClick}
             onDoubleClick={handleButtonDblClick}>
                     {Imgage}

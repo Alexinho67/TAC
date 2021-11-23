@@ -19,6 +19,7 @@
                     <td>${p.color}</td>
                     <td><p class="${classBgColor} rounded-md p-1 m-1">${batchReady}</p></td>
                     <td>${p.cards.map(card => card.value).join("-")}</td>
+                    <td>${p.balls.map(ball => { return `${ball.id} - pos: ${ball.position}`}).join("<br/>")}</td>
                 </tr> `
         }).join("")
         }
@@ -37,6 +38,7 @@
         <th>Color</th>
         <th>ready?</th>
         <th>Cards</th>
+        <th>Balls</th>
     </tr>
     <%- getTableRows(players) %>
 </table>

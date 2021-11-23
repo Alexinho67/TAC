@@ -5,22 +5,24 @@ const Ball = require('./ballModel')
 let playerList = []
 
 class Player {
-    constructor(name, color, position, gameId = undefined) {
+    constructor(name, color, numPlayer, gameId = undefined) {
         this.id = uuidv4()
         this.cards = []
         this.gameId = gameId
         this.name = name
         this.color = color
         this.isReady = false
-        this.position = position
+        this.position = numPlayer // 1..4
         this.socket = undefined
         this.balls =
-            [new Ball(0, color),
-            new Ball(1, color),
-            new Ball(2, color),
-            new Ball(3, color)]
+            [new Ball(numPlayer*10 + 1, color, numPlayer),
+            new Ball(numPlayer *10 + 2, color, numPlayer),
+            new Ball(numPlayer *10 + 3, color, numPlayer),
+            new Ball(numPlayer *10 + 4, color, numPlayer)]
         
+
         console.log(`New player created: ${this.toString()}`);
+        console.log(`   balls: ${JSON.stringify(this.balls)}`);
         playerList.push(this)
     }
 
@@ -33,8 +35,8 @@ class Player {
         return {name: this.name, 
                 pos: this.position, 
                 color: this.color, 
-                state: this.isReady,
-                // balls: this.getBallStatus()
+                isReady: this.isReady,
+                balls: this.getBallStatus()
             }
     }
 

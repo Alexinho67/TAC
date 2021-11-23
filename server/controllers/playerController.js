@@ -35,6 +35,34 @@ exports.handlePlayingCard = (cardPlaying, socket) => {
     }
 }
 
+exports.handleMovedBall = (ballPlayed, socket) => {
+    let pre = '[PlyCtrl-hndlPlyingCard]'
+    let playerId = socket.request.session.playerId
+    let plyMovingBall = Player.findById(playerId)
+    let gameId = socket.request.session.gameId
+    let game = GameTac.findById(gameId)
+    let ballMovedMod = { namePlayedBy: plyMovingBall.name, 
+                         posPlayedBy:  plyMovingBall.position , 
+                         posPlayerOwner: ballPlayed.posOwner ,
+                         id: ballPlayed.id, 
+                         pos: ballPlayed.pos}
+    // 1.output for debug
+    console.log(`${pre} %c${plyMovingBall.name} has moved ball ${JSON.stringify(ballPlayed)}`, 'color:pink');
+    // 2.update player instance
+    let playerOwner = game.players.find(p => p.position === ballMovedMod.posPlayerOwner )
+    playerOwner.balls = playerOwner.balls.map( ball => {
+        // update position of moved/played ball
+        if(ball.id !== ballPlayed.id) {return ball}
+        else{
+            ball.position = ballPlayed.pos
+            return ball
+         }
+    })
+    // 3.inform other players about the moved ball
+    plyMovingBall.socket.to(game.id).emit('serverMovedBallByOther', ballMovedMod)
+
+}
+
 exports.handleReadyToPlay = (callback, socket) => {
     let pre = '[PlyCtrl-hReady2Play]'
     let playerId = socket.request.session.playerId

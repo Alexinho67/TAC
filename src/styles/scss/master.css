@@ -9,14 +9,14 @@ body {
 nav {
   color: white;
   position: fixed;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   top: 0;
-  z-index: 1;
+  height: 10vh;
   width: 100%;
   background-color: #03400f;
   border-bottom: 2px solid white;
-  resize: vertical;
-  overflow: auto;
 }
 
 i {
@@ -38,6 +38,8 @@ h1, h2, h3, h4 {
 }
 
 .container {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   padding-left: 210px;
   margin-right: 1rem;
@@ -45,51 +47,62 @@ h1, h2, h3, h4 {
 }
 
 #table {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
   position: relative;
-  flex-direction: column;
-  justify-content: right;
-  flex-wrap: nowrap;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: right;
+      -ms-flex-pack: right;
+          justify-content: right;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
   height: 500px;
   aspect-ratio: 1/1;
   background-image: url(../../pics/table.jpg);
   background-repeat: no-repeat;
   background-size: cover;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   border: 1px solid black;
   border-radius: 1rem;
-  box-shadow: 8px 8px 2px #222222b9;
-  /* Safari */
-  /* IE 10 and IE 11 */
-  user-select: none;
-  /* Standard syntax */
+  -webkit-box-shadow: 8px 8px 2px #222222b9;
+          box-shadow: 8px 8px 2px #222222b9;
 }
 
 #boardWrapper {
   padding-top: 13%;
   width: 100%;
   height: 70%;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 #board {
   position: relative;
   width: 70%;
   height: 100%;
+  /* background-image: '../../pics/TACboard.jpg'; */
+  background-image: url(../../pics/TACboard.jpg);
   background-repeat: no-repeat;
   background-size: cover;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   border: 1px solid black;
-  box-shadow: 5px 10px 25px #251201;
-}
-
-.rotate_board {
-  transform: rotate(-90deg);
+  -webkit-box-shadow: 5px 10px 25px #251201;
+          box-shadow: 5px 10px 25px #251201;
 }
 
 .center {
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
 }
 
 #fieldConfirmReady, #fieldDealCards {
@@ -105,13 +118,18 @@ h1, h2, h3, h4 {
   opacity: 0.8;
   min-width: 50px;
   min-height: 2rem;
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-transition: -webkit-transform linear 120ms;
+  transition: -webkit-transform linear 120ms;
   transition: transform linear 120ms;
+  transition: transform linear 120ms, -webkit-transform linear 120ms;
   white-space: nowrap;
 }
 
 #fieldConfirmReady:focus, #fieldDealCards:focus, #fieldConfirmReady:hover, #fieldDealCards:hover {
-  transform: translate(-50%, -50%) scale(1.2);
+  -webkit-transform: translate(-50%, -50%) scale(1.2);
+          transform: translate(-50%, -50%) scale(1.2);
   border-width: 4px;
 }
 
@@ -144,7 +162,8 @@ h1, h2, h3, h4 {
   width: 27%;
   aspect-ratio: 1/1;
   /* background-color: #fa0a; */
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
 }
 
 #innerCenter.highlight {
@@ -154,18 +173,24 @@ h1, h2, h3, h4 {
 
 .fieldOwnCards {
   position: absolute;
-  transform: translateX(-50%);
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
   top: 100%;
   left: 50%;
   height: 25%;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
 }
 
 .card {
   margin: 2px 0px;
   padding: 10px;
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
   /* height: 100%; */
   /* height: 20%; */
   position: absolute;
@@ -177,13 +202,15 @@ h1, h2, h3, h4 {
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   /* outline: 1px solid white; */
 }
 
 .card img {
   border-radius: 8px;
-  box-shadow: 2px 2px 2px #000;
+  -webkit-box-shadow: 2px 2px 2px #000;
+          box-shadow: 2px 2px 2px #000;
 }
 
 .numberCardsOtherPlayer {
@@ -204,11 +231,16 @@ h1, h2, h3, h4 {
   cursor: pointer;
   background-repeat: no-repeat;
   background-size: contain;
-  transform: translate(-50%, -50%);
-  box-sizing: border-box;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-transition-property: left, top;
   transition-property: left, top;
-  transition-timing-function: ease-out;
-  transition-duration: 200ms;
+  -webkit-transition-timing-function: ease-out;
+          transition-timing-function: ease-out;
+  -webkit-transition-duration: 200ms;
+          transition-duration: 200ms;
 }
 
 .ball[data-color="red"] {
@@ -227,27 +259,27 @@ h1, h2, h3, h4 {
   background-image: url(../../pics/Ballyellow.png);
 }
 
-.ball[data-color="black"] {
-  background-image: url(../../pics/Ballblack.png);
-}
-
 .BG-white {
   background-color: white;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
 }
 
 .ballSlot {
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
   margin: 0;
   height: 100%;
   aspect-ratio: 1;
   border-radius: 50%;
   border: 1px solid #0000;
+  -webkit-transition-property: background-color, border-color;
   transition-property: background-color, border-color;
-  transition-duration: 250ms;
-  transition-timing-function: linear;
-  font-size: 10px;
-  text-align: center;
+  -webkit-transition-duration: 250ms;
+          transition-duration: 250ms;
+  -webkit-transition-timing-function: linear;
+          transition-timing-function: linear;
 }
 
 .highlightBallSlot {
@@ -257,16 +289,40 @@ h1, h2, h3, h4 {
 
 .highlightBallSlotStart {
   border-color: black;
-  background-color: #f9f913;
+  color: yellow;
   cursor: pointer;
+}
+
+.armBallSlot {
+  position: absolute;
+  top: 49.95%;
+  left: 49.96%;
+  -webkit-transform-origin: 0% 50%;
+          transform-origin: 0% 50%;
+  -webkit-transform: translate(0%, -50%);
+          transform: translate(0%, -50%);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  width: 47.25%;
+  height: 4.25%;
+  border: 0px dashed black;
+  padding: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: right;
+      -ms-flex-pack: right;
+          justify-content: right;
 }
 
 .wrapperBallSlot {
   position: absolute;
-  box-sizing: border-box;
-  transform: translate(-50%, -50%);
-  width: 4.55%;
-  height: 4.55%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  width: 4.25%;
+  height: 4.25%;
   border: 0px dashed black;
   padding: 0;
 }
@@ -275,6 +331,8 @@ h1, h2, h3, h4 {
   background-color: #fffd;
   border-radius: 25px;
   border: 1px solid black;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
   width: fit-content;
   padding: 12px 25px;
   margin: 100px auto 200px auto;
@@ -305,8 +363,12 @@ h1, h2, h3, h4 {
 }
 
 #loginForm .d-flex {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  justify-content: space-between;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
 }
 
 #loginForm .indent {
@@ -363,3 +425,4 @@ option[value=green] {
   padding: 15px;
   opacity: 0.7;
 }
+/*# sourceMappingURL=master.css.map */

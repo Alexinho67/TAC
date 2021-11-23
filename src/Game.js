@@ -16,7 +16,7 @@ function Game() {
   const { stateGameReduce} = React.useContext(GameModelContext)
   return (<> 
             <h2 > game: <span id="gameId">{gameId} </span> &nbsp;       
-      <IconCopyPaste gameId={gameId} /> - {stateGameReduce.self.userName}/#{stateGameReduce.self.userPosition}</h2>
+      <IconCopyPaste gameId={gameId} /> - {stateGameReduce.players[0].name}/#{stateGameReduce.players[0].posAbs}</h2>
             <div className="container">
                 <Table/>
             </div>

@@ -10,6 +10,7 @@ import { useSocketContext } from './socketComps/SocketProvider'
 import CNST from '../utils/Constants'
 import { GameModelContext } from '../GameProvider'
 import ShuffledDeck from './subComponents/ShuffledDeck'
+import BallSlots from './subComponents/BallSlots'
 
 
 
@@ -19,15 +20,20 @@ const ASPECT_RAT_CARD = 0.7
 
 const ConfirmReady = ({ isReady, setIsReady }) => {
     const { socket } = useSocketContext()
-
+    const skipConfirmReady = React.useRef(false)
+    const { dispatcherTac } = React.useContext(GameModelContext)
+    
+    
+    
     React.useEffect(() => {
-        if (!socket){ return }
+        if (!socket || !skipConfirmReady.current){ return }
         setTimeout(()=>{    
             clickReady()
         }, 1000)
     }, [socket])
 
     function clickReady() {
+        dispatcherTac({ type: 'setSelfReady' })
         socket.emit('readyToPlay', (resp) => {
             console.log(`[readyToPlay] ACKM: ${resp}`);
             if (resp === 'ok') {
@@ -47,33 +53,206 @@ const ConfirmReady = ({ isReady, setIsReady }) => {
 const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
     const { socket } = useSocketContext()
     const { stateGameReduce, dispatcherTac} = React.useContext(GameModelContext)
-
+    // cards
     const [idCardSelected, setIdCardSelected] = React.useState(undefined)
     const [idCardPlayed, setIdCardPlayed] = React.useState(-1)
-    const [stateInnerCenter, setStateInnerCenter] = React.useState('inactive')
     const [cardsHand, setCardsHand] = React.useState([])
     const [cardsPlayed, setCardsPlayed] = React.useState([])
-    const cnt = React.useRef(0)
-    // const test = React.useRef(<div> Hello World</div>)
-
-    
+    // center
+    const [stateInnerCenter, setStateInnerCenter] = React.useState('inactive')
+    //balls
+    // const [idBallSelected, setIdBallSelected] = React.useState(-1)
+    const [highlightBallSlots, setHighlightBallSlots] = React.useState(false)
+    const [ballsAllData, setBallsAllData] = React.useState([])
+    // slots
+    const [resetTimer, setResetTimer] = React.useState(false) // in "BallSlots" is a timer, which deactives the slots after a certain time
     /* ================================================================================
     --------------------------     HOOKS      -----------------------------------------
     * ================================================================================ */
     // test.current = React.createElement('div', null, 'INIT');
     React.useEffect(() => { 
-        console.log(`%c[Board]-INIT`, 'color:#999')}
-        ,[])
+        console.log(`%c[Board]-INIT`, 'color:#999')} ,
+        [])
+
+    React.useEffect(()=>{
+
+        // console.log(`Lvl1-[Board-useEffect@stateGameReduce.players[0..4].balls]`);
+
+        function getNewBallObject(ballReRenderModel){
+            // console.log(`....[Board-useEffect@getNewBallObject]: ballReRenderModel:${JSON.stringify(ballReRenderModel)} `);
+            let xBallGlobCentered, yBallGlobCentered
+            if (ballReRenderModel.posGlobal <= 63) {
+                let phi = Math.PI * 2 / 64 // angle between to ring slots
+                let alpha = phi * ballReRenderModel.posGlobal + Math.PI / 2
+                let radius = 45.25
+                xBallGlobCentered = Math.cos(alpha) * radius
+                yBallGlobCentered = Math.sin(alpha) * radius
+
+            } else { // either start or home slot
+                let lastDigit = ballReRenderModel.posGlobal % 10
+                if (lastDigit <= 4) {// startSlot
+                    //  corner right bottom:
+                    //           #1 - O x   #2:  x O   #3: x x  #4: x x
+                    //                x x        x x       O x      x O
+                    let factxy
+                    if (ballReRenderModel.posAbsOwner === 1) { factxy = [1, 1] }
+                    else if (ballReRenderModel.posAbsOwner === 2) { factxy = [-1, 1] }
+                    else if (ballReRenderModel.posAbsOwner === 3) { factxy = [-1, -1] }
+                    else if (ballReRenderModel.posAbsOwner === 4) { factxy = [+1, -1] }
+                    else { factxy = [0, 0] }
+                    console.log(`factxy: ${factxy}`);
+                    xBallGlobCentered = factxy[0] * (40 + (lastDigit - 1) % 2 * 5)
+                    /* ==> lastDigit=1 -> factxy[0]* (40)
+                       ==> lastDigit=2 -> factxy[0] * (40 + 5) =  factxy [0] * 45
+                     */
+                    yBallGlobCentered = factxy[1] * (40 + parseInt((lastDigit - 1) / 2) * 5)
+                } else { // homeSlot
+                    let idxHomeSlot = lastDigit - 5 // [5,6,7,8] --> [0,1,2,3]
+                    let leadingDigit = parseInt(ballReRenderModel.posGlobal/10)
+                    switch (leadingDigit){
+                        case 7: //player 1
+                            // idxHomeSlot=[0,2] are with xCenter = 0
+                            // idxHomeSlot=[1,3] are with yCenter = 20.25
+                            xBallGlobCentered = 0 + idxHomeSlot % 2 * (idxHomeSlot - 2) * 6.8 // for idxHomeSlot=[0,2] -> x=50, for i = [1] -> fact gets "-1" with "idxHomeSlot-2"
+                            yBallGlobCentered = 20.25 + 0 * Math.pow(idxHomeSlot, 3) + 4 * Math.pow(idxHomeSlot, 2) - 16 * idxHomeSlot + 12
+                            break
+                        case 8://player 2
+                            // idxHomeSlot= [0,3] same pos of xCenter= - 28
+                            // idxHomeSlot= [1,2] same pos of xCenter= - 21.25
+                            xBallGlobCentered = -28 + (idxHomeSlot % 2 + parseInt(idxHomeSlot / 2)) % 2 * 6.75 // for i=[0,3] the factor will be "0"
+                            yBallGlobCentered = -8 + 4 * idxHomeSlot + parseInt(idxHomeSlot / 2) * 4 // each gap 4%, but lower two additionally 4 %
+                            break
+                        case 9: //player 3 (Front)
+                            // idxHomeSlot = [0,2] are with xCenter = 0
+                            // idxHomeSlot = [1,3] are with yCenter = -20.5
+                            xBallGlobCentered =  idxHomeSlot % 2 * (idxHomeSlot - 2) * (-1) * 6.8 // for idxHomeSlot=[0,2] -> x=50, for i = [1] -> fact gets "-1" with                        "idxHomeSlot-2"
+                            yBallGlobCentered = -20.5 + 0 * Math.pow(idxHomeSlot, 3) - 4 * Math.pow(idxHomeSlot, 2) + 16 * idxHomeSlot - 12
+                            break
+                        case 10://player 4
+                            // idxHomeSlot= [0,3] same pos of xCenter= + 28
+  
+                            xBallGlobCentered = 28 - (idxHomeSlot % 2 + parseInt(idxHomeSlot / 2)) % 2 * 6.75 // for i=[0,3] the factor will be "0"
+                            yBallGlobCentered = 7.8 - 4 * idxHomeSlot - parseInt(idxHomeSlot / 2) * 4 // each gap 4%, but lower two additionally 4 %
+                            break
+                        default:
+                            xBallGlobCentered = 0
+                            yBallGlobCentered = 0
+                    }
+                }
+            }
+
+            let alphaRot = - (stateGameReduce.players[0].posAbs - 1) * Math.PI / 2 // player1-> posAbs = 1 --> no Rotation; player4 --> rotation by 270°/ 1.5pi ; "-" because anti-clockwise
+            let xBallRel = xBallGlobCentered * Math.cos(alphaRot) - yBallGlobCentered * Math.sin(alphaRot) + 50
+            let yBallRel = xBallGlobCentered * Math.sin(alphaRot) + yBallGlobCentered * Math.cos(alphaRot) + 50
+
+            // console.log(`%cTRANSFORMATION`,'color:red');
+            // console.log(`%c alphaRot:${alphaRot},xBallGlobCentered:${xBallGlobCentered},yBallGlobCentered:${yBallGlobCentered}  `,'color:red');
+            // console.log(`%c    ===> xBallRel:${xBallRel},yBallRel:${yBallRel}  `,'color:red');
+
+            let newBall = { id: ballReRenderModel.id,
+                            posGlobal: ballReRenderModel.posGlobal,
+                            left: Math.round(xBallRel * 100) / 100, 
+                            top: Math.round(yBallRel * 100) / 100 ,
+                            color: ballReRenderModel.color,
+                            isSelected: false, 
+                            show: true, 
+                            isSelectable: isReady }
+            return newBall
+        }
+
+        function updateBallsList(listBalls, ballsListRerender){
+            /* parameters: listBalls - old values of "ballsAllData"
+                           ballsListRerender - list of balls from the model containing informations about balls which 
+                                 shall be rerendered
+                description: 
+                    function loops through the list of ball which shall be rendered and 
+            */
+            // console.log(`    Lvl3-[Board-useEffect@stateGameReduce.players[0..4].balls] updateBallsList.`);
+                                  
+            ballsListRerender.forEach(ballReRenderModel => {
+            //     // console.log(`    Lvl3-[Board-useEffect@stateGameReduce.players[0..4].balls] updateBallsList. Looping through list \n. Rerendering ball ${JSON.stringify(ballReRenderModel)}`);
+                    // find ball in list "listBall"
+                let ballTobeUpdated = listBalls.find(ball => ball.id === ballReRenderModel.id) 
+                let newBall = getNewBallObject(ballReRenderModel)
+                if (!ballTobeUpdated){ // ball not created yet 
+                    listBalls.push(newBall)
+                } else {
+                    Object.assign(ballTobeUpdated, { left: newBall.left, top: newBall.top, posGlobal: newBall.posGlobal})
+                }
+
+                dispatcherTac({ type: 'setBallToHasBeenRendered', payload: ballReRenderModel })
+            })
+            
+            return listBalls 
+
+        }
+
+            function updateBallsForRender(){
+            /* function checks the model data and gets the list of balls which have the 
+                property "rerender === true"
+                These balls shall be created/updated in the state variable "ballsAllData"
+            */
+           let ballsListRerender = stateGameReduce.players.reduce((oldList, player) => {
+               oldList.push(...player.balls.filter(ball => ball.rerender === true))
+               return oldList
+            }, [])
+            
+            // console.log(`  Lvl2-[Board-useEffect@stateGameReduce.players[0..4].balls] updateBallsForRender. ballsToRender: ${JSON.stringify(ballsListRerender)}`);
+            setBallsAllData( listBalls => {
+                return updateBallsList(listBalls, ballsListRerender)
+            })
+        }
+
+        updateBallsForRender()
+        }, [stateGameReduce.players[0].balls, 
+            stateGameReduce.players[1].balls,
+            stateGameReduce.players[2].balls, 
+            stateGameReduce.players[3].balls])
+
+    React.useEffect(() => { 
+        if (isReady){
+            setBallsAllData(balls => {
+                return balls.map(ball => Object.assign(ball,{isSelectable:true}))
+        }) // close setBallsAllData
+    } // close if
+    }, [isReady])
+
+    React.useEffect(() => {
+        function mouseClickHandler(e){
+            /* function: 
+                - unselect ball if user clicks somewhere into the "void"
+            */
+            console.log(`%c[Board]-MouseClick`,'background-color:#a0f; color:white');
+            let elemTgt = e.target
+            let ballSelected = ballsAllData.find(ball => {
+                return ball.isSelected === true
+            })
+            console.log(`....ballSelected:${JSON.stringify(ballSelected)}`);
+            console.log(`......elemTgt: id:${elemTgt.id}-class:${elemTgt.className}`);
+            if (ballSelected !== undefined & elemTgt.className !== 'ballSlot') {
+                console.log(`....unselect ball`);
+                setBallsAllData(list => list.map(b => {
+                     return { ...b, isSelected: false }} ) )
+            } else if (elemTgt.name === 'imgCard') {
+                console.log(`....clicked "imgCard"`);
+                return
+            }
+        }
+        window.addEventListener("click", mouseClickHandler);
+        return () => {
+            window.removeEventListener("click", mouseClickHandler);
+        }
+    }, [ballsAllData])
     
     React.useEffect(() => {
         console.log(`%c[Board-useEffect] - "stateGameReduce.self.cards" has changed`,'color:#999');
-        if (stateGameReduce.self.cards.length > 0 && stateGameReduce.self.updateHandCards === true){
-            setCardsHand(initCards(stateGameReduce.self.cards))
+        if (stateGameReduce.players[0].cards.length > 0 && stateGameReduce.updateHandCards === true){
+            setCardsHand(initCards(stateGameReduce.players[0].cards))
             dispatcherTac({ type: 'deactUpdateHandCards'})
         }else{
-            console.log(`...No cards found. stateGameReduce.self.cards.length:${stateGameReduce.self.cards.length}`);
+            console.log(`...No cards found. stateGameReduce.self.cards.length:${stateGameReduce.players[0].cards.length}`);
         }
-    }, [stateGameReduce.self.cards])
+    }, [stateGameReduce.players[0].cards])
 
     React.useEffect(() => {
         let stateInnerCircle = 'inactive'
@@ -89,6 +268,12 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
         setIdCardSelected(idSelectedCard)
     }, [cardsHand])
 
+    React.useEffect(() => {
+       let singleBallSelected = ballsAllData.some(ball => ball.isSelected) 
+       singleBallSelected ? setHighlightBallSlots(true) : setHighlightBallSlots(false)
+        let stringTemp = singleBallSelected  ? "show" : "hide"
+        console.log(`[Board - useEffect@ballsAllData] singleBallSelected= ${singleBallSelected} --> ${stringTemp} ball slots`);
+    }, [ballsAllData])
 
 
     /* ================================================================================
@@ -195,19 +380,53 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
     * ================================================================================ */
 
    // console.log(`Render [BOARD]`);
+
+
+    const TableDebug = ({ ballsAllData} ) => {
+
+        if (ballsAllData?.length === 0){
+            return <></>
+        } else {
+            return (
+                <>
+                <div style={{ marginEnd: '3rem', position: 'absolute', top: '135%', left: '-50%', color: 'red' }}>ballsAllData
+                    <table style={{ width: '400px', textAlign: 'center' }}>
+                        <tbody>
+                            <tr>
+                                {ballsAllData?.length > 0 ? Object.keys(ballsAllData[0]).map((key) => {
+                                    return <th style={{ padding: '1rem' }} key={Math.floor(Math.random() * 1000000)}>{key}</th>
+                                }) : ""}
+                            </tr>
+                            {ballsAllData.map(ball => <tr key={ball.id}>
+                                {Object.keys(ball).map((key) => {
+                                    let val = ball[key]
+                                    if (typeof val === 'number') {
+                                        val = Math.floor(val * 100) / 100
+                                    }
+                                    return <td key={Math.floor(Math.random() * 1000000)}>{JSON.stringify(val)}</td>
+                                })}
+                            </tr>)}
+                        </tbody>
+                    </table>
+                </div>
+                </>)
+        }
+    } 
    
     return (<>
-            <DebugBox {...{ cnt, idCardPlayed, idCardSelected, stateInnerCenter, cardsHand, cardsPlayed}} />
+            {/* <DebugBox {...{idCardPlayed, idCardSelected, stateInnerCenter, cardsHand, cardsPlayed}} /> */}
+            <BallSlots resetTimer={resetTimer} setResetTimer={setResetTimer} highlightBallSlots={highlightBallSlots} setBallsAllData={setBallsAllData} ballsAllData={ballsAllData}/>
+            {ballsAllData.length > 0 ? <Balls setResetTimer={setResetTimer} ballsData={ballsAllData} setBallsAllData={setBallsAllData}  /> : "" }
             {!isReady  
             ? <ConfirmReady {...{ isReady, setIsReady }} />
-            : <> <Balls numBalls={4} />
+            : <> 
                  {/* <button onClick={() => { setGameStarted(true) }}>Start Game(TEMP)</button>  */}
                  <DealerButton />
                  </>
             }
             {isReady && stateGameReduce.started
             ?  <>
-                <CardsJSX name={"playedCards"} cards={cardsPlayed}/> 
+                <CardsJSX name={"trashCards"} cards={cardsPlayed}/> 
                 <CardsJSX name={"handCards"} cards={cardsHand} setCards={setCardsHand} 
                     transitionCardHandToTray={transitionCardHandToTray} 
                     triggerCardPlayed={triggerCardPlayed} />
@@ -218,6 +437,8 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
                 </> 
             : ""
             }
+
+        <TableDebug ballsAllData={ballsAllData} />
         </>
     )
 }

@@ -31,9 +31,15 @@ class GameSocket{
         this.socket.on('dealCards', (callback)=>{
             console.log(`received DEALING request`);
             gameController.handleDealRequest(this.socket, callback)
+        } )        
+
+        this.socket.on('movedBall', (ballPlayed)=>{
+            console.log(`received "movedBall"-event. Ball:${JSON.stringify(ballPlayed)}`);
+            playerController.handleMovedBall(ballPlayed, this.socket)
         } )
     }
 }
+
 
 class Connection {
     constructor(io, socket){

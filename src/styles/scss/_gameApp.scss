@@ -55,15 +55,15 @@
   border-radius: 50%;
   position: absolute;
   left:50%;
-  top:50%;
-  width:25%;
+  top:49.75%;
+  width:27%;
   aspect-ratio: 1/1;
   /* background-color: #fa0a; */
   transform: translate(-50%, -50%);
 }
 
 #innerCenter.highlight{
-  border:5px solid red ;
+  border:2px solid #0eb574 ;
   cursor: pointer;
 }
 
@@ -122,6 +122,9 @@
   background-size: contain;
   transform: translate(-50%, -50%);
   box-sizing: border-box;
+  transition-property: left, top;
+  transition-timing-function: ease-out;
+  transition-duration: 200ms;
 }
 
 .ball[data-color="red"]{
@@ -136,25 +139,67 @@
 .ball[data-color="yellow"]{
   background-image: url(../../pics/Ballyellow.png);
 }
+.ball[data-color="black"]{
+  background-image: url(../../pics/Ballblack.png);
+}
 
-.ball[data-id="0"]{
-  top: 90%;
-  left:90%;
-}
-.ball[data-id="1"]{
-  top:90%;
-  left:95%;
-}
-.ball[data-id="2"]{
-  top:95%;
-  left:90%;
-}
-.ball[data-id="3"]{
-  top: 95%;
-  left:95%;
-}
 
 .BG-white{
   background-color: white;
   width:fit-content
+}
+
+.ballSlot{
+  box-sizing: border-box;
+  margin:0;
+  height : 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid #0000;
+  transition-property:background-color, border-color;
+  transition-duration: 250ms;
+  transition-timing-function: linear; 
+  font-size: 10px;
+  text-align: center;
+  // color:red;
+  // background-color: #fffa;
+}
+
+.highlightBallSlot{
+  border-color: #333f;
+  // background-color: #ff08;
+  cursor: pointer;
+}
+.highlightBallSlotStart{
+  border-color: black;
+  background-color: #f9f913;
+  cursor: pointer;
+}
+
+
+// .armBallSlot{
+//   position:absolute;
+//   top:49.95%;
+//   left:49.96%;
+//   transform-origin:0% 50%;
+//   transform:translate(0%,-50%);
+//   box-sizing: border-box;
+//   width : 47.25%;
+//   height : 4.25%;
+//   border: 0px dashed black;
+//   padding:0;
+//   display: flex;
+//   justify-content: right;
+// }
+
+.wrapperBallSlot{
+  position:absolute;
+  box-sizing: border-box;
+  transform:translate(-50%,-50%);
+  width :  4.55%;
+  height : 4.55%;
+  border: 0px dashed black;
+  padding:0;
+  // display: flex;
+  // justify-content: right;
 }

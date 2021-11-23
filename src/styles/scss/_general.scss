@@ -13,10 +13,13 @@ nav{
   position:fixed;
   display: flex;
   top:0;
-  height:10vh;
+  z-index: 1;
+  // height:10vh;
   width:100%;
   background-color: #03400f;
   border-bottom: 2px solid white;
+  resize: vertical;
+  overflow: auto;
 }
 i{
   cursor: pointer;
@@ -61,6 +64,9 @@ h1,h2, h3, h4{
   border:1px solid black;
   border-radius: 1rem;
   box-shadow: 8px 8px 2px #222222b9;
+  -webkit-user-select: none; /* Safari */
+      -ms-user-select: none; /* IE 10 and IE 11 */
+          user-select: none; /* Standard syntax */
 }
 
 #boardWrapper{
@@ -75,11 +81,18 @@ h1,h2, h3, h4{
   position: relative;
   width: 70%;
   height: 100%;
-  /* background-image: '../../pics/TACboard.jpg'; */
-  background-image: url(../../pics/TACboard.jpg);
+  // background-image: url(../../pics/TACboard.jpg);
   background-repeat: no-repeat;
   background-size: cover;
   box-sizing: border-box;
   border:1px solid black;
   box-shadow: 5px 10px 25px rgb(37, 18, 1);
+}
+
+.rotate_board{
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
 }

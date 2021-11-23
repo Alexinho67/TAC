@@ -12,7 +12,7 @@
     
     <div class="game flex">
         <div class="flex-initial mr-4 ">
-            <p class="font-bold">ID:<%= game.id %></p>
+            <p class="font-bold">ID: <a href="/admin/<%=game.id %>"> <%= game.id %> </a></p>
             <p>state: <%= game.state %></p>
             <p>subState: <%= game.subState %></p>
             <p>dealer(idx:<%= game.idxDealer%>) <%= getDealerName(game) %> </p>

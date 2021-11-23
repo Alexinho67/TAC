@@ -37,19 +37,23 @@ const LoginPage = () => {
             if (e.key === '1') {
                 // console.log('Selected player #1')
                 setUserPosition(1)
+                setUserColor("red")
                 setUserName('Alex')
             } else if (e.key === '2') {
                 // console.log('Selected player #2')
                 setUserPosition(2)
+                setUserColor("yellow")
                 setUserName('Bea')
             } else if (e.key === '3') {
                 // console.log('Selected player #3')
                 setUserPosition(3)
+                setUserColor("green")
                 setUserName('Clemens')
             }
             else if (e.key === '4') {
                 // console.log('Selected player #4')
                 setUserPosition(4)
+                setUserColor("blue")
                 setUserName('Dani')
             }
         }
@@ -61,7 +65,8 @@ const LoginPage = () => {
 
     async function handleJoinGame() {
         let data = { userName, userColor, userPosition, gameId }
-        // let status;
+        model.dispatcherTac({type: 'setGameID', payload: gameId})
+        
         console.log(`%c[LoginPage - handleJoinGame] data: ${JSON.stringify(data)}`,'color:red');
         let dataReactState = { userName:  data.userName,
                                userColor: data.userColor,
@@ -120,6 +125,7 @@ const LoginPage = () => {
                 history.push(newUrl)
                 navigator.clipboard.writeText(gameId)
                 document.title = `TAC #${gameId}`
+                model.dispatcherTac({ type: 'setGameID', payload: gameId })
                 // window.location.href = newUrl
             }) 
             .catch(err =>{

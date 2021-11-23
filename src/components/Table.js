@@ -8,11 +8,15 @@ const Table = () => {
     const [isReady, setIsReady] = React.useState(false)
     const [gameStarted, setGameStarted] = React.useState(false)
 
+
+    const pathBoard = require(`../pics/TACboard.jpg`).default
+
     return (<>
         <div id="table">
             <div id="boardWrapper" >
-                <div id="board"  >
-                    <StatusOtherPlayer stateGameReduce={stateGameReduce.statusOtherPlayers} />
+                <div id="board" >
+                    <img class={stateGameReduce.players[0].posAbs % 2 === 0 ? "rotate_board" : ""} height='100%' width='100%' src={pathBoard  } alt={'Text'} />
+                    <StatusOtherPlayer stateGameReduce={stateGameReduce.players.slice(1,4)} />
                     <Board {...{ isReady, setIsReady, gameStarted, setGameStarted }}/>
                 </div>      
             </div>
