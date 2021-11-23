@@ -14,8 +14,8 @@ const playerController = require('./controllers/playerController')
 
 console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}`);
 
-// const PORT = (process.env.NODE_ENV === 'production') ? process.env.PORT : 8000
-const  {PORT} = require('./CONSTANTS')
+const PORT = (process.env.NODE_ENV === 'production') ? process.env.PORT : 8000
+// const  {PORT} = require('./CONSTANTS')
 
 let { wsConnect, stateChatServer } = require('./wsConnect')
 
