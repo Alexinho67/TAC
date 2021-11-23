@@ -30,8 +30,9 @@
     ]
   },
   "scripts": {
+    "start": "node server/server",
     "server": "clear & nodemon server/server --ignore ./src/*",
-    "start": "react-scripts start",
+    "start-reactdev": "react-scripts start",
     "build": "react-scripts build",
     "test-react": "react-scripts test",
     "eject": "react-scripts eject",

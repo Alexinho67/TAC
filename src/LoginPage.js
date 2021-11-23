@@ -4,7 +4,12 @@ import {ErrorList, addError} from './components/ErrorList'
 import { useHistory } from "react-router-dom";
 import { GameModelContext } from './GameProvider';
 
-
+let urlServerPrefix
+if (process.env.NODE_ENV === 'development') {
+    urlServerPrefix = '/api' 
+} else {
+    urlServerPrefix = ''
+}
 
 
 const LoginPage = () => {
@@ -73,7 +78,7 @@ const LoginPage = () => {
                                userPosition: data.userPosition }
         model.dispatcherTac({type: 'updateSelfData', payload: dataReactState }) 
         // model.setPlayerData(dataReactState)
-        fetch('/api/joinGame',
+        fetch(urlServerPrefix + '/joinGame',
             {
                 method: 'POST',
                 headers: {
@@ -110,7 +115,7 @@ const LoginPage = () => {
         // send a get request to the server to create a new game of TAC
         model.dispatcherTac({ type: 'updateSelfData', payload: data })
         // model.setPlayerData(data)
-        fetch('/api/newGame',
+        fetch(urlServerPrefix + '/newGame',
             {method:'POST',
             headers: {
                 'Content-Type': 'application/json'
