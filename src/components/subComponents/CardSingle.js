@@ -3,29 +3,39 @@ import {CARDS} from '../../utils/helper'
 
 const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerCardPlayed}) => {
     // console.log(`[CardSingle]. received card:${JSON.stringify(card)}`);
-    const styleCard = React.useRef({
+    const [styleCard, setStyleCard] = React.useState({
         left: `${card.left}%`,
         width: `${card.width}%`,
         top: `${card.top}%`,
         // backgroundImage: `url(${require(`../pics/${CARDS[value]}`).default})`,
     })
 
-    _calcStyling()
+
+    
 
     /* ================================================================================
     --------------------------     HOOKS      -----------------------------------------
     * ================================================================================ */
 
+    React.useEffect(() => {
+        console.log(`[CardSingle - useEffect@Card] card(#${card.idExt},val:${card.value})`);
+        _calcStyling(card)
+    }, [card.left, card.top, card.width, card.isCardForSwap, card.isSelected, card.isPlayed])
 
     /* ================================================================================
     --------------------------     Fuctions      -----------------------------------------
     * ================================================================================ */
 
 
-    function _calcStyling(){
+    function _calcStyling(card){
+        let styleBasis = {left: `${card.left}%`,
+                            width: `${card.width}%`,
+                            top: `${card.top}%`}
+
         let stylingAddition = {}
+
         // if (isSelectedFlag) {
-        if (card.isSelected) {
+        if (card.isSelected && !card.isPlayed && !card.isCardForSwap) {
             stylingAddition = { border: '2px solid yellow',
                                 borderRadius: '10px',
                                 padding: '2px',
@@ -44,8 +54,22 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
                 transition: 'top 0.8s ease, left 0.8s ease',
             }
 
+        } else if (card.isCardForSwap === true){
+            stylingAddition = {
+                ...stylingAddition,
+                top: '72%',
+                left: '69%',
+                cursor: 'not-allowed',
+                transition: 'top 0.8s ease, left 0.8s ease',
+                zIndex:2,
+            }
         }
-        styleCard.current = { ...styleCard.current, ...stylingAddition}
+        let styleNew = { ...styleBasis, ...stylingAddition }
+        
+        console.log(`[CardSingle-calcStyle].card(#${card.idExt},val:${card.value}) -> left:${styleNew.left}, top:${styleNew.top}`);
+
+        setStyleCard(styleCardCurrent => { return { ...styleCardCurrent, ...styleNew} })
+
     }
     
     function getImagePath(value){
@@ -114,11 +138,11 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
     --------------------------     RENDER      -----------------------------------------
     * ================================================================================ */
     if (card.isPlayed) {
-        return (<div style={styleCard.current} className="card" onTransitionEnd={_handleTransitionEnd}>
+        return (<div style={styleCard} className="card" onTransitionEnd={_handleTransitionEnd}>
             {Imgage}
         </div>)
     } else {
-        return (<div style={styleCard.current} className="card" data-idext={card.idExt} 
+        return (<div style={styleCard} className="card" data-idext={card.idExt} 
             onClick={handleButtonClick}
             onDoubleClick={handleButtonDblClick}>
                     {Imgage}

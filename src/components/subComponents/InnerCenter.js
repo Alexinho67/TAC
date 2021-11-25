@@ -2,16 +2,16 @@ import React from 'react'
 import {addMessage, ExpireMsg} from './ExpireMsg'
 
 
-const InnerCenter = ({ state, triggerCardPlayed}) => {
+const InnerCenter = ({ stateInnerCenter, triggerCardPlayed}) => {
     const [debugMsg, setDebugMsg] = React.useState(undefined)
     // let debugMsg = <ExpireMsg> Clicked me</ExpireMsg>
     const classInnerCenter = 
-        state === 'active'? "highlight": ""
+        stateInnerCenter === 'active'? "highlight": ""
 
     function _handleClick(){
         // console.log(`clicked [innerCenter]`);
         addMessage('juhuuuuuu', setDebugMsg)
-        if (state === 'active'){
+        if (stateInnerCenter === 'active'){
             triggerCardPlayed()
         }
     }

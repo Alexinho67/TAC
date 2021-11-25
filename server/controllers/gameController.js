@@ -40,16 +40,16 @@ exports.handleDealRequest = (socket, callback ) => {
     let game = GameTac.findById(socket.request.session.gameId)
     game.dealCards()
     game.players.forEach(p => {
-        let stringCards = p.cards.map(c => c.value).join("-")
+        let stringCards = p.cards.map(c => JSON.stringify(c.value)).join("-")
         console.log(`sending: io.to(${p.socket.id}).emit('newCards', {cards: ${stringCards}}))`);
         let msgData = {
-            cards: p.cards.map(card => card.value),
+            cards: p.cards,
             numCardsShuffledRemain: game.deck.cards.length
             }
         io.to(p.socket.id).emit('newCards', msgData)
     })
     callback('ok')
-    io.to(game.id).emit('gameStart');
+    
 }
 
 exports.reset = (req, res) => {

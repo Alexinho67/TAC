@@ -13,6 +13,18 @@ export function addListenersForTac(socket, model) {
     socket.on('serverPlayedCard', (card)=>{handleCardPlayed(model, card)})
     socket.on('newDealer', (dealer) => { handleNewDealer(model, dealer)})
     socket.on('serverMovedBallByOther', (ballMoved) => { handleBallMovedByOther(model, ballMoved)})
+    socket.on('playerSelectedCardForSwap', (playerData) => { handlePlayerSlctdCard4Swap(model, playerData)})
+    socket.on('serverCardSwapRecvd', (cardSwapRecvd) => { handleNewCardFromSwap(model, cardSwapRecvd)})
+}
+
+function handleNewCardFromSwap(model, cardSwapRecvd){
+    console.log(`[handleNewCardFromSwap]: Received new card from card swap => ${JSON.stringify(cardSwapRecvd)}`);
+    model.dispatcherTac({ type: 'cardFromSwapReceived', payload: cardSwapRecvd})
+}
+
+function handlePlayerSlctdCard4Swap(model, playerData) {
+    console.log(`[handlePlayerSlctdCard4Swap]: Player #${playerData.posAbsPlayer} did select a card for swapping`);
+    model.dispatcherTac({ type: 'cardForSwapSelectedOtherPlayer', payload: playerData.posAbsPlayer })
 }
 
 function handleBallMovedByOther(model, ballMoved) {
@@ -21,7 +33,7 @@ function handleBallMovedByOther(model, ballMoved) {
 }
 
 function handleCardPlayed(model, card){
-    console.log(`[onServerPlayedCard]: "${card.playedBy} played card: ${card.value}"`);
+    console.log(`[onServerPlayedCard]: "${card.playedBy}#${card.playedByPosAbs} played card: ${card.value}"`);
     model.dispatcherTac({ type: 'cardPlayedByOther', payload: card })
 }
 

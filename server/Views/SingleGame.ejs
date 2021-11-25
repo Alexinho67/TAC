@@ -5,11 +5,11 @@ let ballsAll = []
 let r = 45 //%
 let alpha = 2*Math.PI/64
 game.players.forEach(p =>{
-    console.log(`${p.name} has ${p.balls.length} balls`);
+    // console.log(`${p.name} has ${p.balls.length} balls`);
     p.balls.forEach((b,i) =>{
-        console.log(`    ${p.name}'s ${i+1}. ball`);
+        // console.log(`    ${p.name}'s ${i+1}. ball`);
         if (b.position<=64){
-            console.log(`  ring slot.player ${p.name} - pos: ${p.position}`);
+            // console.log(`  ring slot.player ${p.name} - pos: ${p.position}`);
             let phi = alpha * b.position + Math.PI/2
             let xPos = Math.round(Math.cos(phi) * r * 10)/10 + 50
             let yPos = Math.round(Math.sin(phi) * r * 10 )/10 + 50
@@ -20,25 +20,25 @@ game.players.forEach(p =>{
             let leadingDigits = parseInt(b.position/10)
             if (lastDigit <=4){
                 // balls in "start slots" // 90 / 95%
-                console.log(`  start slot. lastDigit:${lastDigit}`);
+                // console.log(`  start slot. lastDigit:${lastDigit}`);
                 switch (leadingDigits){
                     case 7: //player 1
-                        console.log(`...1st player`);
+                        // console.log(`...1st player`);
                         xPos = 50 + 40 + (lastDigit-1) % 2 * 5
                         yPos = 50 + 40 + parseInt((lastDigit-1) / 2) * 5
                         break
                     case 8: //player 2
-                        console.log(`...2nd player`);
+                        // console.log(`...2nd player`);
                         xPos = 50 - 40 - (lastDigit-1) % 2 * 5
                         yPos = 50 + 40 + parseInt((lastDigit-1) / 2) * 5
                         break
                     case 9: //player 3
-                        console.log(`...3rd player`);
+                        // console.log(`...3rd player`);
                         xPos = 50 - 40 - (lastDigit-1) % 2 * 5
                         yPos = 50 - 40 - parseInt((lastDigit-1) / 2) * 5
                         break
                     case 10: //player 4
-                        console.log(`...1st player`);
+                        // console.log(`...1st player`);
                         xPos = 50 + 40 + (lastDigit-1) % 2 * 5
                         yPos = 50 - 40 - parseInt((lastDigit-1) / 2) * 5
                         break
@@ -50,7 +50,7 @@ game.players.forEach(p =>{
                 //            O     |         O     |          O      |              O  |
                 // */
                 let idxHomeSlot = lastDigit- 5 // [5,6,7,8] --> [0,1,2,3]
-                console.log(` home slot. idxHomeSlot:${idxHomeSlot}`);
+                // console.log(` home slot. idxHomeSlot:${idxHomeSlot}`);
                 switch (leadingDigits){
                     case 7: //player 1 (bottom)
                         // 0,2 are with x=left=50
@@ -70,7 +70,7 @@ game.players.forEach(p =>{
                             // {pos: 86, left: 28.75, top: 46,  },
                             // {pos: 87, left: 28.75, top: 53.85,  },
                             // {pos: 88, left: 22, top: 57.8,  }]
-                        console.log(`...2nd player`);
+                        // console.log(`...2nd player`);
                         xPos = 22 + (idxHomeSlot%2 + parseInt(idxHomeSlot/2))%2*6.75 // for i=[0,3] the factor will be "0"
                         yPos = 42 + 4 * idxHomeSlot + parseInt(idxHomeSlot/2)*4 // each gap 4%, but lower two additionally 4 %
                         break
@@ -79,7 +79,7 @@ game.players.forEach(p =>{
                         // { pos: 96, left: 56.8, top: 29.5 },
                         // { pos: 97, left: 50, top: 33.5 },
                         // { pos: 98, left: 43.1, top: 29.5}]
-                        console.log(`...3rd player`);
+                        // console.log(`...3rd player`);
                         xPos = 50 + idxHomeSlot%2 * (idxHomeSlot-2)*(-1) * 6.8 // for idxHomeSlot=[0,2] -> x=50, for i = [1] -> fact gets "-1" with                        "idxHomeSlot-2"
                         yPos = 29.5 + 0 * Math.pow(idxHomeSlot,3) - 4 *Math.pow(idxHomeSlot,2) + 16* idxHomeSlot - 12
                         break
@@ -91,12 +91,12 @@ game.players.forEach(p =>{
                             // {pos: 106, left: 71.3, top: 54 },
                             // {pos: 107, left: 71.3, top: 46 },
                             // {pos: 108, left: 78, top: 42 },
-                        console.log(`...4nd player`);
+                        // console.log(`...4nd player`);
                         xPos = 78 - (idxHomeSlot%2 + parseInt(idxHomeSlot/2))%2 * 6.75 // for i=[0,3] the factor will be "0"
                         yPos = 57.8 - 4 * idxHomeSlot - parseInt(idxHomeSlot/2)*4 // each gap 4%, but lower two additionally 4 %
                         break
                     default:
-                        console.log(`...default`);
+                        // console.log(`...default`);
                         xPos = 50 
                         yPos = 50 
                         break

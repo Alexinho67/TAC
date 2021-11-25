@@ -21,25 +21,27 @@ class GameSocket{
         this.socket = socket
         // this.socket.on("readyToPlay", this.handleReadyToPlay)
         this.socket.on("readyToPlay",(callback)=>{ 
+            console.log(`Event:"readyToPlay" }`);
             playerController.handleReadyToPlay(callback, this.socket)
         })
         this.socket.on('playingCard', (card)=>{
-            console.log(`received ${JSON.stringify(card)}`);
+            console.log(`Event:"playingCard" - received ${JSON.stringify(card)}`);
             playerController.handlePlayingCard(card, this.socket)
         })
-
+        this.socket.on('swappingCard', (card)=>{
+            console.log(`Event:"swappingCard" - received ${JSON.stringify(card)}`);
+            playerController.handleSwapCard(card, this.socket)
+        })
         this.socket.on('dealCards', (callback)=>{
-            console.log(`received DEALING request`);
+            console.log(`Event:"dealCards" - received DEALING request`);
             gameController.handleDealRequest(this.socket, callback)
         } )        
-
         this.socket.on('movedBall', (ballPlayed)=>{
-            console.log(`received "movedBall"-event. Ball:${JSON.stringify(ballPlayed)}`);
+            console.log(`Event:"movedBall" - received "movedBall"-event. Ball:${JSON.stringify(ballPlayed)}`);
             playerController.handleMovedBall(ballPlayed, this.socket)
         } )
     }
 }
-
 
 class Connection {
     constructor(io, socket){

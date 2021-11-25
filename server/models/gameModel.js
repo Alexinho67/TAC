@@ -7,13 +7,13 @@ let games = []
 
 let cardsPerRound = [20,20,20,20,20]
 cardsPerRound = [8, 8]
-let nrPlayersNeeded = 4   
-
+let nrPlayersNeeded = 2
 
 class GameTac {
     
     constructor() {
         this.players = []
+        this.spotsMax = nrPlayersNeeded
         this.state = 'INIT' // INIT -> WAIT FOR OTHER PLAYERS -> WAIT FOR READY -> PLAYING -> FINISHED
         this.subState = 'none'
         this.id = crypto.randomBytes(LENGTH_GAME_IDENTIFYER / 2).toString('hex');
@@ -60,8 +60,9 @@ class GameTac {
                 if (plyrsNotReady.length > 0){
                     reject(`Cannot start game. ${plyrsNotReady.map(p => p.name)} are not ready yet.`)
                 } else {
+                    io.to(this.id).emit('gameStart');
                     this.state = 'PLAYING'
-                    this.subState = 'waitForDealReq'
+                    this.subState = 'WAIT_FOR_DEAL_REQ'
                     this.calcAndInformDealer(io)
 
                     resolve({ msg: `Let's go. Cards are shuffled. "${this.players[this.idxDealer].name}" is the dealer.`})
@@ -89,9 +90,12 @@ class GameTac {
     }
 
     dealCards(){   
-        // the model  assigns the new cards to the players instances
-        // then the current state of each player shall be communicated to the each player(socket)
-        
+        /* the model  assigns the new cards to the players instances
+         then the current state of each player shall be communicated to the each player(socket)
+        */
+
+
+
         // if the shuffled deck is finished --> create a new one
         console.log(`[gameMdl] cards in deck: "${this.deck.cards.length}"`);
         if (this.deck.cards.length === 0) {
@@ -110,8 +114,8 @@ class GameTac {
         // assign N cards to each player instance 
         this.players.forEach(p => {
             let cardsForThisPlayer = cardsDealing.splice(0, cardsThisRound / 4)
-            cardsForThisPlayer.forEach((valueCard,idx) => {
-                p.cards.push({id:idx, value:valueCard})
+            cardsForThisPlayer.forEach(card => {
+                p.cards.push(card)
             })
 
         })
@@ -122,7 +126,8 @@ class GameTac {
             console.log(`\t - "${p.name}" received: ${stringCards}`);
         })
 
-       
+        this.state = 'PLAYING'
+        this.subState = 'WAIT_FOR_SWAP_CARDS'
     }
 
     sendPlayerStatus(io){

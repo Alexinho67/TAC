@@ -9,9 +9,9 @@ const CardsAllOtherPlayers = ({ width}) => {
     const { stateGameReduce} = React.useContext(GameModelContext)
 
     React.useEffect(() => {
+        console.log(`[CardsAllOtherPlayers - useEffect @ stateGameReduce.cardPlayedOther] -stateGameReduce.cardPlayedOther:${JSON.stringify(stateGameReduce.cardPlayedOther)} `);
         if (stateGameReduce.cardPlayedOther){
-            console.log(`[CardsAllOtherPlayers]-[UseEffect@stateGameReduce.cardPlayedOther]`);
-            let cardObjWithStyle = createCardPlaying(stateGameReduce.cardPlayedOther)
+            let cardObjWithStyle = createCardOpenPlaying(stateGameReduce.cardPlayedOther)
             console.log(`...Created open card for visualization: ${JSON.stringify(cardObjWithStyle)}`);
             setOpenCard(cardObjWithStyle)
         }
@@ -19,28 +19,19 @@ const CardsAllOtherPlayers = ({ width}) => {
         //     cleanup
         // }
     }, [stateGameReduce.cardPlayedOther])
-
-
-
-    const pos = {
-        left :  {name:'left', top:50, left: -10, rotate: 0},
-        front:  {name:'front', top:-10, left: 50, rotate: 90},
-        right:  {name:'right', top:50, left: 110, rotate: 0},
-
-    }
     
-    function createCardPlaying(cardPlaying){
+    function createCardOpenPlaying(cardPlaying){
         // let cardPlaying = openCard
         // let cardPlaying = openCard
 
-        switch (cardPlaying.posRel){
-            case 'left':
+        switch (cardPlaying.posRelOfPlayer){
+            case 2:
                 cardPlaying = { ...cardPlaying, left:-10, top:50, width: width }
                 break
-            case 'front':
+            case 3:
                 cardPlaying = { ...cardPlaying, left: 50, top: -10, width: width }
                 break
-            case 'right':
+            case 4:
                 cardPlaying = { ...cardPlaying, left: 110, top: 50, width: width }
                 break
             default:
@@ -53,9 +44,15 @@ const CardsAllOtherPlayers = ({ width}) => {
 
     return (
         <div name="cardsOtherPlayer">
-            <CardsOtherPly width={width} posObj={pos.left}  />
-            <CardsOtherPly width={width} posObj={pos.front} />
-            <CardsOtherPly width={width} posObj={pos.right} />
+            {stateGameReduce.players.slice(1,4).map(player => {
+                if (player.state === "init"){
+                    return <></>
+                } else {
+                    return <CardsOtherPly width = {width} playerObj={player} />
+                }
+            })}
+            {/* //TODO: why only 1x "openCard"  */}
+            {/* // what happens if two or even three other player are selecting a card? */}
             {openCard ? <CardOpenOtherPly card={openCard} setOpenCard={setOpenCard} /> : null}
         </div>
     )

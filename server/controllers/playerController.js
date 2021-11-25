@@ -8,13 +8,68 @@ exports.setSocketConnection = (ioFromServerJs) => {
     io = ioFromServerJs
 }
 
+exports.handleSwapCard = (cardForSwap, socket) => {
+    let pre = '[PlyCtrl-handleSwapCard]'
+    let playerId = socket.request.session.playerId
+    let plyGive = Player.findById(playerId)
+    let gameId = socket.request.session.gameId
+    let game = GameTac.findById(gameId)
+    
+    // 2.update players instances
+    plyGive.cardSwapGive = cardForSwap
+    let idxPlayerGiver = plyGive.position - 1  
+    let idxPlayerReq
+    if (game.spotsMax === 4) {// give card to "opposite" player
+        idxPlayerReq = (idxPlayerGiver + 2) % 4
+    } else {
+        idxPlayerReq = (idxPlayerGiver + 1) % game.spotsMax
+        // 2-players: 
+        // posGiver = 1  =>  idxReq = (1 - 1 + 1 ) % 2 = 1
+        // posGiver = 2  =>  idxReq = (2 - 1 + 1 ) % 2 = 0
+    } 
+    let plyReq = game.players[idxPlayerReq]
+    plyReq.cardSwapRecvd = cardForSwap
+    // 1.output for debug
+    let listCardsForSwapReqd = game.players.reduce( (listOld, player) => {
+        if (player.cardSwapGive){
+            listOld.push(player.cardSwapGive)
+        } 
+        return listOld
+    }, [])
+    console.log(pre + `listCardsForSwapReqd: ${JSON.stringify(listCardsForSwapReqd)}`);
+
+
+    // 4.inform other players about the played card
+    // io.to(game.id).emit('serverPlayedCard', cardPlayedModd)
+    plyGive.socket.to(game.id).emit('playerSelectedCardForSwap', { posAbsPlayer: plyGive.position} )
+
+    // check if all players selected a card
+    if (game.players.every(p => p.cardSwapGive !== undefined)){
+        
+        setTimeout(( )=>{
+            // each player has selected a card for the swap
+            game.players.forEach(p => {
+                console.log(pre + ` ${p.name} is receiving card ${JSON.stringify(p.cardSwapRecvd)}`);
+                io.to(p.socket.id).emit('serverCardSwapRecvd', p.cardSwapRecvd)
+                // reset the cardForSwap property of each player
+                p.cardSwapGive = undefined
+                p.cardSwapRecvd = undefined
+            })
+
+            game.state = 'PLAYING'
+            game.subState = 'WAIT_FOR_ALL_CARDS_PLAYED'
+            
+        }, 1000)
+    }
+}
+
 exports.handlePlayingCard = (cardPlaying, socket) => {
     let pre = '[PlyCtrl-hndlPlyingCard]'
     let playerId = socket.request.session.playerId
     let ply = Player.findById(playerId)
     let gameId = socket.request.session.gameId
     let game = GameTac.findById(gameId)
-    let cardPlayedModd = { playedBy: ply.name, value: cardPlaying.value }
+    let cardPlayedModd = { playedByName: ply.name, playedByPosAbs: ply.position , value: cardPlaying.value }
     // 1.output for debug
     console.log(`${pre} %c${ply.name} is playing ${JSON.stringify(cardPlaying)}`,'color:pink');
     // 2.update player instance
@@ -22,8 +77,8 @@ exports.handlePlayingCard = (cardPlaying, socket) => {
     // 3.update game instance
     game.cardsTrash.push(cardPlayedModd)
     // 4.inform other players about the played card
-    // io.to(game.id).emit('serverPlayedCard', cardPlayedModd)
-    ply.socket.to(game.id).emit('serverPlayedCard', cardPlayedModd)
+    // ply.socket.to(game.id).emit('serverPlayedCard', cardPlayedModd)
+    socket.to(game.id).emit('serverPlayedCard', cardPlayedModd)
 
     // 5.check if all cards have been played
     let sumHandCards = game.players.reduce((old, ply) => { return old + ply.cards.length }, 0)
@@ -81,6 +136,7 @@ exports.handleReadyToPlay = (callback, socket) => {
     if (game){
         // game.sendPlayerStatus(io)
         game.startGame(io)
+
         .then((resp )=>{ 
             console.log(`${pre}: ${resp.msg}`);
             io.to(game.id).emit('info', resp.msg);  

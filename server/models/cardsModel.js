@@ -1,6 +1,7 @@
 class CardDeck{
 
     constructor(numTot = undefined){
+        this.cards=[]
         this.getShuffledDeck(numTot)
         // FOR DEBUG PURP
 
@@ -28,25 +29,31 @@ class CardDeck{
 
     getSortedDeck(){
         let unShuffledDeck = []
-        let DECK_Description = {} // contains typeOfCard -> total number of this card in the deck
-        DECK_Description[1] = 9 // 9x card #1
-        DECK_Description[2] = 7 // 7x card #2 
-        DECK_Description[3] = 7 // 7x ...
-        DECK_Description[4] = 7 // 7x
-        DECK_Description[5] = 7 // 7x
-        DECK_Description[6] = 7 // 7x
-        DECK_Description[7] = 8 // 8x
-        DECK_Description[8] = 7 // 7x
-        DECK_Description[9] = 7 // 7x
-        DECK_Description[10] = 7 // 7x
-        DECK_Description[12] = 7 // 7x
-        DECK_Description[13] = 9 // 9x
-        DECK_Description[14] = 7 // 7x Trickser
-        DECK_Description[15] = 4 // 4x Tac
+        let numOfCardsPerValue = {} // contains typeOfCard -> total number of this card in the deck
+        numOfCardsPerValue[1] = 9 // 9x card #1
+        numOfCardsPerValue[2] = 7 // 7x card #2 
+        numOfCardsPerValue[3] = 7 // 7x ...
+        numOfCardsPerValue[4] = 7 // 7x
+        numOfCardsPerValue[5] = 7 // 7x
+        numOfCardsPerValue[6] = 7 // 7x
+        numOfCardsPerValue[7] = 8 // 8x
+        numOfCardsPerValue[8] = 7 // 7x
+        numOfCardsPerValue[9] = 7 // 7x
+        numOfCardsPerValue[10] = 7 // 7x
+        numOfCardsPerValue[12] = 7 // 7x
+        numOfCardsPerValue[13] = 9 // 9x
+        numOfCardsPerValue[14] = 7 // 7x Trickser
+        numOfCardsPerValue[15] = 4 // 4x Tac
      
-        for (let id of Object.keys(DECK_Description)) {
-            let tmpArray = Array(DECK_Description[id]).fill(id)
-            unShuffledDeck.push(...tmpArray)
+        let idxContns = 0
+        for (let value of Object.keys(numOfCardsPerValue)) {
+            // loop through "values" (1,2,3...'Trickser','Tac')
+            let numOfCardsThisValue = numOfCardsPerValue[value]
+            for (let i = 0; i < numOfCardsThisValue; i++){
+                let newCard = { id: idxContns, value: value}
+                unShuffledDeck.push(newCard)
+                idxContns +=1
+            }
         }
         console.log(`Created ${unShuffledDeck.length} cards`)
         return unShuffledDeck

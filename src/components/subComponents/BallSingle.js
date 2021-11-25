@@ -29,7 +29,7 @@ const BallSingle = ({ ballDataSingle, toogleIsSelected}) => {
     }, [ballDataSingle, ballDataSingle.left])
 
     React.useEffect(() => {
-        console.log(`%c[BallSingle - UseEffect] - Render ball-id:${ballDataSingle.id}`,'color:#0fa');
+        // console.log(`%c[BallSingle - UseEffect] - Render ball-id:${ballDataSingle.id}`,'color:#0fa');
     })
     
     /* ================================================================================
@@ -38,7 +38,7 @@ const BallSingle = ({ ballDataSingle, toogleIsSelected}) => {
 
 
     function _calcStyling() {
-        console.log(`[BallsSingle] _calcStyling(). ballDataSingle:${ JSON.stringify(ballDataSingle)} `);
+        // console.log(`[BallsSingle] _calcStyling(). ballDataSingle:${ JSON.stringify(ballDataSingle)} `);
         if (ballDataSingle.isSelected) {
             styleBall.current = { ...styleBall.current, border: '2px solid yellow' }
         } else {

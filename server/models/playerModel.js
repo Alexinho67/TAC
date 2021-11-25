@@ -12,6 +12,8 @@ class Player {
         this.name = name
         this.color = color
         this.isReady = false
+        this.cardSwapGive = undefined
+        this.cardSwapRecvd = undefined
         this.position = numPlayer // 1..4
         this.socket = undefined
         this.balls =

@@ -25,19 +25,8 @@ const NavBar = () => {
     return (
         <nav>
             <div style={{ flexGrow: '1' }}>
-                {/* <span>name: "{model.playerData.userName}" - pos: "{model.playerData.userPosition}" - color:"{model.playerData.color}"</span> */}
-                {/* <span style={{ color: 'white', fontWeight: 'bold' }}>GAME state: {model?.gameStatus?.state}</span> */}
-                {/* <br/> <WhiteSpan> GameVariables:{JSON.stringify(gameStatus.stateGameReduce.data)}  </WhiteSpan> */}
-                {/* <WhiteSpan> OtherPlayers:
-                    {model.stateGameReduce.statusOtherPlayers.map((p,idx) => {
-                        return (<li key={idx} style={{fontSize:'0.70rem',fontWeight:'500'}}>{JSON.stringify(p)}</li>)})}  
-                </WhiteSpan> */}
-                {/* <WhiteSpan>Self: {JSON.stringify(stateGameReduce.self, (key, input)=> {
-                    if(key ==='idInternal'){ return '...'}
-                    else{
-                        return input}
-                    })}
-                </WhiteSpan> */}
+                <WhiteSpan> Game: state: "{stateGameReduce.state}" - subState: "{stateGameReduce.subState}"
+                </WhiteSpan> <br/>
                 <WhiteSpan>#{stateGameReduce.players[0].posAbs}-{stateGameReduce.players[0].name}-{stateGameReduce.players[0].color}
                     <ul>{stateGameReduce.players[0].balls.map(ball => <span key={ball.id}> #{ball.id} @{ball.posGlobal} ---</span>)   }</ul>
                 </WhiteSpan>    

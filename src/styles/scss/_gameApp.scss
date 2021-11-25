@@ -203,3 +203,25 @@
   // display: flex;
   // justify-content: right;
 }
+
+
+.zoneCardSwap{
+  position:absolute;
+  top: 72%;
+  left:69%;
+  box-sizing: border-box;
+  transform:translate(-50%,-50%);
+  border-radius: 5px;
+  height : 23%;
+  aspect-ratio: 0.7;
+  border: 2px solid #055;
+  background-color: #fff9;
+  font-size: .78rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  line-height: 1.25rem;
+  overflow-wrap:  anywhere;
+  cursor: pointer;
+
+}

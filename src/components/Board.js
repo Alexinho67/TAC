@@ -11,6 +11,7 @@ import CNST from '../utils/Constants'
 import { GameModelContext } from '../GameProvider'
 import ShuffledDeck from './subComponents/ShuffledDeck'
 import BallSlots from './subComponents/BallSlots'
+import CardSwapZone from './subComponents/CardSwapZone'
 
 
 
@@ -50,12 +51,12 @@ const ConfirmReady = ({ isReady, setIsReady }) => {
 
                         
 
-const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
+const Board = ({ isReady, setIsReady }) => {
     const { socket } = useSocketContext()
     const { stateGameReduce, dispatcherTac} = React.useContext(GameModelContext)
     // cards
     const [idCardSelected, setIdCardSelected] = React.useState(undefined)
-    const [idCardPlayed, setIdCardPlayed] = React.useState(-1)
+    // const [idCardPlayed, setIdCardPlayed] = React.useState(-1)
     const [cardsHand, setCardsHand] = React.useState([])
     const [cardsPlayed, setCardsPlayed] = React.useState([])
     // center
@@ -227,14 +228,14 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
             let ballSelected = ballsAllData.find(ball => {
                 return ball.isSelected === true
             })
-            console.log(`....ballSelected:${JSON.stringify(ballSelected)}`);
-            console.log(`......elemTgt: id:${elemTgt.id}-class:${elemTgt.className}`);
+            // console.log(`....ballSelected:${JSON.stringify(ballSelected)}`);
+            // console.log(`......elemTgt: id:${elemTgt.id}-class:${elemTgt.className}`);
             if (ballSelected !== undefined & elemTgt.className !== 'ballSlot') {
-                console.log(`....unselect ball`);
+                // console.log(`....unselect ball`);
                 setBallsAllData(list => list.map(b => {
                      return { ...b, isSelected: false }} ) )
             } else if (elemTgt.name === 'imgCard') {
-                console.log(`....clicked "imgCard"`);
+                // console.log(`....clicked "imgCard"`);
                 return
             }
         }
@@ -246,7 +247,7 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
     
     React.useEffect(() => {
         console.log(`%c[Board-useEffect] - "stateGameReduce.self.cards" has changed`,'color:#999');
-        if (stateGameReduce.players[0].cards.length > 0 && stateGameReduce.updateHandCards === true){
+        if (stateGameReduce.players[0].cards.length > 0 && stateGameReduce.rerenderHandCards === true){
             setCardsHand(initCards(stateGameReduce.players[0].cards))
             dispatcherTac({ type: 'deactUpdateHandCards'})
         }else{
@@ -287,8 +288,9 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
             let newCard = {
                 id: cardsFromServer[i].idInternal,
                 idExt: cardsFromServer[i].idExt,
-                isPlayed: false,
-                isSelected: false,
+                isPlayed: false,   // card is set to "isPlayed" to set position "top=50%" and "left=50%" while using a transition
+                isCardForSwap: false,   // card is set to "isCardForSwap" to set position approx. "top=70%" and "left=70%" while using a transition
+                isSelected: false,  // use can (pre) select or unselect each card. Selection get highlighted 
                 width: WIDTHCARD,
                 // value: Math.floor(Math.random() * 9) + 1,
                 value: cardsFromServer[i].value,
@@ -298,6 +300,29 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
         }
         console.log(`[initCards()] cards: ${JSON.stringify(cardObjects)}`);
         return cardObjects
+    }
+
+
+    function triggerSelectedCardForSwap(idCardDblClicked = undefined){
+        console.log(`[Board - triggerSelectedCardForSwap ]`);
+
+        let idCardSwaping = idCardDblClicked ? idCardDblClicked : idCardSelected
+        let cardSwaping = cardsHand.find(card => card.id === idCardSwaping)
+        if (!cardSwaping) {
+            console.log('cardSwaping not defined')
+        }
+        let cardToServer = { value: cardSwaping.value, id: cardSwaping.idExt }
+        
+        dispatcherTac({ type: 'cardForSwapSelectedSelf', payload: cardSwaping.idExt })
+        socket.emit('swappingCard', cardToServer)
+
+        setCardsHand( cardsListOld => {
+            cardsListOld = cardsListOld.map(card => {
+                if (card.id === idCardSwaping) { Object.assign(card, {isCardForSwap:true})} 
+                return card 
+            })
+            return cardsListOld
+        })
     }
 
     function triggerCardPlayed(idCardDblClicked = undefined){
@@ -316,7 +341,7 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
             idCardPlaying = idCardSelected
         }
 
-        setIdCardPlayed(idCardPlaying)
+        // setIdCardPlayed(idCardPlaying)
         console.log(`%c[Board=>triggerCardPlayed] User wants to play card #${idCardPlaying}`,CNST.ORANGE);
         let cardPlaying = cardsHand.find(card => card.id === idCardPlaying)
         if(!cardPlaying){
@@ -334,9 +359,7 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
             // console.log(`\t Current card: #${card.id} - value: ${card.value}. Compare to idCardSelected = ${idCardSelected}`);
             if (card.id !== idCardPlaying) { return card}
             else { 
-                let cardTmp = { ...card, isPlayed:true};
-                // console.log(`\t\t Setting card #${card.id} to ${JSON.stringify(cardTmp)} `); 
-                return cardTmp
+                return Object.assign(card, { isPlayed: true} ) //setting card to "isPlayed : true"
             } // closing if-else
         }) // closing- list.map()
         }) // closing setCards()
@@ -371,7 +394,7 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
         let style = 'color:yellow;background-color: #00f'
         console.log(`issue_%c[Board/transitionCardHandToTray] card played with id: ${idCardPlaying}`, style);
         dispatcherTac({ type: 'removeHandCard', payload: idCardPlaying })
-        setIdCardPlayed(-1)
+        // setIdCardPlayed(-1)
     }
 
 
@@ -418,26 +441,38 @@ const Board = ({ isReady, setIsReady, gameStarted, setGameStarted}) => {
             <BallSlots resetTimer={resetTimer} setResetTimer={setResetTimer} highlightBallSlots={highlightBallSlots} setBallsAllData={setBallsAllData} ballsAllData={ballsAllData}/>
             {ballsAllData.length > 0 ? <Balls setResetTimer={setResetTimer} ballsData={ballsAllData} setBallsAllData={setBallsAllData}  /> : "" }
             {!isReady  
-            ? <ConfirmReady {...{ isReady, setIsReady }} />
-            : <> 
-                 {/* <button onClick={() => { setGameStarted(true) }}>Start Game(TEMP)</button>  */}
-                 <DealerButton />
-                 </>
+            ? <ConfirmReady {...{ isReady, setIsReady }} />: <>  </>
             }
             {isReady && stateGameReduce.started
             ?  <>
+                <DealerButton />
                 <CardsJSX name={"trashCards"} cards={cardsPlayed}/> 
                 <CardsJSX name={"handCards"} cards={cardsHand} setCards={setCardsHand} 
                     transitionCardHandToTray={transitionCardHandToTray} 
                     triggerCardPlayed={triggerCardPlayed} />
                 {/* <CardsAllOtherPlayers width={WIDTHCARD} openCard={openCard} /> */}
                 <CardsAllOtherPlayers width={WIDTHCARD} />
-                <InnerCenter state={stateInnerCenter} triggerCardPlayed={triggerCardPlayed} />
+                
                 <ShuffledDeck width={WIDTHCARD} />
                 </> 
-            : ""
+            : <></>
             }
 
+        {(stateGameReduce.state === 'PLAYING' && 
+          stateGameReduce.subState === 'WAIT_FOR_SWAP_CARDS') 
+            ? <>
+                <CardSwapZone idCardSelected={idCardSelected} triggerSelectedCardForSwap={triggerSelectedCardForSwap}/>
+            </>
+           : <></>
+        }       
+
+        <InnerCenter stateInnerCenter={stateInnerCenter} triggerCardPlayed={triggerCardPlayed} />
+   
+     {(stateGameReduce.state === 'PLAYING' && 
+            stateGameReduce.subState === 'WAIT_FOR_ALL_CARDS_PLAYED')
+            ? <InnerCenter stateInnerCenter={stateInnerCenter} triggerCardPlayed={triggerCardPlayed} />
+           : <></>
+        }
         <TableDebug ballsAllData={ballsAllData} />
         </>
     )

@@ -19,6 +19,8 @@ const CardOpenOtherPly = ({ card, setOpenCard}) => {
     * ================================================================================ */
 
     React.useEffect(() => {
+        console.log(`[CardOpenOtherPly - useEffect@INIT]`);
+
         let newStyle = {
             top: '50%',
             left: '50%',
@@ -29,6 +31,8 @@ const CardOpenOtherPly = ({ card, setOpenCard}) => {
             setStyleCardState(olStyle =>{return  { ...olStyle, ...newStyle } })
         }, 250);
     }, [])
+
+
 
     /* ================================================================================
     --------------------------     Fuctions      -----------------------------------------

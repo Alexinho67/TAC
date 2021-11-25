@@ -2,13 +2,12 @@ import React from 'react'
 import { GameModelContext } from '../../GameProvider'
 import { useSocketContext } from '../socketComps/SocketProvider'
 
-const stylePosAll = {
-        center: { top: '50%', left: '50%'},
-        self: { top: '94%', left: '80%' },
-        left: { top: '80%', left: '06%'},
-        front: { top: '6%', left: '20%'},
-        right: { top: '20%', left: '94%'}
-    }
+const stylePosAll = [
+        { top: '50%', left: '50%'},
+        { top: '94%', left: '80%' },
+        { top: '80%', left: '06%'},
+        { top: '6%', left: '20%'},
+        { top: '20%', left: '94%'}]
 
 const FieldDealCards = ({ setIAmDealer} )=>{
     const { socket } = useSocketContext()
@@ -36,7 +35,7 @@ const DealerButton = () => {
 
 
     React.useEffect(() => {
-        let flagDealer = posDealerRel === 'self'
+        let flagDealer = posDealerRel === 1
         setIAmDealer(flagDealer)
     }, [stateGameReduce.posDealerRel])
 
@@ -44,7 +43,7 @@ const DealerButton = () => {
 
     function getStyle(posDealerRel){
         if (posDealerRel === undefined){
-            return stylePosAll.center
+            return stylePosAll[0] //center
         } else {
             return stylePosAll[posDealerRel]
         }
