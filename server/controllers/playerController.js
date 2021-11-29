@@ -49,6 +49,8 @@ exports.handleSwapCard = (cardForSwap, socket) => {
         setTimeout(( )=>{
             // each player has selected a card for the swap
             game.players.forEach(p => {
+                p.cards = p.cards.filter(c => c.id !== p.cardSwapGive.id) // filters all cards not involved in the swapping
+                p.cards.push(p.cardSwapRecvd)
                 console.log(pre + ` ${p.name} is receiving card ${JSON.stringify(p.cardSwapRecvd)}`);
                 io.to(p.socket.id).emit('serverCardSwapRecvd', p.cardSwapRecvd)
                 // reset the cardForSwap property of each player
@@ -69,7 +71,7 @@ exports.handlePlayingCard = (cardPlaying, socket) => {
     let ply = Player.findById(playerId)
     let gameId = socket.request.session.gameId
     let game = GameTac.findById(gameId)
-    let cardPlayedModd = { playedByName: ply.name, playedByPosAbs: ply.position , value: cardPlaying.value }
+    let cardPlayedModd = { playedByName: ply.name, playedByPosAbs: ply.position ,id:cardPlaying.id, value: cardPlaying.value }
     // 1.output for debug
     console.log(`${pre} %c${ply.name} is playing ${JSON.stringify(cardPlaying)}`,'color:pink');
     // 2.update player instance
@@ -85,7 +87,9 @@ exports.handlePlayingCard = (cardPlaying, socket) => {
     console.log(`${sumHandCards} left to play...`);
     if(sumHandCards === 0){
         console.log(`Each player has played his/her hand cards.`)
-        game.calcAndInformDealer(io)
+        setTimeout(( )=>{
+            game.calcAndInformDealer(io)
+        },500)
         // inform all players about who is the new dealer
     }
 }

@@ -25,6 +25,7 @@ class GameObj{
         // this.self = initPlayerSelf();
         this.numShuffledCards = 0
         this.players = initPlayers();
+        this.cardsPlayed = []
         this.cardPlayedOther = undefined
         this.rerenderHandCards = false
     }
@@ -201,7 +202,12 @@ function updateBallPosition(returnState, payload ){
 }
 
 function handleRemoveSingleHandCard(returnState, idCardPlayed){
+
+
     let cardPlayed = returnState.players[0].cards.find(c => c.idInternal === idCardPlayed)
+    let selfName = returnState.players[0].name
+    returnState.cardsPlayed.push({ ...cardPlayed, playedByName: selfName})
+    
     if(!cardPlayed){
         alert('[modelReducer.js - removeSingleHandCard]. "cardPlayed" is not defined')
         console.error(`[modelReducer.js - removeSingleHandCard]: "cardPlayed" is not defined`);
@@ -245,9 +251,11 @@ function handleNewDealer(returnState, dealer){
 
 function handleCardPlayedByOther(returnState, card){
     console.log(`[handleCardPlayedByOther]: "${card.playedByName}"-#${card.playedByPosAbs} played card: "${card.value}"`);
+    // update "played cards" 
+    returnState.cardsPlayed.push({...card, idExt:card.id}) //rewrite id to idExt
+
     let namePlayedBy = card.playedByName
     let playersOthers = returnState.players.slice(1,4)
-    
     let playerCardPlayed = playersOthers.find(p => p.posAbs === card.playedByPosAbs)
     playerCardPlayed.nrCards -= 1
     const [, posRel] = getRelativePos(returnState.players[0].posAbs, card.playedByPosAbs)
@@ -282,7 +290,7 @@ function handleUpdateSelfData(returnState, data){
 function handleUpdateCardsFromServer(returnState, cards){
 console.log(`[Reducer-handleUpdateCardsFromServer] received new cards: "${JSON.stringify(cards)}". Setting ".rerenderHandCards = true" `);
     cards.forEach(card => {
-        let newCardObj = { idExt: card.id, idInternal: uuidv4(), value: card.value }
+        let newCardObj = { idExt: card.id, idInternal: uuidv4(), value: parseInt(card.value)}
         returnState.players[0].cards.push(newCardObj)
     })
 

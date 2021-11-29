@@ -1,6 +1,6 @@
 import React from 'react'
 
-const CardSwapZone = ({ idCardSelected, triggerSelectedCardForSwap}) => {
+const CardSwapZone = ({gameState, gameSubState, idCardSelected, triggerSelectedCardForSwap }) => {
     const [messageInZone, setMessageInZone] = React.useState('1x Karte tauschen')
 
     function _handleClick() {
@@ -11,11 +11,16 @@ const CardSwapZone = ({ idCardSelected, triggerSelectedCardForSwap}) => {
         }
     }
 
-    return (
-        <div class="zoneCardSwap" onClick={_handleClick}>
-            {messageInZone}
-        </div>
-    )
+    if (gameState === 'PLAYING' && gameSubState === 'WAIT_FOR_SWAP_CARDS') {
+        return (
+            <div class="zoneCardSwap" onClick={_handleClick}>
+                {messageInZone}
+            </div>
+        )
+    } else {
+        return null
+    }
+            
 }
 
 export default CardSwapZone

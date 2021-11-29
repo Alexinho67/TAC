@@ -3,4 +3,3 @@ function updatePage (){
 }
 
 
-setTimeout(updatePage, 1000)

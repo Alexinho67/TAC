@@ -51,6 +51,7 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
                 top:'50%',
                 left: '50%',
                 cursor:  'not-allowed',
+                zIndex:3,
                 transition: 'top 0.8s ease, left 0.8s ease',
             }
 

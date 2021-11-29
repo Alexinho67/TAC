@@ -12,6 +12,8 @@ import { GameModelContext } from '../GameProvider'
 import ShuffledDeck from './subComponents/ShuffledDeck'
 import BallSlots from './subComponents/BallSlots'
 import CardSwapZone from './subComponents/CardSwapZone'
+import HandCardsSelf from './subComponents/HandCardsSelf'
+import TrashCards from './subComponents/TrashCards'
 
 
 
@@ -58,7 +60,6 @@ const Board = ({ isReady, setIsReady }) => {
     const [idCardSelected, setIdCardSelected] = React.useState(undefined)
     // const [idCardPlayed, setIdCardPlayed] = React.useState(-1)
     const [cardsHand, setCardsHand] = React.useState([])
-    const [cardsPlayed, setCardsPlayed] = React.useState([])
     // center
     const [stateInnerCenter, setStateInnerCenter] = React.useState('inactive')
     //balls
@@ -383,8 +384,6 @@ const Board = ({ isReady, setIsReady }) => {
             console.table(list)
             return list
         }
-        setCardsPlayed(list => _updateFncCardsPlayed(list))
-
 
         setCardsHand( (list) => {return list.filter(card => {
             return card.isPlayed !== true
@@ -446,33 +445,18 @@ const Board = ({ isReady, setIsReady }) => {
             {isReady && stateGameReduce.started
             ?  <>
                 <DealerButton />
-                <CardsJSX name={"trashCards"} cards={cardsPlayed}/> 
-                <CardsJSX name={"handCards"} cards={cardsHand} setCards={setCardsHand} 
-                    transitionCardHandToTray={transitionCardHandToTray} 
+                <TrashCards width={WIDTHCARD}/>
+                <HandCardsSelf cards={cardsHand} setCards={setCardsHand}
+                    transitionCardHandToTray={transitionCardHandToTray}
                     triggerCardPlayed={triggerCardPlayed} />
-                {/* <CardsAllOtherPlayers width={WIDTHCARD} openCard={openCard} /> */}
                 <CardsAllOtherPlayers width={WIDTHCARD} />
-                
                 <ShuffledDeck width={WIDTHCARD} />
+                <CardSwapZone gameState={stateGameReduce.state} gameSubState={stateGameReduce.subState} idCardSelected={idCardSelected} triggerSelectedCardForSwap={triggerSelectedCardForSwap}/>      
+                <InnerCenter gameState={stateGameReduce.state} gameSubState={stateGameReduce.subState} stateInnerCenter={stateInnerCenter} triggerCardPlayed={triggerCardPlayed} />
                 </> 
-            : <></>
+            : null
             }
 
-        {(stateGameReduce.state === 'PLAYING' && 
-          stateGameReduce.subState === 'WAIT_FOR_SWAP_CARDS') 
-            ? <>
-                <CardSwapZone idCardSelected={idCardSelected} triggerSelectedCardForSwap={triggerSelectedCardForSwap}/>
-            </>
-           : <></>
-        }       
-
-        <InnerCenter stateInnerCenter={stateInnerCenter} triggerCardPlayed={triggerCardPlayed} />
-   
-     {(stateGameReduce.state === 'PLAYING' && 
-            stateGameReduce.subState === 'WAIT_FOR_ALL_CARDS_PLAYED')
-            ? <InnerCenter stateInnerCenter={stateInnerCenter} triggerCardPlayed={triggerCardPlayed} />
-           : <></>
-        }
         <TableDebug ballsAllData={ballsAllData} />
         </>
     )

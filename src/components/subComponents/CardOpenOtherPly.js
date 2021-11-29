@@ -20,16 +20,22 @@ const CardOpenOtherPly = ({ card, setOpenCard}) => {
 
     React.useEffect(() => {
         console.log(`[CardOpenOtherPly - useEffect@INIT]`);
-
+        let transitionTime = 0.8 //s
         let newStyle = {
             top: '50%',
             left: '50%',
-            transition: 'top 0.8s ease, left 0.8s ease',
+            transition: `top ${transitionTime}s ease, left ${transitionTime}s ease`,
         }
         setTimeout(() => {
             console.log(`[CardOpenOtherPly.js] \t Put card to the middle`);
-            setStyleCardState(olStyle =>{return  { ...olStyle, ...newStyle } })
+            setStyleCardState(oldStyle =>{return  { ...oldStyle, ...newStyle } })
         }, 250);
+
+        setTimeout(() => {
+            console.log(`[CardOpenOtherPly.js] \t Put card to the middle`);
+            setOpenCard(undefined)
+            model.dispatcherTac({ type: 'resetCardPlayedByOther' })
+        }, 250 + transitionTime);
     }, [])
 
 
@@ -38,15 +44,12 @@ const CardOpenOtherPly = ({ card, setOpenCard}) => {
     --------------------------     Fuctions      -----------------------------------------
     * ================================================================================ */
 
-    function _handleTransitionEnd(e){
-        console.log(`trigger "_handleTransitionEnd()"`);
-        e.target.style.opacity = '50%'
-        if (card.isPlayed === true){
-            // transitionCardHandToTray()
-        }
-        setOpenCard(undefined)
-        model.dispatcherTac({ type: 'resetCardPlayedByOther'})
-    }
+    // function _handleTransitionEnd(e){
+    //     console.log(`[CardOpenOtherPly] trigger "_handleTransitionEnd()"`);
+    //     e.target.style.opacity = '50%'
+    //     setOpenCard(undefined)
+    //     model.dispatcherTac({ type: 'resetCardPlayedByOther'})
+    // }
 
     const fileNameImage = `${CARDS[card.value]}`
     const Imgage = <img height='100%' width='100%' src={`${require(`../../pics/${fileNameImage}`).default}`} alt={`value=${card.value}`} />
@@ -55,7 +58,7 @@ const CardOpenOtherPly = ({ card, setOpenCard}) => {
     --------------------------     RENDER      -----------------------------------------
     * ================================================================================ */
     
-    return (<div style={styleCardState} className="card" onTransitionEnd={_handleTransitionEnd}>
+    return (<div style={styleCardState} className="card" >
         {Imgage}
     </div>)
     

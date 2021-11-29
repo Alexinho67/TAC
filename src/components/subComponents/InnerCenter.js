@@ -1,9 +1,11 @@
 import React from 'react'
+import CardsPlayedHistory from './CardsPlayedHistory'
 import {addMessage, ExpireMsg} from './ExpireMsg'
 
 
-const InnerCenter = ({ stateInnerCenter, triggerCardPlayed}) => {
+const InnerCenter = ({ gameState, gameSubState, stateInnerCenter, triggerCardPlayed}) => {
     const [debugMsg, setDebugMsg] = React.useState(undefined)
+    const [showHistoryCards, setShowHistoryCards] = React.useState(false)
     // let debugMsg = <ExpireMsg> Clicked me</ExpireMsg>
     const classInnerCenter = 
         stateInnerCenter === 'active'? "highlight": ""
@@ -16,17 +18,28 @@ const InnerCenter = ({ stateInnerCenter, triggerCardPlayed}) => {
         }
     }
 
+    function onRightClick(e){
+        e.preventDefault()
+        // alert('test')
+        setShowHistoryCards(flag => !flag)
+    }
 
 
-    // console.log(`rendering [InnerCenter]: stateInnerCenter:${state}`);
-    return (<>
-        <div id="innerCenter" onClick={_handleClick} className={classInnerCenter}>
-            {/* {state} */}
-        </div>
-        {debugMsg}
-        {/* <ExpireMsg> Clicked me</ExpireMsg> */}
-        </>
-    )
+    if (gameState === 'PLAYING' && gameSubState === 'WAIT_FOR_ALL_CARDS_PLAYED') {
+        return (<>
+            <div id="innerCenter" onClick={_handleClick} onContextMenu={(e) => e.preventDefault()} className={classInnerCenter} onAuxClick={onRightClick} onRightClick={onRightClick}>
+                {/* {state} */}
+            </div>
+            {showHistoryCards ? <CardsPlayedHistory /> : null}
+            {debugMsg}
+            
+            {/* <ExpireMsg> Clicked me</ExpireMsg> */}
+            </>
+        )
+    } else {
+        return null
+    }
+
 }
 
 export default InnerCenter

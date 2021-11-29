@@ -225,3 +225,16 @@
   cursor: pointer;
 
 }
+
+.cardsPlayedHistory{
+  padding: .5rem;
+  font-size: .8rem;
+  position: absolute;
+  top: 50%;
+  left:60%;
+  z-index: 2;
+  background-color: white;
+  color:#111;
+  border: 2px solid #111;
+  border-radius: 20px;
+}
