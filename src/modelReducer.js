@@ -16,7 +16,6 @@ class Player{
 }
 class GameObj{
     constructor(){
-        this.started = false;
         this.state = 'init'
         this.subState = 'init'
         this.gameId = undefined
@@ -47,10 +46,13 @@ export function reducerFcnGameModel(state, action) {
         handleUpdatePlayers(returnState, action.payload)
         return returnState
     } else if (type === 'setGameID') {
-        let gameID = action.payload
-        return setGameID(returnState, gameID)
+        let gameId = action.payload
+        return setGameId(returnState, gameId)
     } else if (type === 'clearState') {
-        return initGameModel()
+        let player = returnState.players[0]
+        let newGameState = initGameModel()
+        newGameState.players[0] = player
+        return newGameState
     } else if (type === 'setBallToHasBeenRendered') {
         return setBallToHasBeenRendered(returnState, action.payload)
     } else if (type === 'updateCardsFromServer') {
@@ -67,7 +69,6 @@ export function reducerFcnGameModel(state, action) {
         return handleUpdateSelfData(returnState, action.payload )
     } else if (type === 'gameStart') {
         console.log(`[Reducer] start game`);
-        returnState.started = true
         returnState.state = 'PLAYING'
         return returnState
     } else if (type === 'setSelfReady') {
@@ -96,12 +97,74 @@ export function reducerFcnGameModel(state, action) {
     } else if (type === 'cardFromSwapReceived') {
         let cardFromSwapRecvd = action.payload
         return handleCardFrmSwapReceived(returnState, cardFromSwapRecvd)
+    } else if (type === 'setUserName') {
+        let userName = action.payload
+        console.log(`[modelReducer.js - setUserName]: userName:${userName} `);
+        returnState.players[0].name = userName
+        return returnState
+    } else if (type === 'userInfoAfterReload') {
+        const { playerStatus, gameState } = action.payload
+        console.log(`[modelReducer.js - userInfoAfterReload]: gameState: ${JSON.stringify(gameState)} \n playerStatus:${JSON.stringify(playerStatus)} `);
+        return updateDataAfterReload(returnState, playerStatus, gameState)
     } else{
         throw new Error(`DISPATCHER: TYPE "${type}" is not supported!`)
     }    
 }
 
-function setGameID(returnState, gameId) {
+function updateDataAfterReload(returnState, playerStatus, gameState) {
+    returnState.gameId = gameState.id
+    returnState.state = gameState.state
+    returnState.subState = gameState.subState
+    // update dealer
+    const [, posRel] = getRelativePos(playerStatus.pos, gameState.dealerPos)
+    returnState.posDealerRel = posRel
+    returnState.posDealerAbs = gameState.dealerPos
+    
+    // update trash cards
+    returnState.cardsPlayed = gameState.trashCards.map(cardTrashServer => {
+        return { ...cardTrashServer, idExt: cardTrashServer.id } //rewrite id to idExt
+    })
+
+    
+    // update ball objects
+    let ballsData = playerStatus.balls.map(ballServer => {
+        return {
+            id: ballServer.id,
+            posAbsOwner: parseInt(playerStatus.pos),
+            posGlobal: ballServer.pos,
+            color: playerStatus.color,
+            show: playerStatus.isReady,
+            rerender: playerStatus.isReady
+        }
+    })
+    let cardsData = playerStatus.cards.map(cardServer => {
+        let newCardObj = {
+            idExt: cardServer.id,
+            idInternal: uuidv4(),
+            value: parseInt(cardServer.value)
+        }
+        return newCardObj })
+
+    let playerDataNew = {
+        name: playerStatus.name,
+        color: playerStatus.color,
+        posAbs: playerStatus.pos,
+        posRel: 0,
+        balls: ballsData,
+        state: playerStatus.isReady ? 'ready' : 'init',
+        cardForSwap: playerStatus.cardSwapGive ?
+             {...playerStatus.cardSwapGive, idExt: playerStatus.cardSwapGive.id} : undefined ,
+        cards: cardsData,
+        nrCards: playerStatus.cards.length,
+    }
+    
+
+    returnState.rerenderHandCards = true
+    returnState.players[0] = playerDataNew
+    return returnState
+}
+
+function setGameId(returnState, gameId) {
     returnState.gameId = gameId
     return returnState
 }
@@ -290,7 +353,10 @@ function handleUpdateSelfData(returnState, data){
 function handleUpdateCardsFromServer(returnState, cards){
 console.log(`[Reducer-handleUpdateCardsFromServer] received new cards: "${JSON.stringify(cards)}". Setting ".rerenderHandCards = true" `);
     cards.forEach(card => {
-        let newCardObj = { idExt: card.id, idInternal: uuidv4(), value: parseInt(card.value)}
+        let newCardObj = { 
+                idExt: card.id, 
+                idInternal: uuidv4(), 
+                value: parseInt(card.value)}
         returnState.players[0].cards.push(newCardObj)
     })
 
@@ -343,7 +409,13 @@ function handleUpdatePlayers(returnState, payload) {
             }
         }
         let stateUpdate = playerDataServer.isReady ? 'is ready' : 'getting a beer. Will be ready soon.'
-        let data = { name: playerDataServer.name, state: stateUpdate, posAbs: playerDataServer.pos, posRel: idxPosRel + 1, color: playerDataServer.color}
+        let data = { 
+            name: playerDataServer.name, 
+            state: stateUpdate, 
+            posAbs: playerDataServer.pos, 
+            posRel: idxPosRel + 1, 
+            color: playerDataServer.color,
+            cardForSwap: playerDataServer.hasSelectedCardSwap ? { idExt: -1, value: 0 } : undefined}
         Object.assign(returnState.players[idxOtherPlayer], data)
     }) // end forEach
 }

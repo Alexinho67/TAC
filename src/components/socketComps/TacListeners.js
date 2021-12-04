@@ -1,4 +1,9 @@
+
+import { useHistory } from "react-router-dom";
+
+
 export function addListenersForTac(socket, model) {
+
     // socket.on('playerStatus',(data )=>{
         //     console.log(`onPlayerStatus: data: ${JSON.stringify(data)} `);
         //     console.dir(data.message);
@@ -15,10 +20,22 @@ export function addListenersForTac(socket, model) {
     socket.on('serverMovedBallByOther', (ballMoved) => { handleBallMovedByOther(model, ballMoved)})
     socket.on('playerSelectedCardForSwap', (playerData) => { handlePlayerSlctdCard4Swap(model, playerData)})
     socket.on('serverCardSwapRecvd', (cardSwapRecvd) => { handleNewCardFromSwap(model, cardSwapRecvd)})
+    socket.on('redirectToHome', () => { handleRedirectToHome()})
+    socket.on('userInfoAfterReload', (updateData) => { handleUserInfoAfterReload(model, updateData)})
+}
+
+function handleUserInfoAfterReload(model, updateData){
+    console.log(`[TacListener - handleUserInfoAfterReload].updateData:${JSON.stringify(updateData)}.`);
+    model.dispatcherTac({ type: 'userInfoAfterReload', payload: updateData })
+}
+
+function handleRedirectToHome(){
+    console.log(`[TacListener - handleRedirectToHome]`);
+    window.location.href = '/';
 }
 
 function handleNewCardFromSwap(model, cardSwapRecvd){
-    console.log(`[handleNewCardFromSwap]: Received new card from card swap => ${JSON.stringify(cardSwapRecvd)}`);
+    console.log(`[TacListener - handleNewCardFromSwap]: Received new card from card swap => ${JSON.stringify(cardSwapRecvd)}`);
     model.dispatcherTac({ type: 'cardFromSwapReceived', payload: cardSwapRecvd})
 }
 

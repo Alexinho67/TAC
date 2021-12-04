@@ -5,11 +5,17 @@ import StatusOtherPlayer from './subComponents/StatusOtherPlayer';
 
 const Table = () => {
     const { stateGameReduce} = React.useContext(GameModelContext)
+    // if self state equals "ready" (because of a reload for example) --> init ReactState "isReady" with true
     const [isReady, setIsReady] = React.useState(false)
     const [gameStarted, setGameStarted] = React.useState(false)
 
-
     const pathBoard = require(`../pics/TACboard.jpg`).default
+
+    React.useEffect(() => {
+        if (!isReady && stateGameReduce.players[0].state === 'ready'){
+            setIsReady(true)
+        }
+    }, [stateGameReduce.players[0].state] )
 
     return (<>
         <div id="table">

@@ -5,16 +5,33 @@ const session = require('express-session')
 const { instrument } = require("@socket.io/admin-ui");
 const http = require('http')
 const app = express()
-const dotenv = require('dotenv')
-dotenv.config()
+require('dotenv').config();
 const colors = require('colors')
 const gameController = require('./controllers/gameController')
 const playerController = require('./controllers/playerController')
 
+console.log('Starting server in: ... ')
+if (process.env?.REACT_APP_STAGE === 'production' ){
+    console.log(`... production`);
+} else {
+    console.log(`process.env.REACT_APP_STAGE:${process.env.REACT_APP_STAGE} `);
+    // console.log(`process.env:${JSON.stringify(process.env)} `);
+}
 
-console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}`);
+let PORT
+const PORT_DEVELOPMENT = 8000
+if (process.env?.REACT_APP_STAGE === 'production'){
+    console.log(`setting port to production port:`);
+    PORT = process.env.PORT
+} else {
+    console.log(`setting port to development port:`);
+    PORT = PORT_DEVELOPMENT
+}
 
-const PORT = (process.env.NODE_ENV === 'production') ? process.env.PORT : 8000
+console.log(`process.env.NODE_ENV: ${process.env.NODE_ENV}.Port: ${PORT}`);
+console.log(`(dummy)process.env.REACT_APP_CLIENT_ID: ${process.env.REACT_APP_CLIENT_ID}`);
+console.log(`(dummy)process.env.REACT_APP_WHATEVER:${process.env.REACT_APP_WHATEVER}`);
+// console.log(`all process.env: ${JSON.stringify(process.env,null,2)}`);
 // const  {PORT} = require('./CONSTANTS')
 
 let { wsConnect, stateChatServer } = require('./wsConnect')
@@ -25,6 +42,7 @@ let { wsConnect, stateChatServer } = require('./wsConnect')
 let sessionMiddleware = session({
     secret: 'I love superbock',
     resave: true,
+    httpOnly:false,
     saveUninitialized: true,
     cookie: { maxAge: 1000 * 60 * 60, httpOnly: false }
 })
@@ -49,9 +67,19 @@ app.set('view engine', 'ejs')  // ejs engine
 
 
 const my_router = require('./router.js')
+
+// app.use('/', (req, resp,next )=>{
+//     console.log(`Somebody is on your page. Cookie: ${req.session.id}`);
+//     console.log(`\t\t req.url: ${req.url}`);
+//     console.log(`\t\t\t Calling next()`); 
+//     //req.url: ${req.url}
+//     next()
+// })
+
 app.use('/', my_router)
 
-if (process.env.NODE_ENV === 'production') {
+// if (process.env.NODE_ENV === 'production') {
+if (process.env.REACT_APP_STAGE === 'production') {
     console.log(colors.red(`run server in PRODUCTION. Serve folder "/build" as static content`));
     app.use(express.static(path.join(__dirname, '../build')))
 } else {

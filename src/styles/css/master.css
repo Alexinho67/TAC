@@ -88,6 +88,14 @@ h1, h2, h3, h4 {
   transform: rotate(-90deg);
 }
 
+.cookieCnt {
+  position: absolute;
+  left: -40%;
+  top: 5%;
+  z-index: 2;
+  background-color: #fffe;
+}
+
 .center {
   transform: translate(-50%, -50%);
 }

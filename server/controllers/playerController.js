@@ -87,6 +87,8 @@ exports.handlePlayingCard = (cardPlaying, socket) => {
     console.log(`${sumHandCards} left to play...`);
     if(sumHandCards === 0){
         console.log(`Each player has played his/her hand cards.`)
+        game.state = 'PLAYING'
+        game.subState = 'WAIT_FOR_DEAL_REQ'
         setTimeout(( )=>{
             game.calcAndInformDealer(io)
         },500)
@@ -152,7 +154,34 @@ exports.handleReadyToPlay = (callback, socket) => {
         console.log(`Could not find game with id #${gameId}`);
     }
 }
-    
+
+exports.checkIfPlayerIsKnown = (idPlayer) => {
+    let ply = Player.findById(idPlayer)
+    let playerIsKnown = false
+    if (ply.socket) {
+        playerIsKnown = true
+    }
+    return playerIsKnown
+}
+
+exports.sendUpdateAfterReload = (playerIdSession, socket ) => {
+    /* player had an different socket before already 
+    most likely due to reload of the page a new socket is set.
+    --> send some player information back to client about  him/herself
+    */
+    let ply = Player.findById(playerIdSession)
+    let gameId = socket.request.session.gameId
+    let game = GameTac.findById(gameId)
+    console.log(`[playerControler.setSocket]. Found a old socket instance.`);
+    console.log(`[playerControler.setSocket]. Sending info about player`);
+    let flagShowCards = true
+    let playerStatus = ply.getStatus(flagShowCards)
+    let last5Cards = game.cardsTrash.length >=3 ? game.cardsTrash.slice(-5): game.cardsTrash
+    let gameState = { id: game.id, state: game.state, subState: game.subState, dealerPos: game.plyDealer?.position, trashCards: last5Cards}
+    socket.emit('userInfoAfterReload', { playerStatus, gameState })
+
+}
+
 exports.setSocket = (idPlayer, socket) =>{
     let ply = Player.findById(idPlayer)
     ply.socket = socket

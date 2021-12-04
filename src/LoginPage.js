@@ -3,19 +3,38 @@ import { nameList } from './components/utilities/nameList'
 import {ErrorList, addError} from './components/ErrorList'
 import { useHistory } from "react-router-dom";
 import { GameModelContext } from './GameProvider';
+import { UserSessionDataContext } from './Root';
 
 let urlServerPrefix
+let urlFetchCookie
 if (process.env.NODE_ENV === 'development') {
+    urlFetchCookie = URL + '/initSession'
     urlServerPrefix = '/api' 
 } else {
+    urlFetchCookie = '/initSession'
     urlServerPrefix = ''
 }
 
 
+function getInitName(userSessionData){
+    console.log(`[LoginPage - getInitName(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
+    if (userSessionData){
+        return userSessionData.name
+    }else {
+        return nameList[Math.floor(Math.random() * nameList.length)]
+    }
+}
+
+
+
+
 const LoginPage = () => {
+    const { stateGameReduce, dispatcherTac } = React.useContext(GameModelContext)
+    const userSessionData = React.useContext(UserSessionDataContext)
     let history = useHistory();
-    let initName = nameList[Math.floor(Math.random()*nameList.length)]
-    const [userName, setUserName] = React.useState(initName)
+    const [cookieReceived, setCookieReceived] = React.useState(false)
+    const [fetchData, setFetchData] = React.useState()
+    const [userName, setUserName] = React.useState((userSessionData) => { return getInitName(userSessionData)})
     const [userColor, setUserColor] = React.useState("red")
     const [userPosition, setUserPosition] = React.useState("1")
     const [gameId, setGameId] = React.useState("")
@@ -23,15 +42,55 @@ const LoginPage = () => {
 
     const idGameRef = React.useRef()
 
-    const model = React.useContext(GameModelContext)
-
+    /* ================================================================================
+    --------------------------     HOOKS      -----------------------------------------
+    * ================================================================================ */
 
     React.useEffect(() => {
+
+        console.log(`%c[LoginPage.js - INIT]`,'color:#fa0');
+
         window.addEventListener("keydown", keyDownHandler);
         return () => {
             window.removeEventListener("keydown",keyDownHandler);
         }
     }, [])
+
+    React.useEffect(() => {
+        console.log(`%c[LoginPage.js - useEffect@userSessionData]`, 'color:#fa0');
+        if (userSessionData?.name){
+            setUserName(userSessionData.name)
+        }
+    }, [userSessionData])
+
+    React.useEffect(() => {
+        /* DO NOT DELETE. Sending a single GET request to the server
+           will lead to receiving a cookie-id
+           without it the proxy middleware is not capable of establishing
+           a webSocket connection ( don't know why ...)
+        */
+
+        // let urlFetchCookie = urlServerPrefix + '/initSession'
+        // fetchGetCookie(urlFetchCookie, setFetchData, setCookieReceived)
+    }, [])
+
+
+
+    /* ================================================================================
+    --------------------------     Fuctions      -----------------------------------------
+    * ================================================================================ */
+
+
+
+    async function fetchGetCookie(url, callbackUpdate, setCookieReceived) {
+        let data = await fetch(url).then(resp => { return resp.json() })
+            .then(resp => {
+                callbackUpdate(resp?.msg)
+                return resp
+            })
+        console.log(`Received from "${url}"=> ${JSON.stringify(data)}`);
+        setCookieReceived(true)
+    }
 
     function keyDownHandler(e) {
         // console.log(`ctrl: ${e.ctrlKey} - key: ${e.key}`)
@@ -70,13 +129,11 @@ const LoginPage = () => {
 
     async function handleJoinGame() {
         let data = { userName, userColor, userPosition, gameId }
-        model.dispatcherTac({type: 'setGameID', payload: gameId})
+        dispatcherTac({type: 'setGameID', payload: gameId})
         
         console.log(`%c[LoginPage - handleJoinGame] data: ${JSON.stringify(data)}`,'color:red');
-        let dataReactState = { userName:  data.userName,
-                               userColor: data.userColor,
-                               userPosition: data.userPosition }
-        model.dispatcherTac({type: 'updateSelfData', payload: dataReactState }) 
+
+        
         // model.setPlayerData(dataReactState)
         fetch(urlServerPrefix + '/joinGame',
             {
@@ -95,6 +152,12 @@ const LoginPage = () => {
                 if (status === 404){
                     throw resp.msg
                 } else {
+                    let dataReactState = {
+                        userName: data.userName,
+                        userColor: data.userColor,
+                        userPosition: data.userPosition
+                    }
+                    dispatcherTac({ type: 'updateSelfData', payload: dataReactState })
                     let gameId = resp.room
                     let newUrl = `/game/${gameId}`
                     document.title = `TAC #${gameId}`
@@ -113,7 +176,7 @@ const LoginPage = () => {
         let data = { userName, userColor, userPosition}
         console.log(`%cFetching from server. Data:${JSON.stringify(data)}`,'color:red');
         // send a get request to the server to create a new game of TAC
-        model.dispatcherTac({ type: 'updateSelfData', payload: data })
+        dispatcherTac({ type: 'updateSelfData', payload: data })
         // model.setPlayerData(data)
         fetch(urlServerPrefix + '/newGame',
             {method:'POST',
@@ -130,7 +193,7 @@ const LoginPage = () => {
                 history.push(newUrl)
                 navigator.clipboard.writeText(gameId)
                 document.title = `TAC #${gameId}`
-                model.dispatcherTac({ type: 'setGameID', payload: gameId })
+                dispatcherTac({ type: 'setGameID', payload: gameId })
                 // window.location.href = newUrl
             }) 
             .catch(err =>{
@@ -140,10 +203,17 @@ const LoginPage = () => {
     }
 
 
+    /* ================================================================================
+    --------------------------     RENDER      -----------------------------------------
+    * ================================================================================ */
+
 
     return (
-        <div className="container"  >            
+        <div className="container"  >    
             <div id="table">
+                <div className={"cookieCnt"}>
+                    <p>fetchData('/initSession'):{fetchData}</p>
+                </div>
                 {errorList.length > 0 ? <ErrorList errors={errorList} setErrorList={setErrorList}/> : "" }
                 <form  id="loginForm" onSubmit={(e) => { e.preventDefault() }}>
                     <h3>LOGIN </h3>

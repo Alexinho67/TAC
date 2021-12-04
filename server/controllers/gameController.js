@@ -99,6 +99,7 @@ exports.addPlayer = async (req, res) =>{
     try{
         let resp = await game.addPlayer(player)
         console.log(`Adding player ${player.toString()} --> ${resp}`);
+        req.session.playerName = player.name;
         req.session.playerId = player.id;
         req.session.gameId = gameIdJoining;
         req.session.save(() => {

@@ -22,6 +22,7 @@ class GameTac {
         this.cardsTrash = []
         this.round = -1
         this.idxDealer = undefined
+        this.plyDealer = undefined
         games.push(this)
         console.log(`Games on server:`);
         games.forEach(g => console.log(`\t - ${g.id}: ${g.players.length} players`))
@@ -84,9 +85,9 @@ class GameTac {
         } else {
             this.idxDealer = (this.idxDealer + 1) % nrPlayersNeeded
         }
-        let plyObjDealer = this.players[this.idxDealer]
-        console.log(`New dealer is "${plyObjDealer.toString(true)}""`);
-        io.to(this.id).emit('newDealer', { pos: plyObjDealer.position, name: plyObjDealer.name })
+        this.plyDealer = this.players[this.idxDealer]
+        console.log(`New dealer is "${this.plyDealer.toString({ flagShort:true })}""`);
+        io.to(this.id).emit('newDealer', { pos: this.plyDealer.position, name: this.plyDealer.name })
     }
 
     dealCards(){   

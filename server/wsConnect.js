@@ -55,16 +55,16 @@ class Connection {
         socket.emit('hello','Hello! Nice to meet you!')
         
         this.initializeSocketNew()
-        socket.on("setUserName", name => this.handleSetUserName(socket, name))
-        socket.on("createRoom", (userName, clbk) => {
-            this.handleSetUserName(socket, userName)
-            this.handleCreateRoom(socket, clbk)
-        })
-        socket.on("joinRoom", (userName, roomName) => {
-            this.handleSetUserName(socket, userName)
-            this.handleJoinRom(socket, userName, roomName)
-        })
-        socket.on("leaveRoom", roomName => this.handleLeaveRoom(socket, roomName))
+        // socket.on("setUserName", name => this.handleSetUserName(socket, name))
+        // socket.on("createRoom", (userName, clbk) => {
+        //     this.handleSetUserName(socket, userName)
+        //     this.handleCreateRoom(socket, clbk)
+        // })
+        // socket.on("joinRoom", (userName, roomName) => {
+        //     this.handleSetUserName(socket, userName)
+        //     this.handleJoinRom(socket, userName, roomName)
+        // })
+        // socket.on("leaveRoom", roomName => this.handleLeaveRoom(socket, roomName))
         // socket.on("sendMessage", (msgData) => { this.handleSendMessage(socket, msgData) })
         socket.on("disconnect", () => this.socketCbDisconnect(socket))
 
@@ -74,11 +74,24 @@ class Connection {
 
     initializeSocketNew(){
         console.log(`initializeSocketNew`);
-        try{
-            playerController.setSocket(this.socket.request.session.playerId, this.socket)
-        } catch(err){
-            console.log(`[initializeSocketNew] Error: ${err}`);
-        }   
+        let userNameSession = this.socket.request.session?.playerName
+        let playerIdSession = this.socket.request.session?.playerId
+        let gameIdUrlReq = this.socket.request.headers.referer.split("/").slice(-1)[0]
+        let gameIdSession = this.socket.request.session?.gameId
+        if (userNameSession && gameIdUrlReq === gameIdSession) { // --> has already user session data
+            console.log(`\t[wsConnect.js - initSocketNew] - KNOWN User is  . ================================`.green)
+            console.log(`\t\t His/her name is: "${userNameSession}"`);
+            let playerIsKnown = playerController.checkIfPlayerIsKnown(playerIdSession)
+            if (playerIsKnown){
+                playerController.sendUpdateAfterReload(playerIdSession,this.socket)
+            }
+            playerController.setSocket(playerIdSession, this.socket)
+        } else { // user is unkown
+            console.log(`\t[wsConnect.js - initSocketNew] - UNknown user ======================================`.red);
+            /*  "visitor" shall be redirected to "home" 
+            */
+           this.socket.emit('redirectToHome')
+        } 
     }
 
 
@@ -96,149 +109,89 @@ class Connection {
         // stateChatServer.printListUserIds()
     }
 
-    initNewUser() {
-        /* user is completly new to the server (no session data found) 
-        * --> create a new userObj and link it to the server state
-        */
-    
-        let userObj = new User()
-        let newId = getNewId()
-        // put the new unique id to both the session and the user Object
-        this.socket.request.session.user = { name: undefined, id: newId }
-        this.socket.request.session.save()
-        userObj.id = newId
-        userObj.idSocket = this.socket.id
-        stateChatServer.rooms['general'].addUser(userObj)
-        stateChatServer.addUser(userObj)
-    }
 
-    reInitKnownUser() {
-        /*  function handles the reinitialization of a known user (= session data has been found)
-        */
-       // 1. identify user and get it's userObj
-        let idUser = this.socket.request.session.user.id
-        let userObj = stateChatServer.users[idUser]
-    
+    // handleSetUserName(socket, userName) {
+    //     console.log(`\n==> *** SET USER NAME *** => name: "${userName}"`);
+    //     socket.request.session.user.name = userName
+    //     socket.request.session.save()
+    //     console.log(`Setting (socket>request)"session.user" -> idSocket:${socket.id}. Name:${socket.request.session.user.name}`)
 
-        if (!userObj) {
-            // Destroy session and force reload on client side through io-Socket event    
-            console.error(`\t UserObj undefined `);
-            this.socket.request.session.destroy(() => {
-                console.log(`!!!!!!! Session has been destroyed`)
-                this.socket.emit("reloadPage")
-            })
+    //     let userObj = stateChatServer.findUserBySocketId(socket.id)
+    //     if (userObj === undefined) {
+    //         console.log(`break`);
+    //     }
+    //     userObj.name = userName
+    //     stateChatServer.printListUserIds()
+    //     // this.printFieldsOfSession(socket.request.session)
+    // }
 
-            return
-        } 
-        // below this line its granted that the userObj is defined
+    // handleCreateRoom(socket, clbkClient) {
+    //     let nameRoomNew = crypto.randomBytes(ROOMLENGTH).toString('hex');
+    //     let roomObj = new ChatRoom(nameRoomNew, 99)
+    //     stateChatServer.addRoom(roomObj)
 
-        userObj.status = "online"
-        let strRoom = userObj?.room?.name ? userObj.room.name : "none"
-        let strOldRoom = userObj?.roomOld
-        console.log(`\t[InitSocket]: User is known.IdUser${idUser}.Name: ${userObj.name}.Room: ${strRoom}. Old room:${strOldRoom} `);
-        // 3. stop the removal of the userObj (which has been triggered by the disconnect-Event)
-        userObj.clearRemoveTimeOut()
-        userObj.idSocket = this.socket.id
-        stateChatServer.rooms['general'].addUser(userObj)
+    //     this.updateRelationUserAndRoom(socket.id, nameRoomNew, 'add')
+    //     let userObj = stateChatServer.findUserBySocketId(socket.id)
+    //     console.log(`==> *** CREATE *** User "${userObj.toString()}" is requesting to create a new room => ${nameRoomNew}`);
+    //     clbkClient({ name: nameRoomNew }) // literally CALL BACK CLIENT (with new information);) 
+    //     socket.join(nameRoomNew)
+
+    // }
+
+    // handleJoinRom(socket, userName, roomNameToJoin) {
+    //     let userObj = stateChatServer.findUserBySocketId(socket.id)
+    //     console.log(`\n==> *** JOIN *** User "${userObj.toString()}" wants to join room "${roomNameToJoin}"`);
+    //     if (roomNameToJoin) { 
 
 
-        let msgDataToUser;
-        if (strOldRoom === undefined) {
-            console.log(`User has not been in a room before.`.red);
-            msgDataToUser = { msg: `Your name is ${userObj.name}`, nameUser: userObj.name, nameRoom: undefined }
-        } else {
-            console.log(`\t ${userObj.name} was previously in room ${strOldRoom}`);
-            // send message to all users in that  room
-            // let msgUserJoined = { msg: `${userObj.name} has joined your room ${roomObjPrev.name}`, sender: 'Server', time: getTimeString(), color: colorServer, debug:'INIT' }
-            // this.socket.to(roomObjPrev.name).emit("messageServer", msgUserJoined)
-            msgDataToUser = {
-                msg: `Your name is ${userObj.name}`, nameUser: userObj.name, nameRoom: strOldRoom }
-        }
-        this.socket.emit("foundSession", msgDataToUser)
-    }
+    //         let roomObjJoining = stateChatServer.rooms[roomNameToJoin]
+    //         if ( roomObjJoining === undefined){
+    //             console.log(`\t Room does not exist. Cancelling the JOIN-event`.red);
+    //             let flagSuccess = false
+    //             socket.emit("joinedRoom", { success: flagSuccess, nameRoom: roomNameToJoin })
+    //             return
+    //         }
 
-    handleSetUserName(socket, userName) {
-        console.log(`\n==> *** SET USER NAME *** => name: "${userName}"`);
-        socket.request.session.user.name = userName
-        socket.request.session.save()
-        console.log(`Setting (socket>request)"session.user" -> idSocket:${socket.id}. Name:${socket.request.session.user.name}`)
-
-        let userObj = stateChatServer.findUserBySocketId(socket.id)
-        if (userObj === undefined) {
-            console.log(`break`);
-        }
-        userObj.name = userName
-        stateChatServer.printListUserIds()
-        // this.printFieldsOfSession(socket.request.session)
-    }
-
-    handleCreateRoom(socket, clbkClient) {
-        let nameRoomNew = crypto.randomBytes(ROOMLENGTH).toString('hex');
-        let roomObj = new ChatRoom(nameRoomNew, 99)
-        stateChatServer.addRoom(roomObj)
-
-        this.updateRelationUserAndRoom(socket.id, nameRoomNew, 'add')
-        let userObj = stateChatServer.findUserBySocketId(socket.id)
-        console.log(`==> *** CREATE *** User "${userObj.toString()}" is requesting to create a new room => ${nameRoomNew}`);
-        clbkClient({ name: nameRoomNew }) // literally CALL BACK CLIENT (with new information);) 
-        socket.join(nameRoomNew)
-
-    }
-
-    handleJoinRom(socket, userName, roomNameToJoin) {
-        let userObj = stateChatServer.findUserBySocketId(socket.id)
-        console.log(`\n==> *** JOIN *** User "${userObj.toString()}" wants to join room "${roomNameToJoin}"`);
-        if (roomNameToJoin) { 
+    //         // update WebSocket
+    //         socket.join(roomNameToJoin)
+    //         socket.emit("joinedRoom", { success: true, nameRoom: roomNameToJoin })
 
 
-            let roomObjJoining = stateChatServer.rooms[roomNameToJoin]
-            if ( roomObjJoining === undefined){
-                console.log(`\t Room does not exist. Cancelling the JOIN-event`.red);
-                let flagSuccess = false
-                socket.emit("joinedRoom", { success: flagSuccess, nameRoom: roomNameToJoin })
-                return
-            }
-
-            // update WebSocket
-            socket.join(roomNameToJoin)
-            socket.emit("joinedRoom", { success: true, nameRoom: roomNameToJoin })
-
-
-            let roomNameAct = userObj.room?.name
-            let roomNameJoining = roomObjJoining.name
-            if (roomNameAct && (roomNameAct === roomNameJoining)){
+    //         let roomNameAct = userObj.room?.name
+    //         let roomNameJoining = roomObjJoining.name
+    //         if (roomNameAct && (roomNameAct === roomNameJoining)){
                 
-                // do nothing because user is trying to join room she's currently in
-                console.log(`User (${userObj.toString()}) is trying to join room "${roomNameJoining}" although currently in room "${roomNameAct}"`);
+    //             // do nothing because user is trying to join room she's currently in
+    //             console.log(`User (${userObj.toString()}) is trying to join room "${roomNameJoining}" although currently in room "${roomNameAct}"`);
 
-                return
-            }
+    //             return
+    //         }
         
             
-            console.log(`User "${userObj.toString()}" is joining room "${roomObjJoining.name}. `,
-                `Current room: "${roomNameAct}"`.red);
+    //         console.log(`User "${userObj.toString()}" is joining room "${roomObjJoining.name}. `,
+    //             `Current room: "${roomNameAct}"`.red);
 
-            // TODO: 
-            // once functionality is working fine -> delete this commented section
-            if (roomNameAct) {
-                console.log(`\t[handleJoinRom]: found roomNameLeaving=${roomNameAct}. Triggering -> [handleLeaveRoom]"`);
-                this.handleLeaveRoom(socket, roomNameAct)
-             }
+    //         // TODO: 
+    //         // once functionality is working fine -> delete this commented section
+    //         if (roomNameAct) {
+    //             console.log(`\t[handleJoinRom]: found roomNameLeaving=${roomNameAct}. Triggering -> [handleLeaveRoom]"`);
+    //             this.handleLeaveRoom(socket, roomNameAct)
+    //          }
 
-            // add new room to the userObj and add the UserObj to the room 
-            // this.updateRelationUserAndRoom(socket.id, roomNameToJoin, 'add')
-            userObj.addRoom(roomObjJoining)
+    //         // add new room to the userObj and add the UserObj to the room 
+    //         // this.updateRelationUserAndRoom(socket.id, roomNameToJoin, 'add')
+    //         userObj.addRoom(roomObjJoining)
 
             
-            roomObjJoining.addUser(userObj)
+    //         roomObjJoining.addUser(userObj)
            
-            // this.sendAllPreviousMessages(userName, roomObjJoining)
+    //         // this.sendAllPreviousMessages(userName, roomObjJoining)
 
         
-        } else {
-            console.error(`\tCannot join room of undefined`);
-        }
-    }
+    //     } else {
+    //         console.error(`\tCannot join room of undefined`);
+    //     }
+    // }
 
     // sendAllPreviousMessages(userName, roomObjJoining){
     //     // send all previous messages of that room to the new client/socket
@@ -254,31 +207,30 @@ class Connection {
 
     // }
 
-    handleLeaveRoom(socket, roomNameLeaving){
-        let userObj = stateChatServer.findUserBySocketId(socket.id)
-        console.log(`\n==> *** LEAVE *** User id: ${userObj.idSocket} is leaving room "${roomNameLeaving}"`);
-        let roomObj = stateChatServer.rooms[roomNameLeaving]
-        // loop through all the rooms and :
-        // 1. send an update to users in each room
-        // 2. remove the user from the chatRoom instance
-        // send message "user ... left the room"
-        socket.leave(roomNameLeaving)
+    // handleLeaveRoom(socket, roomNameLeaving){
+    //     let userObj = stateChatServer.findUserBySocketId(socket.id)
+    //     console.log(`\n==> *** LEAVE *** User id: ${userObj.idSocket} is leaving room "${roomNameLeaving}"`);
+    //     let roomObj = stateChatServer.rooms[roomNameLeaving]
+    //     // loop through all the rooms and :
+    //     // 1. send an update to users in each room
+    //     // 2. remove the user from the chatRoom instance
+    //     // send message "user ... left the room"
+    //     socket.leave(roomNameLeaving)
         
-        // store the nameRoom in case user "comes back"
-        userObj.roomOld = roomNameLeaving
-        userObj.leaveRoom()
-        try{
-            let numUsersRemainging = roomObj.removeUser(userObj.id)
-            if (numUsersRemainging === 0) {
-                console.log(`\t --> deleting room`);
-                delete (stateChatServer.rooms[roomObj.name])
-            }
+    //     // store the nameRoom in case user "comes back"
+    //     userObj.roomOld = roomNameLeaving
+    //     userObj.leaveRoom()
+    //     try{
+    //         let numUsersRemainging = roomObj.removeUser(userObj.id)
+    //         if (numUsersRemainging === 0) {
+    //             console.log(`\t --> deleting room`);
+    //             delete (stateChatServer.rooms[roomObj.name])
+    //         }
 
-        }catch(err){
-            console.log(`err:${err}`);
-        }
-    
-    }
+    //     }catch(err){
+    //         console.log(`err:${err}`);
+    //     }
+    // }
 
     // handleSendMessage(socket, msgData) { 
     //     //// msgData = { msg: inputMsg, sender: userName, time: getTimeString() }

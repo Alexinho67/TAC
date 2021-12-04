@@ -96,3 +96,13 @@ h1,h2, h3, h4{
   -o-transform: rotate(-90deg);
   transform: rotate(-90deg);
 }
+
+
+.cookieCnt{
+  position: absolute;
+  left: -40%;
+  top:5%;
+  z-index: 2;
+  background-color: #fffe;
+
+}

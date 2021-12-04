@@ -14,6 +14,7 @@ import BallSlots from './subComponents/BallSlots'
 import CardSwapZone from './subComponents/CardSwapZone'
 import HandCardsSelf from './subComponents/HandCardsSelf'
 import TrashCards from './subComponents/TrashCards'
+import FieldDealCards from './subComponents/FieldDealCards'
 
 
 
@@ -68,6 +69,9 @@ const Board = ({ isReady, setIsReady }) => {
     const [ballsAllData, setBallsAllData] = React.useState([])
     // slots
     const [resetTimer, setResetTimer] = React.useState(false) // in "BallSlots" is a timer, which deactives the slots after a certain time
+    // dealer
+    const [showDealerField, setShowDealerField] = React.useState(false)
+    
     /* ================================================================================
     --------------------------     HOOKS      -----------------------------------------
     * ================================================================================ */
@@ -75,6 +79,13 @@ const Board = ({ isReady, setIsReady }) => {
     React.useEffect(() => { 
         console.log(`%c[Board]-INIT`, 'color:#999')} ,
         [])
+
+    
+    React.useEffect(() => {
+        if (showDealerField === false && stateGameReduce.posDealerRel === 1){
+            setShowDealerField(true)
+        }
+    }, [stateGameReduce.posDealerRel])
 
     React.useEffect(()=>{
 
@@ -282,19 +293,20 @@ const Board = ({ isReady, setIsReady }) => {
     --------------------------     Fuctions      -----------------------------------------
     * ================================================================================ */
 
-    function initCards(cardsFromServer) {
+    function initCards(cardsFromModel) {
         let cardObjects = []
        
-        for (let i = 0; i < cardsFromServer.length; i++) {
+        for (let i = 0; i < cardsFromModel.length; i++) {
+            let idExtCardSwap = stateGameReduce.players[0].cardForSwap?.idExt
             let newCard = {
-                id: cardsFromServer[i].idInternal,
-                idExt: cardsFromServer[i].idExt,
+                id: cardsFromModel[i].idInternal,
+                idExt: cardsFromModel[i].idExt,
                 isPlayed: false,   // card is set to "isPlayed" to set position "top=50%" and "left=50%" while using a transition
-                isCardForSwap: false,   // card is set to "isCardForSwap" to set position approx. "top=70%" and "left=70%" while using a transition
+                isCardForSwap: idExtCardSwap === cardsFromModel[i].idExt,   // card is set to "isCardForSwap" to set position approx. "top=70%" and "left=70%" while using a transition
                 isSelected: false,  // use can (pre) select or unselect each card. Selection get highlighted 
                 width: WIDTHCARD,
                 // value: Math.floor(Math.random() * 9) + 1,
-                value: cardsFromServer[i].value,
+                value: cardsFromModel[i].value,
                 left: (100 - WIDTHCARD * numCards) * 0.5 + WIDTHCARD * i + WIDTHCARD/2,
                 top: 100 + ASPECT_RAT_CARD * WIDTHCARD } // left edge of each card
             cardObjects.push(newCard)
@@ -442,7 +454,7 @@ const Board = ({ isReady, setIsReady }) => {
             {!isReady  
             ? <ConfirmReady {...{ isReady, setIsReady }} />: <>  </>
             }
-            {isReady && stateGameReduce.started
+            {(isReady && stateGameReduce.state === 'PLAYING' )
             ?  <>
                 <DealerButton />
                 <TrashCards width={WIDTHCARD}/>
@@ -453,6 +465,7 @@ const Board = ({ isReady, setIsReady }) => {
                 <ShuffledDeck width={WIDTHCARD} />
                 <CardSwapZone gameState={stateGameReduce.state} gameSubState={stateGameReduce.subState} idCardSelected={idCardSelected} triggerSelectedCardForSwap={triggerSelectedCardForSwap}/>      
                 <InnerCenter gameState={stateGameReduce.state} gameSubState={stateGameReduce.subState} stateInnerCenter={stateInnerCenter} triggerCardPlayed={triggerCardPlayed} />
+                <FieldDealCards showDealerField={showDealerField} setShowDealerField={setShowDealerField} gameState={stateGameReduce.state} gameSubState={stateGameReduce.subState}/>
                 </> 
             : null
             }

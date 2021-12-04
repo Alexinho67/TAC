@@ -29,7 +29,6 @@ const PlayerStatus = ({ pos, data }) => {
 }
 
 const StatusOtherPlayer = (  { stateGameReduce } ) => {
-    // const userData = React.useContext(UserDataContext)
 
     return (<>
         <PlayerStatus pos={'left'} data={stateGameReduce[0]} />

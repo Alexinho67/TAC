@@ -2,6 +2,21 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { GameModelContext } from '../GameProvider'
 
+const CookieRemover = () => {
+
+    const fcnClearCookies = (e) => {
+        let allCookies = document.cookie
+        // console.log(`allCookies:${allCookies} `);
+        document.cookie.split(";").forEach(function (c) {
+            // alert(`Killing cookie: `, c);
+            document.cookie = c.replace(/^ +/, "")
+                .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+        });
+    }
+
+    return (<button onClick={fcnClearCookies}> Remove Cookies</button>)
+}
+
 const WhiteSpan = (props) => {
     return (<span style={{ color: 'white', fontWeight: 'bold' }} >
             {props.children}
@@ -21,10 +36,17 @@ const NavBar = () => {
         for (let i=0; i<3; i++){window.open('http://localhost:3000', '_blank');}
     }
 
+    let cookie = document.cookie
+    if(cookie){
+        cookie = cookie.split("=")[1]
+        cookie = cookie.split(".")[0]
+        cookie = cookie.replace("s%3A","")
+    }
 
     return (
         <nav>
             <div style={{ flexGrow: '1' }}>
+                <WhiteSpan>cookie: {cookie} </WhiteSpan> <br/>
                 <WhiteSpan> Game: state: "{stateGameReduce.state}" - subState: "{stateGameReduce.subState}"
                 </WhiteSpan> <br/>
                 <WhiteSpan>#{stateGameReduce.players[0].posAbs}-{stateGameReduce.players[0].name}-{stateGameReduce.players[0].color}
@@ -36,7 +58,8 @@ const NavBar = () => {
                 }) : ""}
             </div>
             <div>
-                <button>REFRESH</button>
+                <button>REFRESH</button> <br/>
+                <CookieRemover />
             </div>
             <div > 
                 <p><a href="http://localhost:8000/admin" target="_blank" rel="noreferrer"> ADMIN </a></p>

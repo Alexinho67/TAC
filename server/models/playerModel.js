@@ -33,12 +33,15 @@ class Player {
         console.log(`Player ${this.name} is ready.`);
     }
 
-    getStatus(){
+    getStatus(flagShowCards=false){
         return {name: this.name, 
                 pos: this.position, 
                 color: this.color, 
                 isReady: this.isReady,
-                balls: this.getBallStatus()
+                balls: this.getBallStatus(),
+                cardSwapGive: flagShowCards ? this.cardSwapGive : undefined,
+                hasSelectedCardSwap: this.cardSwapGive ? true : false,
+                cards: flagShowCards ? this.getCardsStatus():[],
             }
     }
 
@@ -47,9 +50,15 @@ class Player {
             return {id: b.id, pos:b.position}
         })
     }
+    
+    getCardsStatus(){
+        return this.cards.map(c => {
+            return { id: c.id, value: c.value}
+        })
+    }
 
-    toString(short = false){
-        if (short){
+    toString({ flagShort = false } = {} ){
+        if (flagShort){
             return `${this.name}#${this.position}`
         } else{
             return `${this.name}- #${this.position} - ${this.color}`
