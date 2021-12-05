@@ -70,6 +70,11 @@ function temp(req){
     }
 }
 
+
+// router.get('/game/:idgame', (req, res)=>{
+//     res.redirct('/')
+// } )
+
 router.get('/initSession', (req, res) => {
     // console.log(`GET /initSession`);
     // res.send('hello')

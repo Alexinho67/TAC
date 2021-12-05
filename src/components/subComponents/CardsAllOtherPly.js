@@ -3,7 +3,7 @@ import { GameModelContext } from '../../GameProvider'
 import CardOpenOtherPly from './CardOpenOtherPly'
 import CardsOtherPly from './CardsOtherPly'
 
-const CardsAllOtherPlayers = ({ width}) => {
+const CardsAllOtherPlayers = ({ width }) => {
     const [openCard, setOpenCard] = React.useState(undefined)
 
     const { stateGameReduce} = React.useContext(GameModelContext)
@@ -15,9 +15,6 @@ const CardsAllOtherPlayers = ({ width}) => {
             console.log(`...Created open card for visualization: ${JSON.stringify(cardObjWithStyle)}`);
             setOpenCard(cardObjWithStyle)
         }
-        // return () => {
-        //     cleanup
-        // }
     }, [stateGameReduce.cardPlayedOther])
     
     function createCardOpenPlaying(cardPlaying){

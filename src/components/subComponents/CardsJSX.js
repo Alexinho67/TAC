@@ -66,7 +66,7 @@ const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCard
     function getCardsSingle(){
         let listCards = []
         cards.forEach( (card) => {
-            listCards.push(<CardSingle key={card.id} card={card}
+            listCards.push(<CardSingle key={card.idExt} card={card}
                                     toogleIsSelected={toogleIsSelected} 
                                     triggerCardPlayed={triggerCardPlayed}
                                     transitionCardHandToTray={transitionCardHandToTray} />)

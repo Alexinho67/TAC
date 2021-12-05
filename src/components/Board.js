@@ -470,7 +470,7 @@ const Board = ({ isReady, setIsReady }) => {
             : null
             }
 
-        <TableDebug ballsAllData={ballsAllData} />
+        {/* <TableDebug ballsAllData={ballsAllData} /> */}
         </>
     )
 }

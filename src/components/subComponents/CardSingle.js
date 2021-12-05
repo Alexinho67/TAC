@@ -68,23 +68,68 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
         let styleNew = { ...styleBasis, ...stylingAddition }
         
         console.log(`[CardSingle-calcStyle].card(#${card.idExt},val:${card.value}) -> left:${styleNew.left}, top:${styleNew.top}`);
-
         setStyleCard(styleCardCurrent => { return { ...styleCardCurrent, ...styleNew} })
-
     }
     
     function getImagePath(value){
-        // console.log(`[CardSingle.js] Getting srcPath. card value: ${value}`);
+        let fileString = `../../pics/${CARDS[value]}`
+    
+        console.log(`[CardSingle.js] Getting srcPath. card value: ${value}. FileString: ${fileString}`);
         let path
         try{
-            path = require(`../../pics/${CARDS[value]}`).default
+            switch (value) {
+                case 1:
+                    path = require('../../pics/1_small.png').default
+                    break
+                case 2:
+                    path = require('../../pics/2_small.png').default
+                    break
+                case 3:
+                    path = require('../../pics/3_small.png').default
+                    break
+                case 4:
+                    path = require('../../pics/4_small.png').default
+                    break
+                case 5:
+                    path = require('../../pics/5_small.png').default
+                    break
+                case 6:
+                    path = require('../../pics/6_small.png').default
+                    break
+                case 7:
+                    path = require('../../pics/7_small.png').default
+                    break
+                case 8:
+                    path = require('../../pics/8_small.png').default
+                    break
+                case 9:
+                    path = require('../../pics/9_small.png').default
+                    break
+                case 10:
+                    path = require('../../pics/10_small.png').default
+                    break
+                case 12:
+                    path = require('../../pics/12_small.png').default
+                    break
+                case 13:
+                    path = require('../../pics/13_small.png').default
+                    break
+                case 14:
+                    path = require('../../pics/Trickser_small.png').default
+                    break
+                case 15:
+                    path = require('../../pics/Trickser_small.png').default
+                    break
+                default:
+                    path = require(`../../pics/TAC_small.png`).default
+            }
+            
         }catch{
-            console.error(`Coudn't find card source path`);
+            console.error(`Coudn't find card source path with fileString=${fileString}`);
             path = require(`../../pics/backside1.png`).default
         }
         return path
     }
-
 
 
     function _toogleIsSelected() {
@@ -139,11 +184,11 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
     --------------------------     RENDER      -----------------------------------------
     * ================================================================================ */
     if (card.isPlayed) {
-        return (<div style={styleCard} className="card" onTransitionEnd={_handleTransitionEnd}>
+        return (<div key={card.idExt} style={styleCard} className="card" onTransitionEnd={_handleTransitionEnd}>
             {Imgage}
         </div>)
     } else {
-        return (<div style={styleCard} className="card" data-idext={card.idExt} 
+        return (<div key={card.idExt} style={styleCard} className="card" data-idext={card.idExt}
             onClick={handleButtonClick}
             onDoubleClick={handleButtonDblClick}>
                     {Imgage}

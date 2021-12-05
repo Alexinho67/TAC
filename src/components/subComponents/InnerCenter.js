@@ -27,7 +27,7 @@ const InnerCenter = ({ gameState, gameSubState, stateInnerCenter, triggerCardPla
 
     if (gameState === 'PLAYING' && gameSubState === 'WAIT_FOR_ALL_CARDS_PLAYED') {
         return (<>
-            <div id="innerCenter" onClick={_handleClick} onContextMenu={(e) => e.preventDefault()} className={classInnerCenter} onAuxClick={onRightClick} onRightClick={onRightClick}>
+            <div id="innerCenter" onClick={_handleClick} onContextMenu={(e) => e.preventDefault()} className={classInnerCenter} onAuxClick={onRightClick} >
                 {/* {state} */}
             </div>
             {showHistoryCards ? <CardsPlayedHistory /> : null}

@@ -6,9 +6,8 @@ const CardDeck = require('./cardsModel')
 let games = []
 
 let cardsPerRound = [20,20,20,20,20]
-cardsPerRound = [8, 8]
+// cardsPerRound = [8, 8]
 let nrPlayersNeeded = 2
-
 class GameTac {
     
     constructor() {

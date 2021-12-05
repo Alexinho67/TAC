@@ -36,11 +36,7 @@ const getPosXYForCardSwap = (posRel) => {
 
 const CardsOtherPly = ({ width, playerObj}) => {
     const [styleCardStack, setStyleCardStack] = React.useState({
-        left: `0%`,
-        top: `0%`,
-        width: `${width}%`,
-        cursor: 'unset',
-        transform: `translate(-50%,-50%)  rotate(0deg)`})
+        width: `${width}%`})
     
     const [styleCardForSwap, setStyleCardForSwap] = React.useState({
         left: `0%`,
@@ -49,7 +45,6 @@ const CardsOtherPly = ({ width, playerObj}) => {
         cursor: 'unset',
         transform: `translate(-50%,-50%)  rotate(0deg)`})
     
-    const numCards = playerObj.nrCards
     const cardForSwap = playerObj.cardForSwap
     const Imgage = <img height='100%' width='100%' src={`${require(`../../pics/backside1.png`).default}`} alt={`cardsOtherPlayer`} />
     
@@ -71,24 +66,24 @@ const CardsOtherPly = ({ width, playerObj}) => {
 
     },[])
 
-    if (numCards === 0){
+    if (playerObj.cards.length === 0){
         return <></>
     }
 
     return (
-             <> 
-            <div className="card" style={styleCardStack} >
-                {/* <div style={{transform: `rotate(${rotate}deg) `}}> */}
-                        {Imgage}
-                <div className="numberCardsOtherPlayer" style={{
-                    transform: `translate(-50%,-50%) rotate(-${getPosXY(playerObj.posRel).rotate}deg)`}}>
-                {numCards} </div>
-                {/* </div> */}
+            <div key={playerObj.cards[0].idInternal}  name="cardsOtherPly">
+                <div className="card cardStack" style={styleCardStack} >
+                    {/* <div style={{transform: `rotate(${rotate}deg) `}}> */}
+                            {Imgage}
+                    <div className="numberCardsOtherPlayer" style={{
+                        transform: `translate(-50%,-50%) rotate(-${getPosXY(playerObj.posRel).rotate}deg)`}}>
+                    {playerObj.cards.length} </div>
+                    {/* </div> */}
+                </div>
+                {cardForSwap !== undefined
+                    ? <div className="card" style={styleCardForSwap} > {Imgage} </div>
+                    : ""}
             </div>
-            {cardForSwap !== undefined
-                ? <div className="card" style={styleCardForSwap} > {Imgage} </div>
-                : ""}
-        </>
         )
 }
 

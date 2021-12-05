@@ -151,13 +151,13 @@ const BallSlots = ({  resetTimer,setResetTimer, highlightBallSlots, setBallsAllD
             } )
         })
 
-        // tofRemoveHighlightSlots.current = 
-        //     setTimeout(() => { 
+        tofRemoveHighlightSlots.current = 
+            setTimeout(() => { 
 
-        //         setBallsAllData(list => list.map(b => {
-        //              return { ...b, isSelected: false }} ) ) 
-        //         },
-        //     delayRemoveHighlightSlots)
+                setBallsAllData(list => list.map(b => {
+                     return { ...b, isSelected: false }} ) ) 
+                },
+            delayRemoveHighlightSlots)
     }
 
     const classNameHighlightSlot = highlightBallSlots ? 'highlightBallSlot' : ''
@@ -194,7 +194,7 @@ const BallSlots = ({  resetTimer,setResetTimer, highlightBallSlots, setBallsAllD
     const angleFraction = 360 / N
     const radius = 45.25; //%
     const xCenter = 50
-    const yCenter = 50
+    const yCenter = 49.8
     const allOuterSlots = rotList.map((rot, idxPos) => {
         // let styleThisArm = {transform: `translate(0%,-50%) rotate(${rot * angleFraction}deg)`}
         let alpha = rot * angleFraction * Math.PI / 180 + Math.PI/2 + alphaRot.current ; // adding pi/2 to make first slot the lowest slot
@@ -235,16 +235,20 @@ const BallSlots = ({  resetTimer,setResetTimer, highlightBallSlots, setBallsAllD
     })
 
     return (
-        <>
+        <div name="allSlots">
             <div name="outerBallSlots">
                 {allOuterSlots}
+            </div >
+            <div name="allHomeSlots">
+                {allHomeSlots}
             </div>
-            {allHomeSlots}
-            {allStartSlots}
+            <div name="allStartSlots">
+                {allStartSlots}
+            </div>
             {/* <div style={{backgroundColor:'white', position:'absolute',top:'100%'}}>
                 tofRemoveHighlightSlots:{tofRemoveHighlightSlots.current}
                 </div> */}
-        </>
+        </div>
     )
 }
 

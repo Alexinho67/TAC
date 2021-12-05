@@ -20,8 +20,10 @@ function getInitName(userSessionData){
     console.log(`[LoginPage - getInitName(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
     if (userSessionData){
         return userSessionData.name
-    }else {
+    }else if(process.env.NODE_ENV==='development'){
         return nameList[Math.floor(Math.random() * nameList.length)]
+    }else {
+        return undefined
     }
 }
 
@@ -47,10 +49,10 @@ const LoginPage = () => {
     * ================================================================================ */
 
     React.useEffect(() => {
-
         console.log(`%c[LoginPage.js - INIT]`,'color:#fa0');
-
-        window.addEventListener("keydown", keyDownHandler);
+        if (process.env.NODE_ENV === 'development'){
+            window.addEventListener("keydown", keyDownHandler);
+        }
         return () => {
             window.removeEventListener("keydown",keyDownHandler);
         }
@@ -121,9 +123,9 @@ const LoginPage = () => {
                 setUserName('Dani')
             }
         }
-        // idGameRef.current.focus()
+        
         setTimeout(()=>{
-            idGameRef.current.focus()
+            idGameRef?.current.focus()
         }, 10)
     }
 
@@ -211,13 +213,9 @@ const LoginPage = () => {
     return (
         <div className="container"  >    
             <div id="table">
-                <div className={"cookieCnt"}>
-                    <p>fetchData('/initSession'):{fetchData}</p>
-                </div>
                 {errorList.length > 0 ? <ErrorList errors={errorList} setErrorList={setErrorList}/> : "" }
                 <form  id="loginForm" onSubmit={(e) => { e.preventDefault() }}>
                     <h3>LOGIN </h3>
-                    <p>{userName}, {userColor}, {userPosition}</p>
                     <label htmlFor="userName"> Name player: </label> 
                     <input id="userName" type="text" value={userName} 
                         onChange={(e) => { setUserName(e.target.value) }} ></input>
