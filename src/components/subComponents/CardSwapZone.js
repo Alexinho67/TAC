@@ -13,7 +13,7 @@ const CardSwapZone = ({gameState, gameSubState, idCardSelected, triggerSelectedC
 
     if (gameState === 'PLAYING' && gameSubState === 'WAIT_FOR_SWAP_CARDS') {
         return (
-            <div class="zoneCardSwap" onClick={_handleClick}>
+            <div className="zoneCardSwap" onClick={_handleClick}>
                 {messageInZone}
             </div>
         )

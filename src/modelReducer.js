@@ -9,7 +9,6 @@ class Player{
         this.state = 'init'
         this.cards = []
         this.cardForSwap = undefined //hasSelectdCardForSwap = false // used to display a card for swapping on the board
-        this.nrCards = undefined
         this.color = undefined
         this.balls = []
     }
@@ -78,8 +77,8 @@ export function reducerFcnGameModel(state, action) {
     }else if (type === 'cardPlayedByOther') {
         return handleCardPlayedByOther(returnState, action.payload)
     } else if (type === 'resetCardPlayedByOther') {
-        returnState.cardPlayedOther = undefined
-        return returnState
+        
+        return handleResetCardPlayedByOther(returnState)
     } else if (type === 'newDealer') {
         return handleNewDealer(returnState, action.payload)
     } else if (type === 'updateBallPosition') {
@@ -109,6 +108,14 @@ export function reducerFcnGameModel(state, action) {
     } else{
         throw new Error(`DISPATCHER: TYPE "${type}" is not supported!`)
     }    
+}
+
+function handleResetCardPlayedByOther(returnState){
+    let cardRecentlyPlayed = returnState.cardPlayedOther
+    returnState.cardPlayedOther = undefined
+    // returnState.cardsPlayed.push({...card, idExt:card.id}) //rewrite id to idExt
+    returnState.cardsPlayed.push(cardRecentlyPlayed) //rewrite id to idExt
+    return returnState
 }
 
 function updateDataAfterReload(returnState, playerStatus, gameState) {
@@ -155,7 +162,6 @@ function updateDataAfterReload(returnState, playerStatus, gameState) {
         cardForSwap: playerStatus.cardSwapGive ?
              {...playerStatus.cardSwapGive, idExt: playerStatus.cardSwapGive.id} : undefined ,
         cards: cardsData,
-        nrCards: playerStatus.cards.length,
     }
     
 
@@ -303,6 +309,7 @@ function getRelativePos(posAbsSelf, posAbsTgt){
 }
 
 function handleNewDealer(returnState, dealer){
+    returnState.cardsPlayed =  []
     returnState.posDealerAbs = dealer.pos
     returnState.subState = 'WAIT_FOR_DEAL_REQ'
     const [, posRel] = getRelativePos(returnState.players[0].posAbs ,dealer.pos)
@@ -315,16 +322,16 @@ function handleNewDealer(returnState, dealer){
 function handleCardPlayedByOther(returnState, card){
     console.log(`[handleCardPlayedByOther]: "${card.playedByName}"-#${card.playedByPosAbs} played card: "${card.value}"`);
     // update "played cards" 
-    returnState.cardsPlayed.push({...card, idExt:card.id}) //rewrite id to idExt
-
+    
     let namePlayedBy = card.playedByName
     let playersOthers = returnState.players.slice(1,4)
     let playerCardPlayed = playersOthers.find(p => p.posAbs === card.playedByPosAbs)
-    playerCardPlayed.nrCards -= 1
+    playerCardPlayed.cards.pop()
     const [, posRel] = getRelativePos(returnState.players[0].posAbs, card.playedByPosAbs)
     let cardObjUpdate = { value: card.value, playedByName: namePlayedBy, posRelOfPlayer: posRel, posAbsOfPlayer: playerCardPlayed.posAbs }
     console.log(`[handleCardPlayedByOther]: updating gameModelState with card obj: "${JSON.stringify(cardObjUpdate)}"`);
     returnState.cardPlayedOther = cardObjUpdate
+ 
     return returnState
 }
 
@@ -362,8 +369,15 @@ console.log(`[Reducer-handleUpdateCardsFromServer] received new cards: "${JSON.s
 
     returnState.rerenderHandCards = true
     returnState.subState = 'WAIT_FOR_SWAP_CARDS'
+
+
     // other players received the same number of cards.
-    returnState.players.slice(1,4).forEach(p => { p.nrCards = cards.length })
+    returnState.players.slice(1,4).map(p => {
+        let dummyCards = []
+        for (let i = 0; i < cards.length; i++) {
+            dummyCards.push({ idExt: -1, idInternal: uuidv4(), val: 0 })
+        }
+        return p.cards = dummyCards})
     return returnState
 }
 

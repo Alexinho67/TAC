@@ -75,8 +75,8 @@ const Root = () => {
             <UserSessionDataContext.Provider value={sessionData} >
             <Router>
             <GameProvider>    
-                <p>REACT_APP_CLIENT_ID:{process.env.REACT_APP_CLIENT_ID}</p>
-                <p>NODE_ENV:{process.env.NODE_ENV}</p>
+                {/* <p>REACT_APP_CLIENT_ID:{process.env.REACT_APP_CLIENT_ID}</p>
+                <p>NODE_ENV:{process.env.NODE_ENV}</p> */}
                 <NavBar/>
                 {/* <h1>+++ TAC +++</h1> */}
                 <Switch>

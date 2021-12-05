@@ -21,7 +21,7 @@ const Table = () => {
         <div id="table">
             <div id="boardWrapper" >
                 <div id="board" >
-                    <img class={stateGameReduce.players[0].posAbs % 2 === 0 ? "rotate_board" : ""} height='100%' width='100%' src={pathBoard  } alt={'Text'} />
+                    <img className={stateGameReduce.players[0].posAbs % 2 === 0 ? "rotate_board" : ""} height='100%' width='100%' src={pathBoard  } alt={'Text'} />
                     <StatusOtherPlayer stateGameReduce={stateGameReduce.players.slice(1,4)} />
                     <Board {...{ isReady, setIsReady, gameStarted, setGameStarted }}/>
                 </div>      

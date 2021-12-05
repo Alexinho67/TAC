@@ -3,11 +3,11 @@ import { GameModelContext } from '../../GameProvider'
 import {CARDS} from '../../utils/helper'
 
 const CardOpenOtherPly = ({ card, setOpenCard}) => {
-    // console.log(`[CardSingle]. received card:${JSON.stringify(card)}`);
+
     const initStyle = {
                     left: `${card.left}%`,
                     width: `${card.width}%`,
-                    top: `${card.top}%`,
+                    top: `${card.top}%`,    
                 }
 
     // const styleCard = React.useRef(initStyle)
@@ -20,22 +20,23 @@ const CardOpenOtherPly = ({ card, setOpenCard}) => {
 
     React.useEffect(() => {
         console.log(`[CardOpenOtherPly - useEffect@INIT]`);
-        let transitionTime = 0.8 //s
+        let delayShowCardBeforeMove = 1000 //ms
+        let transitionTime = 1000  //ms
         let newStyle = {
             top: '50%',
             left: '50%',
-            transition: `top ${transitionTime}s ease, left ${transitionTime}s ease`,
+            transition: `top ${transitionTime}ms ease, left ${transitionTime}ms ease`,
         }
         setTimeout(() => {
             console.log(`[CardOpenOtherPly.js] \t Put card to the middle`);
             setStyleCardState(oldStyle =>{return  { ...oldStyle, ...newStyle } })
-        }, 250);
+        }, delayShowCardBeforeMove);
 
         setTimeout(() => {
-            console.log(`[CardOpenOtherPly.js] \t Put card to the middle`);
+            console.log(`[CardOpenOtherPly.js] \t Kill card`);
             setOpenCard(undefined)
             model.dispatcherTac({ type: 'resetCardPlayedByOther' })
-        }, 250 + transitionTime);
+        }, delayShowCardBeforeMove + transitionTime);
     }, [])
 
 
