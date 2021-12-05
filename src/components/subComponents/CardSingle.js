@@ -125,6 +125,7 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
             }
             
         }catch{
+
             // console.error(`Coudn't find card source path with fileString=${fileString}`);
             path = require(`../../pics/backside1.png`).default
         }
