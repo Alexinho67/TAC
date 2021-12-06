@@ -341,7 +341,7 @@ function handleUpdateSelfData(returnState, data){
     // { "userName": "", "userColor": "", "userPosition": "1" }
     returnState.players[0].name = data.userName
     returnState.players[0].color = data.userColor
-    returnState.players[0].posAbs = data.userPosition
+    returnState.players[0].posAbs = parseInt(data.userPosition)
 
     // update "balls" (id:11..14 --> player1, 21..24--> player2, ... , 41..44 --> player4)
     for (let i = 0; i<4; i++){

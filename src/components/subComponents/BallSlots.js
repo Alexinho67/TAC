@@ -71,6 +71,7 @@ const BallSlots = ({  resetTimer,setResetTimer, highlightBallSlots, setBallsAllD
     const alphaRot = React.useRef(0)
 
     React.useEffect(() => {
+        
         switch (stateGameReduce.players[0].posAbs){
             case 2:
                 alphaRot.current = - Math.PI/2
@@ -81,9 +82,11 @@ const BallSlots = ({  resetTimer,setResetTimer, highlightBallSlots, setBallsAllD
             case 4:
                 alphaRot.current = - Math.PI / 2 * 3
                 break
-            default:
+            default:  
                 alphaRot.current = 0
         }
+
+        console.log(`[BallSlots-UseEffect@Init]. posAbs=${stateGameReduce.players[0].posAbs}. AlphaRot=${alphaRot.current}`);
 
         posAllStartSlots.current = posAllStartSlots.current.map(slot => {
             let xBallRel = (slot.left - 50) * Math.cos(alphaRot.current) - (slot.top - 50) * Math.sin(alphaRot.current) + 50
@@ -205,7 +208,7 @@ const BallSlots = ({  resetTimer,setResetTimer, highlightBallSlots, setBallsAllD
         return (
             <div key={idxPos * 100} className="wrapperBallSlot" style={stylePosOnRing} >
                 <div key={idxPos} onClick={(e) => clickedSlot(e, leftPos, topPos, idxPos )} className={['ballSlot', classNameHighlightSlot].join(" ")}>
-                    {/* {idxPos} */}
+                    {idxPos}
                 </div>
             </div>)
     })

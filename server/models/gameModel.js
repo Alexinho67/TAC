@@ -28,7 +28,7 @@ class GameTac {
         }
 
     addPlayer(playerJoin) {
-        let ignoreColorCheck = true
+        let ignoreColorCheck = false
         return new Promise((resolve, reject)=>{
             if (this.players.length === 4){
                 reject('Game already has 4 players')

@@ -7,6 +7,7 @@ import SocketProvider from './components/socketComps/SocketProvider'
 import {GameModelContext, GameProvider} from './GameProvider'
 import NavBar from './components/NavBar'
 import axios from "axios"
+import DebugNew from './components/debugComps/DebugNew'
 
 
 
@@ -89,6 +90,7 @@ const Root = () => {
                         </SocketProvider>
                 </Route> 
                 </Switch>
+                <DebugNew />
             </GameProvider>
             </Router>
         </UserSessionDataContext.Provider>
