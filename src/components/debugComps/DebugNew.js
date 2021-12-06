@@ -60,14 +60,13 @@ const DebugNew = () => {
     // this.state = 'init'
     // this.subState = 'init'
     // this.gameId = undefined
-
     // this.posDealerAbs = 0; // 1,2,3,4
     // this.posDealerRel = undefined;  // self,left,front,right 
-    // // this.self = initPlayerSelf();
     // this.numShuffledCards = 0
+    
     // this.players = initPlayers();
-    // this.cardsPlayed = []
     // this.cardPlayedOther = undefined
+    // this.cardsPlayed = []
     // this.rerenderHandCards = false
 
     return (
@@ -80,8 +79,17 @@ const DebugNew = () => {
                 <li><strong>gameId:</strong> {stateGameReduce.gameId}</li>
                 <li><strong>state:</strong> {stateGameReduce.state}</li>
                 <li><strong>subState:</strong> {stateGameReduce.subState}</li>
+                <li><strong>posDealerAbs:</strong> {stateGameReduce.posDealerAbs}</li>
+                <li><strong>posDealerRel:</strong> {stateGameReduce.posDealerRel}</li>
                 <li><strong>numShuffledCards:</strong> {stateGameReduce.numShuffledCards}</li>
-                <li><strong>cardsPlayed:</strong> {stateGameReduce.cardsPlayed.lenght > 0 ? JSON.stringify(stateGameReduce.cardsPlayed) : "none"}</li>
+                <li><strong>cardPlayedOther:</strong> {JSON.stringify(stateGameReduce.cardPlayedOther)}</li>
+                <li><strong>cardsPlayed:</strong> {stateGameReduce.cardsPlayed.length === 0 ? null :
+                    <ul style={{marginLeft:'3rem'}}>
+                        {stateGameReduce.cardsPlayed.map(card => {
+                        return <li>{JSON.stringify(card)}</li>
+                    })}</ul>
+                    }
+                </li>
                 <li><strong>rerenderHandCards:</strong> <FlagIndicator flag={stateGameReduce.rerenderHandCards} /> {stateGameReduce.rerenderHandCards.toString()}  </li>
             </ul>
             <h2 style={{ textAlign: 'left' }}> player status:</h2>

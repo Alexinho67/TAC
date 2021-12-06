@@ -1,9 +1,9 @@
 <% function getDealerName(game){
     let name = 'tbd'
-    // if (game.state === 'PLAYING'){
-    //     name = game.players[game.idxDealer].name
-    //     // name = 'somebody'
-    // }
+    if (game.state === 'PLAYING'){
+        name = game.players[game.idxDealer].name
+        // name = 'somebody'
+    }
     return name
 
 } %>

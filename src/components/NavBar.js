@@ -43,6 +43,16 @@ const NavBar = () => {
         cookie = cookie.replace("s%3A","")
     }
 
+    let urlAdmin
+    let urlAdminGame
+    if (process.env.NODE_ENV==='production'){
+        urlAdmin = "/admin"
+        urlAdminGame = `/admin/${stateGameReduce.gameId}`
+    } else {
+        urlAdmin = 'http://localhost:8000/admin'
+        urlAdminGame = `http://localhost:8000/admin/${ stateGameReduce.gameId}`
+    }
+
     return (
         <nav>
             {process.env.NODE_ENV === 'development'?
@@ -63,8 +73,8 @@ const NavBar = () => {
                 <CookieRemover />
             </div>
             <div > 
-                <p><a href="http://localhost:8000/admin" target="_blank" rel="noreferrer"> ADMIN </a></p>
-                <p><a href={`http://localhost:8000/admin/${stateGameReduce.gameId}`} target="_blank" rel="noreferrer"> AdminGame </a></p>
+                <p><a href={urlAdmin} target="_blank" rel="noreferrer"> ADMIN </a></p>
+                <p><a href={urlAdminGame} target="_blank" rel="noreferrer"> AdminGame </a></p>
                 <p> process.env.NODE_ENV: {process.env.NODE_ENV} </p>
                 {process.NODE_ENV === 'development' ? <>
                     <p><a href="/" target="_blank"> NEW TAB </a>  <button onClick={open3Tabs}>3x</button> </p>
