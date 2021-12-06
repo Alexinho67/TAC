@@ -13,7 +13,11 @@ function temp(req){
         console.log(`\nKNOWN User is  . ================================`.green)
         console.log(`\t\t His/her name is: "${userNameSession}"`);
         let idPlayer = req.session.playerId
-        return { name: userNameSession}
+        return {name: userNameSession,
+                color: req.session.playerColor,
+                posAbs: req.session.playerPos,
+                gameId: req.session.gameId }
+
         // 1. identify user and get it's userObj
         // userObj = stateChatServer.users[idUser]
         // 2. create output for debugging
@@ -71,9 +75,9 @@ function temp(req){
 }
 
 
-// router.get('/game/:idgame', (req, res)=>{
-//     res.redirct('/')
-// } )
+router.get('/game/:idgame', (req, res)=>{
+    res.redirect('/')
+} )
 
 router.get('/initSession', (req, res) => {
     // console.log(`GET /initSession`);

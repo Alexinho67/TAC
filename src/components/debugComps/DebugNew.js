@@ -27,31 +27,35 @@ const PlayerStatusDebug = ({player })=>{
 
     if (!player){ return null}
 
-    return (<ul style={{ marginLeft: '3rem' }}>
-        <li><strong>name:</strong> {player.name}</li>
-        <li><strong>color:</strong> {player.color}</li>
-        <li><strong>state:</strong> {player.state}</li>
-        <li><strong>posAbs:</strong> {player.posAbs} (type:{typeof(player.posAbs)})</li>
-        <li><strong>posRel:</strong> {player.posRel}</li>
-        <li><strong>cardForSwap:</strong> {JSON.stringify(player.cardForSwap)}</li>
-        <li><strong>cards:</strong>
-            <ul style={{ marginLeft: '3rem' }}>
-                {player.cards.map(card => {
-                    return (<li>{JSON.stringify(card)}</li>)
-                })}
-            </ul></li>
-        <li><strong>balls:</strong>
-            <ul style={{ marginLeft: '3rem' }}>
-                {player.balls.map(ball => {
-                    return (<li>{JSON.stringify(ball)}</li>)
-                })}
-            </ul></li>
-    </ul>)
+    return (
+        <div style={{marginBottom:'1rem', display:'inline-block',borderBottom:'1px solid black'}}>
+        <ul style={{ marginLeft: '3rem' }}>
+            <li><strong>name:</strong> {player.name}</li>
+            <li><strong>color:</strong> {player.color}</li>
+            <li><strong>state:</strong> {player.state}</li>
+            <li><strong>posAbs:</strong> {player.posAbs} (type:{typeof(player.posAbs)})</li>
+            <li><strong>posRel:</strong> {player.posRel}</li>
+            <li><strong>cardForSwap:</strong> {JSON.stringify(player.cardForSwap)}</li>
+            <li><strong>cards:</strong>
+                <ul style={{ marginLeft: '3rem' }}>
+                    {player.cards.map(card => {
+                        return (<li>{JSON.stringify(card)}</li>)
+                    })}
+                </ul></li>
+            <li><strong>balls:</strong>
+                <ul style={{ marginLeft: '3rem' }}>
+                    {player.balls.map(ball => {
+                        return (<li>{JSON.stringify(ball)}</li>)
+                    })}
+                </ul></li>
+        </ul>
+    </div>)
 
 }
 
 const DebugNew = () => {
     const { stateGameReduce, dispatcherTac } = React.useContext(GameModelContext)
+    const [showDebug, setShowDebug] = React.useState(false)
 
     // this.state = 'init'
     // this.subState = 'init'
@@ -68,6 +72,9 @@ const DebugNew = () => {
 
     return (
         <div>
+            <button style={{ cursor: 'pointer', textAlign: 'left' }} onClick={() => { setShowDebug(f => !f) }}> SHOW / HIDE DEBUG</button>
+            {showDebug && 
+            <>
             <h2 style={{textAlign:'left'}}>GameState:</h2>
             <ul style={{marginLeft:'3rem'}}>
                 <li><strong>gameId:</strong> {stateGameReduce.gameId}</li>
@@ -86,6 +93,7 @@ const DebugNew = () => {
                 <PlayerStatusDebug player={stateGameReduce.players[2]} />
             <h3 style={{ marginLeft: '1rem', textAlign: 'left' }}> right </h3>
                 <PlayerStatusDebug player={stateGameReduce.players[3]} />
+                </>}
         </div>
     )
 }

@@ -208,7 +208,7 @@ const BallSlots = ({  resetTimer,setResetTimer, highlightBallSlots, setBallsAllD
         return (
             <div key={idxPos * 100} className="wrapperBallSlot" style={stylePosOnRing} >
                 <div key={idxPos} onClick={(e) => clickedSlot(e, leftPos, topPos, idxPos )} className={['ballSlot', classNameHighlightSlot].join(" ")}>
-                    {idxPos}
+                    {/* {idxPos} */}
                 </div>
             </div>)
     })

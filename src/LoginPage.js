@@ -16,6 +16,13 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 
+// setSessionData({
+//     name: data.name,
+//     color: data.color,
+//     posAbs: data.posAbs,
+//     gameId: data.gameId
+// })
+
 function getInitName(userSessionData){
     console.log(`[LoginPage - getInitName(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
     if (userSessionData){
@@ -27,8 +34,31 @@ function getInitName(userSessionData){
     }
 }
 
+// function getInitColor(userSessionData){
+//     console.log(`[LoginPage - getInitColor(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
+//     if (userSessionData?.color){
+//         return userSessionData.color
+//     }else {
+//         return 'red'
+//     }
+// }
 
-
+// function getInitPos(userSessionData){
+//     console.log(`[LoginPage - getInitPos(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
+//     if (userSessionData?.posAbs){
+//         return userSessionData.posAbs
+//     }else {
+//         return "1"
+//     }
+// }
+// function getInitGameId(userSessionData){
+//     console.log(`[LoginPage - getInitGameId(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
+//     if (userSessionData?.gameId){
+//         return userSessionData.posAbs
+//     }else {
+//         return ""
+//     }
+// }
 
 const LoginPage = () => {
     const { stateGameReduce, dispatcherTac } = React.useContext(GameModelContext)
@@ -38,7 +68,7 @@ const LoginPage = () => {
     const [fetchData, setFetchData] = React.useState()
     const [userName, setUserName] = React.useState((userSessionData) => { return getInitName(userSessionData)})
     const [userColor, setUserColor] = React.useState("red")
-    const [userPosition, setUserPosition] = React.useState("1")
+    const [userPosition, setUserPosition] = React.useState(1)
     const [gameId, setGameId] = React.useState("")
     const [errorList, setErrorList] = React.useState([])
 
@@ -63,6 +93,15 @@ const LoginPage = () => {
         if (userSessionData?.name){
             setUserName(userSessionData.name)
         }
+        if (userSessionData?.color){
+            setUserColor(userSessionData.color)
+        }
+        if (userSessionData?.posAbs){
+            setUserPosition(userSessionData.posAbs)
+        }       
+        if (userSessionData?.gameId){
+            setGameId(userSessionData.gameId)
+        }
     }, [userSessionData])
 
     React.useEffect(() => {
@@ -81,18 +120,6 @@ const LoginPage = () => {
     /* ================================================================================
     --------------------------     Fuctions      -----------------------------------------
     * ================================================================================ */
-
-
-
-    async function fetchGetCookie(url, callbackUpdate, setCookieReceived) {
-        let data = await fetch(url).then(resp => { return resp.json() })
-            .then(resp => {
-                callbackUpdate(resp?.msg)
-                return resp
-            })
-        console.log(`Received from "${url}"=> ${JSON.stringify(data)}`);
-        setCookieReceived(true)
-    }
 
     function keyDownHandler(e) {
         // console.log(`ctrl: ${e.ctrlKey} - key: ${e.key}`)
@@ -164,6 +191,7 @@ const LoginPage = () => {
                     let newUrl = `/game/${gameId}`
                     document.title = `TAC #${gameId}`
                     console.log(`going to : ${newUrl}`);
+                    // got to new url
                     history.push(newUrl)
                     // window.location.href = newUrl
                 }

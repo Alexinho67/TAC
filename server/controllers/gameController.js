@@ -88,9 +88,21 @@ exports.addPlayer = async (req, res) =>{
     } else {
         gameIdJoining = req.session.gameId
     }
+
+    /* if clients session data   
     
+    */
+    let game = GameTac.findById(gameIdJoining)  
+
+    if (game.players.some(p => p.id === req.session.playerId)){
+        console.log(`[GameCtlr - addPlayer]. Client is already player at game "${game.id}" `);
+        let plyObjKnown = game.players.find(p => p.id === req.session.playerId)
+        console.log(`[GameCtlr - addPlayer]. plyObjKnown "${plyObjKnown.toString()}" `);
+        res.json({ room: game.id, msg: `Re-joining room with id ${game.id}.` })
+        return
+    }
+
     let player = new Player(userName, userColor, parseInt(userPosition), gameIdJoining)
-    let game = GameTac.findById(gameIdJoining)
     if (game === undefined) {
         res.status(404)
         res.json({ room: null, msg: `Room with id ${gameIdJoining} not found` })
@@ -100,6 +112,8 @@ exports.addPlayer = async (req, res) =>{
         let resp = await game.addPlayer(player)
         console.log(`Adding player ${player.toString()} --> ${resp}`);
         req.session.playerName = player.name;
+        req.session.playerPos = player.position;
+        req.session.playerColor = player.color;
         req.session.playerId = player.id;
         req.session.gameId = gameIdJoining;
         req.session.save(() => {

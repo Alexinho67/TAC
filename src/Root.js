@@ -60,7 +60,12 @@ const Root = () => {
             })
         console.log(`Received from "${url}"=> ${JSON.stringify(data)}`);
         if ('name' in data) {
-            setSessionData({name: data.name})
+            setSessionData({
+                name: data.name,
+                color: data.color,
+                posAbs: data.posAbs,
+                gameId:data.gameId
+            })
             // dispatcherTac({type:'setUserName', payload: data.name})
         }
     }
