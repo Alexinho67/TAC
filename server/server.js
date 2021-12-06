@@ -77,6 +77,7 @@ const my_router = require('./router.js')
 // })
 
 app.use('/', my_router)
+app.use(express.static(path.join(__dirname, './public')))
 
 // if (process.env.NODE_ENV === 'production') {
 if (process.env.REACT_APP_STAGE === 'production') {
@@ -84,7 +85,6 @@ if (process.env.REACT_APP_STAGE === 'production') {
     app.use(express.static(path.join(__dirname, '../build')))
 } else {
     console.log(colors.rainbow(`run server in DEVELOPMENT. redirecting "/" to "/status"`));
-    app.use(express.static(path.join(__dirname, './public')))
     app.get('/', (req, res) => {
         // res.redirect('/status')
         let pathString = path.join(__dirname, './public/home.html')
