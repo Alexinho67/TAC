@@ -325,7 +325,7 @@ const Board = ({ isReady, setIsReady }) => {
             console.log('cardSwaping not defined')
         }
         let cardToServer = { value: cardSwaping.value, id: cardSwaping.idExt }
-        
+        console.log(`[Board - triggerSelectedCardForSwap ].cardSwaping:${JSON.stringify(cardSwaping)}`);
         dispatcherTac({ type: 'cardForSwapSelectedSelf', payload: cardSwaping.idExt })
         socket.emit('swappingCard', cardToServer)
 

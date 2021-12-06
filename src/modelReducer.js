@@ -179,9 +179,18 @@ function handleCardFrmSwapReceived(returnState, cardFromSwapRecvd){
     console.log(`'[modelReducer.js - handleCardFrmSwapReceived]. card:${JSON.stringify(cardFromSwapRecvd)}`);
     /* remove swapCard from "handCards" */
     let self = returnState.players[0]
+    
+    console.log(`'[modelReducer.js - handleCardFrmSwapReceived]. filtering out the card you are swapping away...`);
+    self.cards.forEach(card => {
+        console.log(`Comparing card "${JSON.stringify(card)}" with selected swap card "${JSON.stringify(self.cardForSwap)}"  `);
+        return card.idExt !== self.cardForSwap.idExt
+    })
+    
     self.cards = self.cards.filter(card => {
         return card.idExt !== self.cardForSwap.idExt
     })
+
+    // reseting the "cardForSwap" for each playerObject
     returnState.players.forEach(p => p.cardForSwap = undefined)
 
     /* add new card to "handCards" */
@@ -195,9 +204,10 @@ function handleCardFrmSwapReceived(returnState, cardFromSwapRecvd){
 }
 
 function handleCardForSwapSelected(returnState, posAbsPlayer, idExtCard = undefined) {
+    console.log(`[modelReducer.js -handleCardForSwapSelected].posAbsPlayer:${posAbsPlayer},idExtCard:${JSON.stringify(idExtCard)}`);
     let plyObj = returnState.players.find(p => p.posAbs === posAbsPlayer)
     let cardForSwap = undefined
-    if (idExtCard){
+    if (idExtCard !== undefined){
         // "self" has selected a fresh card
         cardForSwap = plyObj.cards.find(card => card.idExt === idExtCard)
     } else {
