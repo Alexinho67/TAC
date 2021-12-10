@@ -1,7 +1,9 @@
 import React from 'react'
 import {CARDS} from '../../utils/helper'
 
-const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerCardPlayed}) => {
+
+const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerCardPlayed, onMouseEnter = undefined}) => {
+    console.log(`[CardSingle] onMouseEnter defined? ${onMouseEnter !== undefined} `);
     // console.log(`[CardSingle]. received card:${JSON.stringify(card)}`);
     const [styleCard, setStyleCard] = React.useState({
         left: `${card.left}%`,
@@ -118,10 +120,10 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
                     path = require('../../pics/Trickser_small.png').default
                     break
                 case 15:
-                    path = require('../../pics/Trickser_small.png').default
+                    path = require('../../pics/TAC_small.png').default
                     break
                 default:
-                    path = require(`../../pics/TAC_small.png`).default
+                    path = require(`../../pics/backside1.png`).default
             }
             
         }catch{
@@ -178,22 +180,31 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
         }
     }
 
+
+    function dummyOnMouseEnter(){
+        console.log(`[CardSingle] dummyOnMouseEnter`);
+    }
+
     const pathImg = getImagePath(card.value)
-    const Imgage = <img name="imgCard" height='100%' width='100%' src={pathImg} alt={`value=${card.value}`} />
+    const Imgage = <img name="imgCard" height='100%' width='100%' src={pathImg} alt={`value=${card.value}`} 
+            onMouseEnterCapture={dummyOnMouseEnter} onMouseOver={dummyOnMouseEnter}
+            onMouseEnter={dummyOnMouseEnter}
+            />
 
     /* ================================================================================
     --------------------------     RENDER      -----------------------------------------
     * ================================================================================ */
     if (card.isPlayed) {
-        return (<div key={card.idExt} style={styleCard} className="card" onTransitionEnd={_handleTransitionEnd}>
+        return (<div key={card.idExt} style={styleCard} className="card" onTransitionEnd={_handleTransitionEnd} >
             {Imgage}
         </div>)
     } else {
         return (<div key={card.idExt} style={styleCard} className="card" data-idext={card.idExt}
             onClick={handleButtonClick}
-            onDoubleClick={handleButtonDblClick}>
-                    {Imgage}
-                </div>) // close return ()
+            onDoubleClick={handleButtonDblClick}
+            >
+                {Imgage}
+            </div>) // close return ()
             }  // close else
 }
 

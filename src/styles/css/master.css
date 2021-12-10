@@ -317,6 +317,7 @@ h1, h2, h3, h4 {
 }
 
 .cardsPlayedHistory {
+  width: fit-content;
   padding: .5rem;
   font-size: .8rem;
   position: absolute;
@@ -327,6 +328,19 @@ h1, h2, h3, h4 {
   color: #111;
   border: 2px solid #111;
   border-radius: 20px;
+}
+
+.cardLastPlayed {
+  padding: .5rem;
+  font-size: .8rem;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  z-index: 2;
+  background-color: white;
+  color: #111;
+  border: 2px solid #111;
+  border-radius: 5px;
 }
 
 #loginForm {

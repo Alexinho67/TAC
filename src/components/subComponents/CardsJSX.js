@@ -3,8 +3,8 @@ import CardSingle from './CardSingle'
 import CNST from '../../utils/Constants'
 import { v4 as uuidv4 } from 'uuid';
 
-const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCardPlayed}) => {
-
+const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCardPlayed, onMouseEnter = undefined}) => {
+    console.log(`[cardJsx] name:${name},onMouseEnter defined? ${onMouseEnter!==undefined} `);
     // const [isSelectedArray, setIsSelectedArray] = React.useState([])
     // const valRand = useRef(randomCards)
 
@@ -69,7 +69,9 @@ const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCard
             listCards.push(<CardSingle key={card.idExt} card={card}
                                     toogleIsSelected={toogleIsSelected} 
                                     triggerCardPlayed={triggerCardPlayed}
-                                    transitionCardHandToTray={transitionCardHandToTray} />)
+                                    transitionCardHandToTray={transitionCardHandToTray}
+                                    onMouseEnter={onMouseEnter}
+                                    />)
         })
         return listCards
     }

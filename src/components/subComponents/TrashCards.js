@@ -23,8 +23,12 @@ const TrashCards = ({width}) => {
         }
     }, [stateGameReduce.cardsPlayed])
     
+
+
     return (
-        <CardsJSX name={"trashCards"} cards={cardsTrash} />
+        <div name="wrapperCardTrash" >
+            <CardsJSX name={"trashCards"} cards={cardsTrash} />
+        </div>
     )
 }
 
