@@ -7,7 +7,7 @@ let games = []
 
 let cardsPerRound = [20,20,20,20,20]
 // cardsPerRound = [8, 8]
-let nrPlayersNeeded = 4f
+let nrPlayersNeeded = 4
 class GameTac {
     
     constructor() {
