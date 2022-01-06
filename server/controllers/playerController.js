@@ -17,17 +17,16 @@ exports.handleSwapCard = (cardForSwap, socket) => {
     
     // 2.update players instances
     plyGive.cardSwapGive = cardForSwap
-    let idxPlayerGiver = plyGive.position - 1  
-    let idxPlayerReq
-    if (game.spotsMax === 4) {// give card to "opposite" player
-        idxPlayerReq = (idxPlayerGiver + 2) % 4
+    let posPlayerReq
+    if (game.spotsMax === 4) {// give card to "opposite" player (1->3,2->4, 3->1, 4->1)
+        posPlayerReq = ((plyGive.position -1 + 2) % 4  ) +1  // 1st: to zero-Based,2nd: +2 and %4 / 3rd: back to 1-based
     } else {
-        idxPlayerReq = (idxPlayerGiver + 1) % game.spotsMax
+        posPlayerReq = ((plyGive.position -1 + 1) % game.spotsMax ) +1 // 1st: to zero-Based,2nd: +1 and %nrSpots / 3rd: back to 1-based
         // 2-players: 
-        // posGiver = 1  =>  idxReq = (1 - 1 + 1 ) % 2 = 1
-        // posGiver = 2  =>  idxReq = (2 - 1 + 1 ) % 2 = 0
+        // posGiver = 1  =>  posPlayerReq = ((1 - 1 + 1 ) % 2) +1  = 2
+        // posGiver = 2  =>  idxposPlayerReqeq = ((2 - 1 + 1 ) % 2) +1 = 1
     } 
-    let plyReq = game.players[idxPlayerReq]
+    let plyReq = game.players.find(p => p.position === posPlayerReq)
     plyReq.cardSwapRecvd = cardForSwap
     // 1.output for debug
     let listCardsForSwapReqd = game.players.reduce( (listOld, player) => {

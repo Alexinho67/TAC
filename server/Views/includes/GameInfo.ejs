@@ -1,7 +1,7 @@
 <% function getDealerName(game){
     let name = 'tbd'
     if (game.state === 'PLAYING'){
-        name = game.players[game.idxDealer].name
+        name = game.plyDealer.name
         // name = 'somebody'
     }
     return name
@@ -15,7 +15,7 @@
             <p class="font-bold">ID: <a href="/admin/<%=game.id %>"> <%= game.id %> </a></p>
             <p>state: <%= game.state %></p>
             <p>subState: <%= game.subState %></p>
-            <p>dealer(idx:<%= game.idxDealer%>) <%= getDealerName(game) %> </p>
+            <p>dealer(pos:<%= game.posDealer%>) <%= getDealerName(game) %> </p>
             <p style="word-wrap:anywhere;max-width: 260px;">
             cards(total:<%= game.deck.cards.length %>): <%= game.deck.cards.map(c => c.value).join("-") %></p>
             <div>cards played:<div><ol style="list-style: decimal; overflow-y: scroll; max-height: 7rem;" type="1"> <%- game.cardsTrash.map(c => {return `<li>${c.value} - ${c.playedBy}</li>`}).join("") %> </ol></div></div>

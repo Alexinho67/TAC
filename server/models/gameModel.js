@@ -20,7 +20,7 @@ class GameTac {
         this.decksPlayed = 0
         this.cardsTrash = []
         this.round = -1
-        this.idxDealer = undefined
+        this.posDealer = undefined
         this.plyDealer = undefined
         games.push(this)
         console.log(`Games on server:`);
@@ -64,8 +64,10 @@ class GameTac {
                     this.state = 'PLAYING'
                     this.subState = 'WAIT_FOR_DEAL_REQ'
                     this.calcAndInformDealer(io)
-
-                    resolve({ msg: `Let's go. Cards are shuffled. "${this.players[this.idxDealer].name}" is the dealer.`})
+                    //TODO: update
+                    // dealerName
+                    let dealerName = this.plyDealer.name
+                    resolve({ msg: `Let's go. Cards are shuffled. "${dealerName}" is the dealer.`})
                 }                
             }
          })
@@ -78,13 +80,16 @@ class GameTac {
     }
 
     calcAndInformDealer(io){
-        if ( this.idxDealer === undefined) {
+        if ( this.posDealer === undefined) {
             //init dealer in 1st round
-            this.idxDealer = Math.floor(Math.random() * nrPlayersNeeded) //zero-based
+            this.posDealer = Math.floor(Math.random() * nrPlayersNeeded) + 1 //one-based
         } else {
-            this.idxDealer = (this.idxDealer + 1) % nrPlayersNeeded
+            let idxDealer = this.posDealer - 1
+            idxDealer = (idxDealer + 1) % nrPlayersNeeded // 0...3 for nrPly = 4
+            this.posDealer = idxDealer + 1 
         }
-        this.plyDealer = this.players[this.idxDealer]
+
+        this.plyDealer = this.players.find(p => p.position === this.posDealer)
         console.log(`New dealer is "${this.plyDealer.toString({ flagShort:true })}""`);
         io.to(this.id).emit('newDealer', { pos: this.plyDealer.position, name: this.plyDealer.name })
     }
