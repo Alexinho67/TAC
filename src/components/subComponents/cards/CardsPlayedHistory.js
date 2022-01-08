@@ -1,5 +1,5 @@
 import React from 'react'
-import { GameModelContext } from '../../GameProvider'
+import { GameModelContext } from '../../../providers/GameProvider'
 
 const CardsPlayedHistory = () => {
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { GameModelContext } from '../../GameProvider'
+import { GameModelContext } from '../../../providers/GameProvider'
 
 const ShuffledDeck = ({ width }) => {
     const { stateGameReduce } = React.useContext(GameModelContext)
@@ -14,7 +14,7 @@ const ShuffledDeck = ({ width }) => {
 
 
     const numShuffledCards = stateGameReduce.numShuffledCards
-    const Imgage = <img height='100%' width='100%' src={`${require(`../../pics/backsideStackNew.png`).default}`} alt={`stack`} />
+    const Imgage = <img height='100%' width='100%' src={`${require(`../../../pics/backsideStackNew.png`).default}`} alt={`stack`} />
 
     if (numShuffledCards === 0) {
         return <></>

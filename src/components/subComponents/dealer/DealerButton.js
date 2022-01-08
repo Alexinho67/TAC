@@ -1,6 +1,6 @@
 import React from 'react'
-import { GameModelContext } from '../../GameProvider'
-import { useSocketContext } from '../socketComps/SocketProvider'
+import { GameModelContext } from '../../../providers/GameProvider'
+import { useSocketContext } from '../../../providers/SocketProvider'
 
 const stylePosAll = [
         { top: '50%', left: '50%'},

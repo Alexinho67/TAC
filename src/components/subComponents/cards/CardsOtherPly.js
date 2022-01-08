@@ -1,8 +1,8 @@
 import React from 'react'
-// import { GameModelContext } from '../../GameProvider'
+// import { GameModelContext } from '../../providers/GameProvider'
 
 const getPosXY = (posRel) => {
-    console.log(`[CardsOtherPly - getPosXY] - posRel: ${posRel}`);
+    // console.log(`[CardsOtherPly - getPosXY] - posRel: ${posRel}`);
     switch (posRel){
         case 2:                
             return { name: 'left', top: 50, left: -10, rotate: 0}
@@ -46,7 +46,7 @@ const CardsOtherPly = ({ width, playerObj}) => {
         transform: `translate(-50%,-50%)  rotate(0deg)`})
     
     const cardForSwap = playerObj.cardForSwap
-    const Imgage = <img height='100%' width='100%' src={`${require(`../../pics/backside1.png`).default}`} alt={`cardsOtherPlayer`} />
+    const Imgage = <img height='100%' width='100%' src={`${require(`../../../pics/backside1.png`).default}`} alt={`cardsOtherPlayer`} />
     
     React.useEffect(( )=>{
         let dataObjStack = getPosXY(playerObj.posRel)

@@ -1,19 +1,13 @@
 import React from 'react'
 import io from 'socket.io-client'
-// eslint-disable-next-line
-import {  URL, URLws, ORANGE, PINK, BOLD } from '../../utils/Constants';
-import { GameModelContext } from '../../GameProvider';
-import { addListenersForTac} from './TacListeners'
-// import { addListenersToSocket} from './DefaultListeners'
+import { URLws, PINK } from '../utils/Constants';
+import { GameModelContext } from './GameProvider';
+import { addListenersForTac} from '../components/socketComps/TacListeners'
 
-
-let urlFetchCookie
 let urlIoSocket
 if (process.env.NODE_ENV === 'development') {
-    urlFetchCookie = URL + '/initSession'
     urlIoSocket = URLws + '/socket.io'
 } else {
-    urlFetchCookie = '/initSession'
     urlIoSocket = '/socket.io'
 }
 

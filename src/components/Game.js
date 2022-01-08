@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import React from 'react';
-import './styles/css/master.css';
-import Table from './components/Table';
-import { GameModelContext } from './GameProvider';
+import '../styles/css/master.css';
+import Table from './Table';
+import { GameModelContext } from '../providers/GameProvider';
 
 const IconCopyPaste = ({gameId} )=>{
   return (<i className="fa fa-clone" 

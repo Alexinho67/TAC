@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSocketContext } from '../socketComps/SocketProvider';
+import { useSocketContext } from '../../../providers/SocketProvider';
 
 const FieldDealCards = ({ showDealerField, setShowDealerField, gameState, gameSubState }) => {
     const { socket } = useSocketContext()

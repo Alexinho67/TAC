@@ -82,7 +82,8 @@ class GameTac {
     calcAndInformDealer(io){
         if ( this.posDealer === undefined) {
             //init dealer in 1st round
-            this.posDealer = Math.floor(Math.random() * nrPlayersNeeded) + 1 //one-based
+            let idxDealer =  Math.floor(Math.random() * nrPlayersNeeded)
+            this.posDealer = this.players[idxDealer].position //one-based
         } else {
             let idxDealer = this.posDealer - 1
             idxDealer = (idxDealer + 1) % nrPlayersNeeded // 0...3 for nrPly = 4

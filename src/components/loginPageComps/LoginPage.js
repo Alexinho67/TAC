@@ -1,27 +1,17 @@
 import React from 'react'
-import { nameList } from './components/utilities/nameList'
-import {ErrorList, addError} from './components/ErrorList'
+import { nameList } from '../utilities/nameList'
+import {ErrorList, addError} from '../subComponents/ErrorList'
 import { useHistory } from "react-router-dom";
-import { GameModelContext } from './GameProvider';
-import { UserSessionDataContext } from './Root';
+import { GameModelContext } from '../../providers/GameProvider';
+import { UserSessionDataContext } from '../../Root';
 
 let urlServerPrefix
-let urlFetchCookie
 if (process.env.NODE_ENV === 'development') {
-    urlFetchCookie = URL + '/initSession'
     urlServerPrefix = '/api' 
 } else {
-    urlFetchCookie = '/initSession'
     urlServerPrefix = ''
 }
 
-
-// setSessionData({
-//     name: data.name,
-//     color: data.color,
-//     posAbs: data.posAbs,
-//     gameId: data.gameId
-// })
 
 function getInitName(userSessionData){
     console.log(`[LoginPage - getInitName(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
@@ -34,38 +24,10 @@ function getInitName(userSessionData){
     }
 }
 
-// function getInitColor(userSessionData){
-//     console.log(`[LoginPage - getInitColor(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
-//     if (userSessionData?.color){
-//         return userSessionData.color
-//     }else {
-//         return 'red'
-//     }
-// }
-
-// function getInitPos(userSessionData){
-//     console.log(`[LoginPage - getInitPos(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
-//     if (userSessionData?.posAbs){
-//         return userSessionData.posAbs
-//     }else {
-//         return "1"
-//     }
-// }
-// function getInitGameId(userSessionData){
-//     console.log(`[LoginPage - getInitGameId(plyObj)] plyObj:${JSON.stringify(userSessionData)}`);
-//     if (userSessionData?.gameId){
-//         return userSessionData.posAbs
-//     }else {
-//         return ""
-//     }
-// }
-
 const LoginPage = () => {
-    const { stateGameReduce, dispatcherTac } = React.useContext(GameModelContext)
+    const { dispatcherTac } = React.useContext(GameModelContext)
     const userSessionData = React.useContext(UserSessionDataContext)
     let history = useHistory();
-    const [cookieReceived, setCookieReceived] = React.useState(false)
-    const [fetchData, setFetchData] = React.useState()
     const [userName, setUserName] = React.useState((userSessionData) => { return getInitName(userSessionData)})
     const [userColor, setUserColor] = React.useState("red")
     const [userPosition, setUserPosition] = React.useState(1)

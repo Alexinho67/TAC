@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { GameModelContext } from '../GameProvider'
+import { GameModelContext } from '../providers/GameProvider'
 
 const CookieRemover = () => {
 

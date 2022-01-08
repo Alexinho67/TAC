@@ -1,6 +1,6 @@
 import React from 'react'
-import { GameModelContext } from '../../GameProvider'
-import {CARDS} from '../../utils/helper'
+import { GameModelContext } from '../../../providers/GameProvider'
+import {CARDS} from '../../../utils/helper'
 
 const CardOpenOtherPly = ({ card, setOpenCard}) => {
 
@@ -53,7 +53,7 @@ const CardOpenOtherPly = ({ card, setOpenCard}) => {
     // }
 
     const fileNameImage = `${CARDS[card.value]}`
-    const Imgage = <img height='100%' width='100%' src={`${require(`../../pics/${fileNameImage}`).default}`} alt={`value=${card.value}`} />
+    const Imgage = <img height='100%' width='100%' src={`${require(`../../../pics/${fileNameImage}`).default}`} alt={`value=${card.value}`} />
 
     /* ================================================================================
     --------------------------     RENDER      -----------------------------------------

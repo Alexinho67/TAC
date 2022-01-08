@@ -1,6 +1,6 @@
 import React from 'react'
 import Board from './Board'
-import { GameModelContext } from '../GameProvider';
+import { GameModelContext } from '../providers/GameProvider';
 import StatusOtherPlayer from './subComponents/StatusOtherPlayer';
 
 const Table = () => {
@@ -27,9 +27,6 @@ const Table = () => {
                 </div>      
             </div>
         </div>
-        {/* <div style={{marginLeft:'3rem'}}>
-            <span> GameVariables:<br />{gameStatus.stateGameReduce.map(x => (<li>{JSON.stringify(x)}</li>))}  </span>
-        </div> */}
         </>
     )
 }

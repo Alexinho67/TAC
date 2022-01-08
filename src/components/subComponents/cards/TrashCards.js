@@ -1,5 +1,5 @@
 import React from 'react'
-import { GameModelContext } from '../../GameProvider'
+import { GameModelContext } from '../../../providers/GameProvider'
 import CardsJSX from './CardsJSX'
 
 const TrashCards = ({width}) => {
@@ -16,9 +16,10 @@ const TrashCards = ({width}) => {
                                 top: 50,
                                 width: width,
                                 value: lastCardMdl.value,
-                                isPlayed:false,
+                                isPlayed:true,
                                 isCardForSwap: false,
-                                isSelected: false}  
+                                isSelected: false,
+                                inTrash:true}  
             setCardsTrash([lastCardRender])
         }
     }, [stateGameReduce.cardsPlayed])

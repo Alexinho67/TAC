@@ -1,13 +1,9 @@
 import React from 'react'
 import CardSingle from './CardSingle'
-import CNST from '../../utils/Constants'
-import { v4 as uuidv4 } from 'uuid';
+import CNST from '../../../utils/Constants'
 
-const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCardPlayed, onMouseEnter = undefined}) => {
+const CardsJSX = ({ name, cards, setCards, triggerCardPlayed, onMouseEnter = undefined}) => {
     console.log(`[cardJsx] name:${name},onMouseEnter defined? ${onMouseEnter!==undefined} `);
-    // const [isSelectedArray, setIsSelectedArray] = React.useState([])
-    // const valRand = useRef(randomCards)
-
 
     /* ================================================================================
     --------------------------     HOOKS      -----------------------------------------
@@ -16,25 +12,6 @@ const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCard
     React.useEffect(( )=>{
         console.log(`%c[CARDS] name="${name}" - INIT useEffect`,'color:#999');
     },[])
-
-    // React.useEffect(() => {
-    //     //TODO: clean up this logic.
-    //     // card selection algorithm shall only be available for handcards.
-    //     // not for played cards in the center of the board
-    //     if (setIdCardSelected){ 
-    //         let idxSelected = isSelectedArray.indexOf(true)
-    //         console.log(`[Cards] name=${name} useEffect@[isSelectedArray] setIdCardSelected(${idxSelected}).isSelectedArray=${isSelectedArray}`);
-    //         setIdCardSelected(idxSelected)
-    //     }
-    // }, [isSelectedArray])
-
-    // React.useEffect( ( )=>{
-    //     console.log(`[Cards] name=${name} useEffect@[cards]: Create Array filled with "false"`);
-    //     setIsSelectedArray(Array(cards.length).fill(false))
-    // }, [cards])
-    // }, [])
-
-
 
     /* ================================================================================
     --------------------------     Fuctions      -----------------------------------------
@@ -69,15 +46,11 @@ const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCard
             listCards.push(<CardSingle key={card.idExt} card={card}
                                     toogleIsSelected={toogleIsSelected} 
                                     triggerCardPlayed={triggerCardPlayed}
-                                    transitionCardHandToTray={transitionCardHandToTray}
                                     onMouseEnter={onMouseEnter}
                                     />)
         })
         return listCards
     }
-
-
-
 
     /* ================================================================================
     --------------------------     RENDER      -----------------------------------------
@@ -87,7 +60,6 @@ const CardsJSX = ({ name, cards, setCards, transitionCardHandToTray, triggerCard
                 { cards.length ? getCardsSingle() : null }
             </div>
     )
-    
 }
 
 export default CardsJSX

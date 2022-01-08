@@ -1,9 +1,9 @@
 import React from 'react'
-import {CARDS} from '../../utils/helper'
+import {CARDS} from '../../../utils/helper'
 
 
-const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerCardPlayed, onMouseEnter = undefined}) => {
-    console.log(`[CardSingle] onMouseEnter defined? ${onMouseEnter !== undefined} `);
+const CardSingle = ({ card, toogleIsSelected, triggerCardPlayed}) => {
+    // console.log(`[CardSingle] onMouseEnter defined? ${onMouseEnter !== undefined} `);
     // console.log(`[CardSingle]. received card:${JSON.stringify(card)}`);
     const [styleCard, setStyleCard] = React.useState({
         left: `${card.left}%`,
@@ -52,11 +52,10 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
             stylingAddition = {...stylingAddition,
                 top:'50%',
                 left: '50%',
-                cursor:  'not-allowed',
                 zIndex:3,
+                cursor:  'not-allowed',
                 transition: 'top 0.8s ease, left 0.8s ease',
             }
-
         } else if (card.isCardForSwap === true){
             stylingAddition = {
                 ...stylingAddition,
@@ -67,6 +66,13 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
                 zIndex:2,
             }
         }
+        if (card?.inTrash){
+            stylingAddition = {
+                ...stylingAddition,
+                zIndex:0
+            }
+        }
+        
         let styleNew = { ...styleBasis, ...stylingAddition }
         
         console.log(`[CardSingle-calcStyle].card(#${card.idExt},val:${card.value}) -> left:${styleNew.left}, top:${styleNew.top}`);
@@ -81,55 +87,55 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
         try{
             switch (value) {
                 case 1:
-                    path = require('../../pics/1_small.png').default
+                    path = require('../../../pics/1_small.png').default
                     break
                 case 2:
-                    path = require('../../pics/2_small.png').default
+                    path = require('../../../pics/2_small.png').default
                     break
                 case 3:
-                    path = require('../../pics/3_small.png').default
+                    path = require('../../../pics/3_small.png').default
                     break
                 case 4:
-                    path = require('../../pics/4_small.png').default
+                    path = require('../../../pics/4_small.png').default
                     break
                 case 5:
-                    path = require('../../pics/5_small.png').default
+                    path = require('../../../pics/5_small.png').default
                     break
                 case 6:
-                    path = require('../../pics/6_small.png').default
+                    path = require('../../../pics/6_small.png').default
                     break
                 case 7:
-                    path = require('../../pics/7_small.png').default
+                    path = require('../../../pics/7_small.png').default
                     break
                 case 8:
-                    path = require('../../pics/8_small.png').default
+                    path = require('../../../pics/8_small.png').default
                     break
                 case 9:
-                    path = require('../../pics/9_small.png').default
+                    path = require('../../../pics/9_small.png').default
                     break
                 case 10:
-                    path = require('../../pics/10_small.png').default
+                    path = require('../../../pics/10_small.png').default
                     break
                 case 12:
-                    path = require('../../pics/12_small.png').default
+                    path = require('../../../pics/12_small.png').default
                     break
                 case 13:
-                    path = require('../../pics/13_small.png').default
+                    path = require('../../../pics/13_small.png').default
                     break
                 case 14:
-                    path = require('../../pics/Trickser_small.png').default
+                    path = require('../../../pics/Trickser_small.png').default
                     break
                 case 15:
-                    path = require('../../pics/TAC_small.png').default
+                    path = require('../../../pics/TAC_small.png').default
                     break
                 default:
-                    path = require(`../../pics/backside1.png`).default
+                    path = require('../../../pics/backside1.png').default
             }
             
         }catch{
 
             // console.error(`Coudn't find card source path with fileString=${fileString}`);
-            path = require(`../../pics/backside1.png`).default
+            path = require(`../../../pics/backside1.png`).default
         }
         return path
     }
@@ -150,17 +156,9 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
         triggerCardPlayed(card.id)
     }
 
-    function _handleTransitionEnd(e){
-        // console.log(`trigger "_handleTransitionEnd()"`);
-        // e.target.style.opacity = '50%'
-        // if (card.isPlayed === true){
-        //     transitionCardHandToTray()
-        // }
-    }
-
     let tof = undefined;
 
-    function handleButtonClick(e) {
+    function handleOnClick(e) {
         // console.log(`DOM-event: SINGLE click`);
         if (e.detail === 2) {
             return
@@ -171,7 +169,7 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
         // console.log(`created tof=${tof}`);
     }
 
-    function handleButtonDblClick(e) {
+    function handleOnDblClick(e) {
         // console.log(`DOM-event: %cDOUBLE click`,'color:white;background-color:red');
         if (tof) {
             // console.log(`clearing tof=${tof}`);
@@ -180,28 +178,21 @@ const CardSingle = ({ card, toogleIsSelected, transitionCardHandToTray, triggerC
         }
     }
 
-
-    function dummyOnMouseEnter(){
-        console.log(`[CardSingle] dummyOnMouseEnter`);
-    }
-
     const pathImg = getImagePath(card.value)
     const Imgage = <img name="imgCard" height='100%' width='100%' src={pathImg} alt={`value=${card.value}`} 
-            onMouseEnterCapture={dummyOnMouseEnter} onMouseOver={dummyOnMouseEnter}
-            onMouseEnter={dummyOnMouseEnter}
             />
 
     /* ================================================================================
     --------------------------     RENDER      -----------------------------------------
     * ================================================================================ */
     if (card.isPlayed) {
-        return (<div key={card.idExt} style={styleCard} className="card" onTransitionEnd={_handleTransitionEnd} >
+        return (<div key={card.idExt} style={styleCard} className="card" data-status="played">
             {Imgage}
         </div>)
     } else {
-        return (<div key={card.idExt} style={styleCard} className="card" data-idext={card.idExt}
-            onClick={handleButtonClick}
-            onDoubleClick={handleButtonDblClick}
+        return (<div key={card.idExt} style={styleCard} className="card" data-status="tbd" data-idext={card.idExt}
+            onClick={handleOnClick}
+            onDoubleClick={handleOnDblClick}
             >
                 {Imgage}
             </div>) // close return ()

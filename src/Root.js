@@ -1,14 +1,12 @@
 import React from 'react'
-import Game from './Game'
-// import App from './AppTest'
+import Game from './components/Game'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import LoginPage from './LoginPage'
-import SocketProvider from './components/socketComps/SocketProvider'
-import {GameModelContext, GameProvider} from './GameProvider'
+import LoginPage from './components/loginPageComps/LoginPage'
+import SocketProvider from './providers/SocketProvider'
+import { GameProvider} from './providers/GameProvider'
 import NavBar from './components/NavBar'
 import axios from "axios"
 import DebugNew from './components/debugComps/DebugNew'
-
 
 
 async function axiosGetCookie(url, setSessionData) {

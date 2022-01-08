@@ -1,7 +1,5 @@
 import React from 'react'
-import { GameModelContext } from '../../GameProvider'
-import PlayerStatusSingle from '../subComponents/PlayerStatusSingle'
-
+import { GameModelContext } from '../../providers/GameProvider'
 
 const FlagIndicator = ({flag}) => {
     if (flag){
@@ -16,14 +14,6 @@ const FlagIndicator = ({flag}) => {
 }
 
 const PlayerStatusDebug = ({player })=>{
-    // this.name = 'None'
-    // this.color = undefined
-    // this.state = 'init'
-    // this.posAbs = undefined
-    // this.posRel = posRel
-    // this.cardForSwap = undefined //hasSelectdCardForSwap = false // used to display a card for swapping on the board
-    // this.cards = []
-    // this.balls = []
 
     if (!player){ return null}
 
@@ -56,18 +46,6 @@ const PlayerStatusDebug = ({player })=>{
 const DebugNew = () => {
     const { stateGameReduce, dispatcherTac } = React.useContext(GameModelContext)
     const [showDebug, setShowDebug] = React.useState(false)
-
-    // this.state = 'init'
-    // this.subState = 'init'
-    // this.gameId = undefined
-    // this.posDealerAbs = 0; // 1,2,3,4
-    // this.posDealerRel = undefined;  // self,left,front,right 
-    // this.numShuffledCards = 0
-    
-    // this.players = initPlayers();
-    // this.cardPlayedOther = undefined
-    // this.cardsPlayed = []
-    // this.rerenderHandCards = false
 
     return (
         <div>

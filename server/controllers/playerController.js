@@ -17,25 +17,29 @@ exports.handleSwapCard = (cardForSwap, socket) => {
     
     // 2.update players instances
     plyGive.cardSwapGive = cardForSwap
-    let posPlayerReq
+    let posPlayerReceive
     if (game.spotsMax === 4) {// give card to "opposite" player (1->3,2->4, 3->1, 4->1)
-        posPlayerReq = ((plyGive.position -1 + 2) % 4  ) +1  // 1st: to zero-Based,2nd: +2 and %4 / 3rd: back to 1-based
+        posPlayerReceive = ((plyGive.position -1 + 2) % 4  ) +1  // 1st: to zero-Based,2nd: +2 and %4 / 3rd: back to 1-based
     } else {
-        posPlayerReq = ((plyGive.position -1 + 1) % game.spotsMax ) +1 // 1st: to zero-Based,2nd: +1 and %nrSpots / 3rd: back to 1-based
+        let allPositionsTaken = game.players.reduce((lst,p) => {
+            lst.push(p.position)
+            return lst},[]).sort()
+        let idxPlyRec = (allPositionsTaken.indexOf(plyGive.position) +1 ) % game.spotsMax
+        posPlayerReceive = allPositionsTaken[idxPlyRec]
         // 2-players: 
-        // posGiver = 1  =>  posPlayerReq = ((1 - 1 + 1 ) % 2) +1  = 2
-        // posGiver = 2  =>  idxposPlayerReqeq = ((2 - 1 + 1 ) % 2) +1 = 1
+        // posGiver = 1  =>  posPlayerReceive = ((1 - 1 + 1 ) % 2) +1  = 2
+        // posGiver = 2  =>  idxposPlayerReceive = ((2 - 1 + 1 ) % 2) +1 = 1
     } 
-    let plyReq = game.players.find(p => p.position === posPlayerReq)
-    plyReq.cardSwapRecvd = cardForSwap
+    let plyReceive = game.players.find(p => p.position === posPlayerReceive)
+    plyReceive.cardSwapRecvd = cardForSwap
     // 1.output for debug
-    let listCardsForSwapReqd = game.players.reduce( (listOld, player) => {
+    let listCardsForSwapReceived = game.players.reduce( (listOld, player) => {
         if (player.cardSwapGive){
             listOld.push(player.cardSwapGive)
         } 
         return listOld
     }, [])
-    console.log(pre + `listCardsForSwapReqd: ${JSON.stringify(listCardsForSwapReqd)}`);
+    console.log(pre + `listCardsForSwapReqd: ${JSON.stringify(listCardsForSwapReceived)}`);
 
 
     // 4.inform other players about the played card
