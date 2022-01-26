@@ -114,7 +114,7 @@ const LoginPage = () => {
         }
         
         setTimeout(()=>{
-            idGameRef?.current.focus()
+            idGameRef?.current?.focus()
         }, 10)
     }
 

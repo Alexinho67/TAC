@@ -1,4 +1,23 @@
+#board{
+  position: relative;
+  // width: 70%;
+  height: 100%;
+  aspect-ratio: 1;
+  // background-image: url(../../pics/TACboard.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
+  border:1px solid black;
+  box-shadow: 5px 10px 25px rgb(37, 18, 1);
+}
 
+.rotate_board{
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
 
 .center{
   transform: translate(-50%,-50%);
@@ -78,25 +97,23 @@
 }
 
 .card{
-  margin: 2px 0px;
-  padding: 10px;
+  // margin: 2px 0px;
+  // padding: 10px;
+  margin:0 0;
   transform: translate(-50%, -50%);
-  /* height: 100%; */
-  /* height: 20%; */
   position: absolute  ;
-  /* top: 100%; */
-  /* width : 90px; */
-  aspect-ratio: 0.7;
+  box-shadow: 2px 2px 5px #111;
+  aspect-ratio: 0.61;
   min-width: 1rem;
   min-height: 2rem;
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
   box-sizing: border-box;
-  /* outline: 1px solid white; */
+  // border: 1px solid white; 
 }
 
-.cardStack{
+.cardStackOtherPlayer{
   left: 0%;
   top: 0%;  
   cursor: unset;
@@ -108,26 +125,35 @@
   box-shadow: 2px 2px 2px #000;
 }
 
+.cardDeck{
+  margin-top: 0.7rem;
+}
+
 .playerStatusOther{
+  padding:0.2rem;
   position: absolute;
   border-radius: 10px;
   border: 2px solid black;
   color: black;
   background-color: #ddd;
-  opacity: 0.8;
+  opacity: 0.95;
   min-width: 50px;
   min-height: 2rem;
-  transform: translate(-50%,-50%)
 }
 
 .numberCardsOtherPlayer{
-  //  position: absolute;
+  top:0;
+  right:0;
   color: white; 
-  font-size: 2rem;
-  // top: 100%;
-  // left: 10%;
+  font-size: 1rem;
+  position: absolute;
+  height: 1.4rem;
+  aspect-ratio: 1;
   text-align: center; 
-  margin-top:-30%;
+  // margin-top:-30%;
+  border-radius: 50%;
+  border: 1px solid white;
+  background-color: #222;
 }
 
 
@@ -147,22 +173,47 @@
   transition-duration: 200ms;
 }
 
-.ball[data-color="red"]{
-  background-image: url(../../pics/Ballred.png);
-}
-.ball[data-color="blue"]{
-  background-image: url(../../pics/Ballblue.png);
-}
-.ball[data-color="green"]{
-  background-image: url(../../pics/Ballgreen.png);
-}
-.ball[data-color="yellow"]{
-  background-image: url(../../pics/Ballyellow.png);
-}
-.ball[data-color="black"]{
-  background-image: url(../../pics/Ballblack.png);
+// .ball[data-color="red"]{
+//   background-image: url(../../pics/Ballred.png);
+// }
+// .ball[data-color="blue"]{
+//   background-image: url(../../pics/Ballblue.png);
+// }
+// .ball[data-color="green"]{
+//   background-image: url(../../pics/Ballgreen.png);
+// }
+// .ball[data-color="yellow"]{
+//   background-image: url(../../pics/Ballyellow.png);
+// }
+// .ball[data-color="black"]{
+//   background-image: url(../../pics/Ballblack.png);
+// }
+
+$ballColors: ("red", "yellow", "black", "blue","green");
+
+@each $color in $ballColors {
+  .ball[data-color="#{$color}"]{
+    background-image: url(../../pics/Ball#{$color}.png);
+  }
 }
 
+
+$cardValues: (1, 2, 3, 4,5,6,7,8,9,10,12,13, 14, 15);
+
+@each $valCard in $cardValues {
+  $path: null;
+  @if $valCard == 14 {
+    $path : '../../pics/Trickser_small.png'
+   } @else if $valCard == 15{
+    $path : '../../pics/TAC_small.png'
+   } @else {
+    $path : '../../pics/#{$valCard}_small.png'
+  }
+
+  .card[data-valCard="#{$valCard}"]{
+    background-image: url($path)
+  }
+}
 
 .BG-white{
   background-color: white;
@@ -195,22 +246,6 @@
   background-color: #f9f913;
   cursor: pointer;
 }
-
-
-// .armBallSlot{
-//   position:absolute;
-//   top:49.95%;
-//   left:49.96%;
-//   transform-origin:0% 50%;
-//   transform:translate(0%,-50%);
-//   box-sizing: border-box;
-//   width : 47.25%;
-//   height : 4.25%;
-//   border: 0px dashed black;
-//   padding:0;
-//   display: flex;
-//   justify-content: right;
-// }
 
 .wrapperBallSlot{
   position:absolute;

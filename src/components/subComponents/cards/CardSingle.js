@@ -39,13 +39,13 @@ const CardSingle = ({ card, toogleIsSelected, triggerCardPlayed}) => {
         // if (isSelectedFlag) {
         if (card.isSelected && !card.isPlayed && !card.isCardForSwap) {
             stylingAddition = { border: '2px solid yellow',
-                                borderRadius: '10px',
-                                padding: '2px',
+                                borderRadius: '5px',
+                                // padding: '2px',
                                 backgroundColor: 'yellow', }
         } else {
             stylingAddition = { border: undefined, 
                                 borderRadius: undefined,    
-                                padding: '10px',
+                                // padding: '10px',
                                 backgroundColor: 'unset' }
         }
         if (card.isPlayed === true){
@@ -179,22 +179,22 @@ const CardSingle = ({ card, toogleIsSelected, triggerCardPlayed}) => {
     }
 
     const pathImg = getImagePath(card.value)
-    const Imgage = <img name="imgCard" height='100%' width='100%' src={pathImg} alt={`value=${card.value}`} 
+    const Image = <img name="imgCard" height='100%' width='100%' src={pathImg} alt={`value=${card.value}`} 
             />
 
     /* ================================================================================
     --------------------------     RENDER      -----------------------------------------
     * ================================================================================ */
     if (card.isPlayed) {
-        return (<div key={card.idExt} style={styleCard} className="card" data-status="played">
-            {Imgage}
+        return (<div key={card.idExt} style={styleCard} data-id={card.value} className="card" data-status="played">
+            {Image}
         </div>)
     } else {
-        return (<div key={card.idExt} style={styleCard} className="card" data-status="tbd" data-idext={card.idExt}
+        return (<div key={card.idExt} style={styleCard} data-valCard={card.value} className="card" data-status="notPlayed" data-idext={card.idExt}
             onClick={handleOnClick}
             onDoubleClick={handleOnDblClick}
             >
-                {Imgage}
+                {/* {Image} */}
             </div>) // close return ()
             }  // close else
 }

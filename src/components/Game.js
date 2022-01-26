@@ -5,7 +5,7 @@ import Table from './Table';
 import { GameModelContext } from '../providers/GameProvider';
 
 const IconCopyPaste = ({gameId} )=>{
-  return (<i className="fa fa-clone" 
+  return (<i className="fa fa-clone IconCopyPaste" 
              aria-hidden="true" 
              onClick={() => { navigator.clipboard.writeText(gameId) }}></i>)
 }

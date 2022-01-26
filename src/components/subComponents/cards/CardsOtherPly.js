@@ -1,6 +1,5 @@
 import React from 'react'
-// import { GameModelContext } from '../../providers/GameProvider'
-
+    
 const getPosXY = (posRel) => {
     // console.log(`[CardsOtherPly - getPosXY] - posRel: ${posRel}`);
     switch (posRel){
@@ -46,7 +45,7 @@ const CardsOtherPly = ({ width, playerObj}) => {
         transform: `translate(-50%,-50%)  rotate(0deg)`})
     
     const cardForSwap = playerObj.cardForSwap
-    const Imgage = <img height='100%' width='100%' src={`${require(`../../../pics/backside1.png`).default}`} alt={`cardsOtherPlayer`} />
+    const Image = <img height='100%' width='100%' src={`${require(`../../../pics/backside1.png`).default}`} alt={`cardsOtherPlayer`} />
     
     React.useEffect(( )=>{
         let dataObjStack = getPosXY(playerObj.posRel)
@@ -72,16 +71,14 @@ const CardsOtherPly = ({ width, playerObj}) => {
 
     return (
             <div key={playerObj.cards[0].idInternal}  name="cardsOtherPly">
-                <div className="card cardStack" style={styleCardStack} >
-                    {/* <div style={{transform: `rotate(${rotate}deg) `}}> */}
-                            {Imgage}
+                <div className="card cardStackOtherPlayer" style={styleCardStack} >
+                        {Image}
                     <div className="numberCardsOtherPlayer" style={{
-                        transform: `translate(-50%,-50%) rotate(-${getPosXY(playerObj.posRel).rotate}deg)`}}>
+                        transform: `rotate(-${getPosXY(playerObj.posRel).rotate}deg)`}}>
                     {playerObj.cards.length} </div>
-                    {/* </div> */}
                 </div>
                 {cardForSwap !== undefined
-                    ? <div className="card" style={styleCardForSwap} > {Imgage} </div>
+                    ? <div className="card" style={styleCardForSwap} > {Image} </div>
                     : ""}
             </div>
         )

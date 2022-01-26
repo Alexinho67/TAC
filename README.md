@@ -1,5 +1,7 @@
 # TAC - a fun browser game for 4 friends  <!-- omit in toc -->
-_by_ ***Alexander Knoch*** (2021)
+_by_ ***Alexander Knoch*** (2022)
+
+**Play now on https://playtac.herokuapp.com/**
 
 <img src="documentation/TacBoard.png" width="350" alt="TacBoard">
 
@@ -20,7 +22,7 @@ _by_ ***Alexander Knoch*** (2021)
 - [Possible improvements](#possible-improvements)
 - [Appendix](#appendix)
   - [Slot labelling](#slot-labelling)
-  - [TAC - basic rules of the game](#tac---basic-rules-of-the-game)
+  - [TAC - Basic rules of the game](#tac---basic-rules-of-the-game)
 Play online on [playtac.herokuapp.com](http://playtac.herokuapp.com)
 
 # Introduction
@@ -149,7 +151,7 @@ For slots **#71-#78**, **#81-#88**, **#91-#98** and **#101-#108** the following 
 |95-98|home slots for player 3|
 |101-104|base slots for player 4|
 |105-108|home slots for player 4|
-## TAC - basic rules of the game
+## TAC - Basic rules of the game
 
 TAC is a game for 4 players who are playing in 2 teams in a 2vs2 mode against each other.
 The **main objective** for each player is to bring all of their **4 balls** into their **4 home slots** by moving them around the board playing cards with different effects on the board. **The team which brings all of its 8 balls into their home slots first wins the game**. As soon as one player of a team finished their 4 balls, they are allowed to help and move the balls of their teammate to bring home all of their remaining balls.  

@@ -22,7 +22,7 @@ const ShuffledDeck = ({ width }) => {
 
     return (
         <>
-            <div className="card" style={styleCard.current} >
+            <div className="card cardDeck" style={styleCard.current} >
                 {Imgage}
                 <div className="numberCardsOtherPlayer">
                     {numShuffledCards} </div>

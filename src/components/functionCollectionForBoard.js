@@ -145,11 +145,15 @@ export function updateBallsForRender(playersMdl, setBallsAllData, dispatcherTac,
             }
         }
 
-export function initCards(cardsFromModel, WIDTHCARD, ASPECT_RAT_CARD, numCards, cardForSwap) {
+export function initCards(cardsFromModel, WIDTHCARD, cardForSwap) {
         let cardObjects = []
-      
+        let numCards = cardsFromModel.length
+        let gabCards = (100 - WIDTHCARD * numCards ) / (numCards) // 5 cards --> 4 gabs in between and 1/2 on each end
+        console.log(`gabCards: ${gabCards}, width:${WIDTHCARD}, num: ${numCards}`);
         for (let i = 0; i < cardsFromModel.length; i++) {
-            let idExtCardSwap = cardForSwap?.idExt
+            let idExtCardSwap = cardForSwap?.idExt 
+            let leftPos = i * (gabCards + WIDTHCARD) + WIDTHCARD/2 + gabCards/2 // horiz. center of each card
+            console.log(`... i=${i}: left: ${leftPos}`);
             let newCard = {
                 id: cardsFromModel[i].idInternal,
                 idExt: cardsFromModel[i].idExt,
@@ -159,8 +163,9 @@ export function initCards(cardsFromModel, WIDTHCARD, ASPECT_RAT_CARD, numCards, 
                 width: WIDTHCARD,
                 // value: Math.floor(Math.random() * 9) + 1,
                 value: cardsFromModel[i].value,
-                left: (100 - WIDTHCARD * numCards) * 0.5 + WIDTHCARD * i + WIDTHCARD/2,
-                top: 100 + ASPECT_RAT_CARD * WIDTHCARD } // left edge of each card
+                // free space =  100 - WIDTH * numCards
+                left: leftPos , 
+                top: 100 + WIDTHCARD*0.50 + WIDTHCARD/2 } 
             cardObjects.push(newCard)
         }
         console.log(`[initCards()] cards: ${JSON.stringify(cardObjects)}`);

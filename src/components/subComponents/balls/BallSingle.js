@@ -7,8 +7,6 @@ const BallSingle = ({ ballDataSingle, toogleIsSelected}) => {
 
     const styleBall = React.useRef({
         border: '2px solid yellow',
-        // left: `${ballsData.find(ball => ball.id === id).left}%`,
-        // top: `${ballsData.find(ball => ball.id === id).top}%`,
         left: `${ballDataSingle.left}%`,
         top: `${ballDataSingle.top}%`,
     })

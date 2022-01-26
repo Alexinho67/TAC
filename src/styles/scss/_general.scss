@@ -1,18 +1,36 @@
+$dark-green : #03400f;
+
 body {
-  margin: 11vh 0 0 0;
+  margin: 0 0 0 0;
+  // margin: 11vh 0 0 0;
   background-color: #78c15e;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+}
+
+#root{
+  margin:0;
+  padding:0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+  
+
+a{
+  text-decoration: none;
+  color:unset;
 }
 
 nav{
   color:white;
-  position:fixed;
+  // position:fixed;
   display: flex;
-  top:0;
+  // top:0;
   z-index: 1;
   justify-content: right;
   width:100%;
@@ -20,20 +38,27 @@ nav{
   border-bottom: 2px solid white;
   resize: vertical;
   overflow: auto;
-}
-i{
-  cursor: pointer;
+  min-height: 4rem;
+  // padding-right: 2rem;
+  
+  a{
+    color:white;
+    font-weight: 900;
+    padding:0px;
+    height:100%;
+    white-space: nowrap;
+  }
+
+  h1{
+    width: 100%;
+    padding: 1.5rem 0;
+  }
+
 }
 
-a{
-  color:white;
-  font-weight: 900;
-  padding:0px;
-  text-decoration: none;
-  height:100%;
-  white-space: nowrap;
+#adminNav{
+  margin: 1rem 2rem 0 0;
 }
-
 
 h1,h2, h3, h4{
   text-align: center;
@@ -41,23 +66,21 @@ h1,h2, h3, h4{
 }
 
 .container{
+  flex: 1 0 auto;
   display: flex;
-  // padding-left: 210px;
   justify-content: center;
-  // justify-content: flex-start;  
-  // margin-right: 1rem;
-  /* padding-top:2rem; */
-  
+  padding-top: 2rem;
 }
 
 #table{
+  margin-bottom: 2rem;
   display: flex;
   position: relative;
   flex-direction: column;
   justify-content: right;
   flex-wrap: nowrap;
   height:500px; 
-  aspect-ratio: 1/1;
+  aspect-ratio: 1.25/1;
   background-image: url(../../pics/table.jpg);
   background-repeat: no-repeat;
   background-size: cover;
@@ -71,39 +94,23 @@ h1,h2, h3, h4{
 }
 
 #boardWrapper{
-  padding-top:13%;
+  padding-top:10%;
   width: 100%;
   height: 70%;
   display: flex;
   justify-content: center;
 }
 
-#board{
-  position: relative;
-  width: 70%;
-  height: 100%;
-  // background-image: url(../../pics/TACboard.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
-  box-sizing: border-box;
-  border:1px solid black;
-  box-shadow: 5px 10px 25px rgb(37, 18, 1);
+.IconCopyPaste{
+  cursor: pointer;
 }
 
-.rotate_board{
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -ms-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  transform: rotate(-90deg);
-}
-
-
-.cookieCnt{
-  position: absolute;
-  left: -40%;
-  top:5%;
-  z-index: 2;
-  background-color: #fffe;
-
+.footer{
+    color: white;
+    line-height: 2em;
+    border-top: 2px solid white;  
+    background-color: $dark-green;
+    position: relative;
+    padding-right:5em;
+    text-align: right; 
 }

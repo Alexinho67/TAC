@@ -1,4 +1,4 @@
-const LENGTH_GAME_IDENTIFYER = 6
+const LENGTH_GAME_IDENTIFIER = 6
 const crypto = require("crypto")
 const CardDeck = require('./cardsModel')
 // const { v4: uuidv4 } = require('uuid');
@@ -15,7 +15,7 @@ class GameTac {
         this.spotsMax = nrPlayersNeeded
         this.state = 'INIT' // INIT -> WAIT FOR OTHER PLAYERS -> WAIT FOR READY -> PLAYING -> FINISHED
         this.subState = 'none'
-        this.id = crypto.randomBytes(LENGTH_GAME_IDENTIFYER / 2).toString('hex');
+        this.id = crypto.randomBytes(LENGTH_GAME_IDENTIFIER / 2).toString('hex');
         this.deck = new CardDeck(cardsPerRound.reduce((sum, e) => sum + e, 0))
         this.decksPlayed = 0
         this.cardsTrash = []

@@ -15,9 +15,8 @@ import FieldDealCards from './subComponents/dealer/FieldDealCards'
 
 import { updateBallsForRender,  unselectBallOnClickToVoid, triggerSelectedCardForSwap, initCards, triggerCardPlayed } from "./functionCollectionForBoard.js";
 
-const numCards = 6
-const WIDTHCARD = 18; // %
-const ASPECT_RAT_CARD = 0.7
+const WIDTHCARD = 13; // %
+// const ASPECT_RAT_CARD = 0.7
 
 const Board = ({ isReady, setIsReady }) => {
     const { socket } = useSocketContext()
@@ -84,7 +83,7 @@ const Board = ({ isReady, setIsReady }) => {
     React.useEffect(() => {
         console.log(`%c[Board-useEffect] - "stateGameReduce.self.cards" has changed`,'color:#999');
         if (stateGameReduce.players[0].cards.length > 0 && stateGameReduce.rerenderHandCards === true){
-            setCardsHand(initCards(stateGameReduce.players[0].cards, WIDTHCARD, ASPECT_RAT_CARD, numCards, stateGameReduce.players[0].cardForSwap))
+            setCardsHand(initCards(stateGameReduce.players[0].cards, WIDTHCARD, stateGameReduce.players[0].cardForSwap))
             dispatcherTac({ type: 'deactUpdateHandCards'})
         }else{
             console.log(`...No cards found. stateGameReduce.self.cards.length:${stateGameReduce.players[0].cards.length}`);

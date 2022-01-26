@@ -7,6 +7,7 @@ import { GameProvider} from './providers/GameProvider'
 import NavBar from './components/NavBar'
 import axios from "axios"
 import DebugNew from './components/debugComps/DebugNew'
+import Footer from './components/Footer'
 
 
 async function axiosGetCookie(url, setSessionData) {
@@ -93,7 +94,8 @@ const Root = () => {
                         </SocketProvider>
                 </Route> 
                 </Switch>
-                <DebugNew />
+                {process.env.NODE_ENV === 'development' ? <DebugNew /> : <></> }
+                <Footer/>
             </GameProvider>
             </Router>
         </UserSessionDataContext.Provider>

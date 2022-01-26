@@ -1,16 +1,27 @@
 body {
-  margin: 11vh 0 0 0;
+  margin: 0 0 0 0;
   background-color: #78c15e;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+}
+
 nav {
   color: white;
-  position: fixed;
   display: flex;
-  top: 0;
   z-index: 1;
   justify-content: right;
   width: 100%;
@@ -18,19 +29,24 @@ nav {
   border-bottom: 2px solid white;
   resize: vertical;
   overflow: auto;
+  min-height: 4rem;
 }
 
-i {
-  cursor: pointer;
-}
-
-a {
+nav a {
   color: white;
   font-weight: 900;
   padding: 0px;
-  text-decoration: none;
   height: 100%;
   white-space: nowrap;
+}
+
+nav h1 {
+  width: 100%;
+  padding: 1.5rem 0;
+}
+
+#adminNav {
+  margin: 1rem 2rem 0 0;
 }
 
 h1, h2, h3, h4 {
@@ -39,19 +55,21 @@ h1, h2, h3, h4 {
 }
 
 .container {
+  flex: 1 0 auto;
   display: flex;
   justify-content: center;
-  /* padding-top:2rem; */
+  padding-top: 2rem;
 }
 
 #table {
+  margin-bottom: 2rem;
   display: flex;
   position: relative;
   flex-direction: column;
   justify-content: right;
   flex-wrap: nowrap;
   height: 500px;
-  aspect-ratio: 1/1;
+  aspect-ratio: 1.25/1;
   background-image: url(../../pics/table.jpg);
   background-repeat: no-repeat;
   background-size: cover;
@@ -66,17 +84,31 @@ h1, h2, h3, h4 {
 }
 
 #boardWrapper {
-  padding-top: 13%;
+  padding-top: 10%;
   width: 100%;
   height: 70%;
   display: flex;
   justify-content: center;
 }
 
+.IconCopyPaste {
+  cursor: pointer;
+}
+
+.footer {
+  color: white;
+  line-height: 2em;
+  border-top: 2px solid white;
+  background-color: #03400f;
+  position: relative;
+  padding-right: 5em;
+  text-align: right;
+}
+
 #board {
   position: relative;
-  width: 70%;
   height: 100%;
+  aspect-ratio: 1;
   background-repeat: no-repeat;
   background-size: cover;
   box-sizing: border-box;
@@ -86,14 +118,6 @@ h1, h2, h3, h4 {
 
 .rotate_board {
   transform: rotate(-90deg);
-}
-
-.cookieCnt {
-  position: absolute;
-  left: -40%;
-  top: 5%;
-  z-index: 2;
-  background-color: #fffe;
 }
 
 .center {
@@ -171,25 +195,20 @@ h1, h2, h3, h4 {
 }
 
 .card {
-  margin: 2px 0px;
-  padding: 10px;
+  margin: 0 0;
   transform: translate(-50%, -50%);
-  /* height: 100%; */
-  /* height: 20%; */
   position: absolute;
-  /* top: 100%; */
-  /* width : 90px; */
-  aspect-ratio: 0.7;
+  box-shadow: 2px 2px 5px #111;
+  aspect-ratio: 0.61;
   min-width: 1rem;
   min-height: 2rem;
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
   box-sizing: border-box;
-  /* outline: 1px solid white; */
 }
 
-.cardStack {
+.cardStackOtherPlayer {
   left: 0%;
   top: 0%;
   cursor: unset;
@@ -201,23 +220,34 @@ h1, h2, h3, h4 {
   box-shadow: 2px 2px 2px #000;
 }
 
+.cardDeck {
+  margin-top: 0.7rem;
+}
+
 .playerStatusOther {
+  padding: 0.2rem;
   position: absolute;
   border-radius: 10px;
   border: 2px solid black;
   color: black;
   background-color: #ddd;
-  opacity: 0.8;
+  opacity: 0.95;
   min-width: 50px;
   min-height: 2rem;
-  transform: translate(-50%, -50%);
 }
 
 .numberCardsOtherPlayer {
+  top: 0;
+  right: 0;
   color: white;
-  font-size: 2rem;
+  font-size: 1rem;
+  position: absolute;
+  height: 1.4rem;
+  aspect-ratio: 1;
   text-align: center;
-  margin-top: -30%;
+  border-radius: 50%;
+  border: 1px solid white;
+  background-color: #222;
 }
 
 .ball {
@@ -240,6 +270,14 @@ h1, h2, h3, h4 {
   background-image: url(../../pics/Ballred.png);
 }
 
+.ball[data-color="yellow"] {
+  background-image: url(../../pics/Ballyellow.png);
+}
+
+.ball[data-color="black"] {
+  background-image: url(../../pics/Ballblack.png);
+}
+
 .ball[data-color="blue"] {
   background-image: url(../../pics/Ballblue.png);
 }
@@ -248,12 +286,60 @@ h1, h2, h3, h4 {
   background-image: url(../../pics/Ballgreen.png);
 }
 
-.ball[data-color="yellow"] {
-  background-image: url(../../pics/Ballyellow.png);
+.card[data-valCard="1"] {
+  background-image: url("../../pics/1_small.png");
 }
 
-.ball[data-color="black"] {
-  background-image: url(../../pics/Ballblack.png);
+.card[data-valCard="2"] {
+  background-image: url("../../pics/2_small.png");
+}
+
+.card[data-valCard="3"] {
+  background-image: url("../../pics/3_small.png");
+}
+
+.card[data-valCard="4"] {
+  background-image: url("../../pics/4_small.png");
+}
+
+.card[data-valCard="5"] {
+  background-image: url("../../pics/5_small.png");
+}
+
+.card[data-valCard="6"] {
+  background-image: url("../../pics/6_small.png");
+}
+
+.card[data-valCard="7"] {
+  background-image: url("../../pics/7_small.png");
+}
+
+.card[data-valCard="8"] {
+  background-image: url("../../pics/8_small.png");
+}
+
+.card[data-valCard="9"] {
+  background-image: url("../../pics/9_small.png");
+}
+
+.card[data-valCard="10"] {
+  background-image: url("../../pics/10_small.png");
+}
+
+.card[data-valCard="12"] {
+  background-image: url("../../pics/12_small.png");
+}
+
+.card[data-valCard="13"] {
+  background-image: url("../../pics/13_small.png");
+}
+
+.card[data-valCard="14"] {
+  background-image: url("../../pics/Trickser_small.png");
+}
+
+.card[data-valCard="15"] {
+  background-image: url("../../pics/TAC_small.png");
 }
 
 .BG-white {

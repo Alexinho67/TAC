@@ -1,7 +1,7 @@
 import React from 'react'
 
 const CardSwapZone = ({gameState, gameSubState, idCardSelected, triggerSelectedCardForSwap }) => {
-    const [messageInZone, setMessageInZone] = React.useState('1x Karte tauschen')
+    const [messageInZone, setMessageInZone] = React.useState('swap 1x card')
 
     function _handleClick() {
         // console.log(`clicked [CardSwapZone]`);
