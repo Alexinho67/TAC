@@ -37,7 +37,6 @@
     "build": "react-scripts build",
     "test-react": "react-scripts test",
     "eject": "react-scripts eject",
-    "e2e": "cypress open",
     "test": "python selenium/main.py"
   },
   "eslintConfig": {
