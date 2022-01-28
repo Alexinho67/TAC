@@ -1,7 +1,26 @@
 {
+    "liveSassCompile.settings.autoprefix": [],
+    "liveSassCompile.settings.formats": [
+
+        {
+            "format": "expanded",
+            "extensionName": ".css",
+            "savePath": "/src/styles/css"
+        }
+    ],
+    "liveSassCompile.settings.generateMap": false,
+    "html.validate.styles": false,
     "workbench.colorCustomizations": {
-        "activityBar.background": "#412433",
-        "titleBar.activeBackground": "#5B3348",
-        "titleBar.activeForeground": "#FCF9FB"
-    }
-}
+        "activityBar.background": "#424241",
+        "titleBar.activeBackground": "#424241",
+        "titleBar.activeForeground": "#FDF9F3"
+    },
+    "cSpell.ignoreWords": [
+        "Trickser",
+        "herokuapp",
+        "playtac"
+    ],
+    "cSpell.words": [
+        "lockdown"
+    ]
+}   
