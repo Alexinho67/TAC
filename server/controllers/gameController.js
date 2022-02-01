@@ -1,6 +1,5 @@
 let {games, GameTac} = require('../models/gameModel')
 const {Player} = require('../models/playerModel') 
-const ioDebug = require('./ioDebug')
 
 let io;
 
@@ -10,15 +9,8 @@ exports.setSocketConnection = (ioFromServerJs) => {
 
 exports.sendPlayerStatus = (idGame) =>{
     let game = GameTac.findById(idGame)
-    let sockets = ioDebug.getSocketsInRoom(io, idGame)
-    console.log(`Sockets in room "${idGame}":${sockets}`);
-
-    let socketsInRoom = io.sockets.adapter.rooms.get(idGame)
-    console.log(`Sockets in room:"${idGame}": ${Array.from(socketsInRoom)}`);
-
-
+    console.log(`Sockets in room:"${idGame}": ${Array.from(io.sockets.adapter.rooms.get(idGame))}`);
     console.log(`[gameController.sendPlayerStatus()]`);
-
     game.sendPlayerStatus(io)
 
 }

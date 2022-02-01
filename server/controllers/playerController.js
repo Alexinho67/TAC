@@ -1,6 +1,5 @@
-let {playerList, Player } = require('../models/playerModel')
-let {games, GameTac} = require('../models/gameModel')
-const gameController =require('./gameController')
+let { Player } = require('../models/playerModel')
+let { GameTac} = require('../models/gameModel')
 
 let io;
 
@@ -190,5 +189,4 @@ exports.setSocket = (idPlayer, socket) =>{
     ply.socket = socket
     console.log(`${ply.name} is joining socket-room ${ply.gameId} `);
     ply.socket.join(ply.gameId)
-    gameController.sendPlayerStatus(ply.gameId)
 }

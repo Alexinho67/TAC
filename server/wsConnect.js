@@ -1,20 +1,5 @@
 const playerController = require('./controllers/playerController')
 const gameController  = require ('./controllers/gameController')
-const { StateChatServer, ChatRoom, User } = require('./modelChatServer.js')
-
-const ROOMLENGTH = 3
-const DELAY_DELETE_USER_OBJECT = 10 /*sec*/ * 1000/*msec*/; // x_min * 60sec/min* 1000ms/sec*
-
-
-let idUser = 0
-const getNewId = () => {
-    return idUser++
-}
-
-let stateChatServer = new StateChatServer()
-let chatGeneral = new ChatRoom('general', 99)
-stateChatServer.addRoom(chatGeneral)
-
 
 class GameSocket{
     constructor(socket){
@@ -55,10 +40,7 @@ class Connection {
         socket.emit('hello','Hello! Nice to meet you!')
         
         this.initializeSocket()
-        socket.on("disconnect", () => this.socketCbDisconnect(socket))
-
-
-        this.gameSocket = new GameSocket(this.socket)
+          this.gameSocket = new GameSocket(this.socket)
     }
 
     initializeSocket(){
@@ -75,6 +57,7 @@ class Connection {
                 playerController.sendUpdateAfterReload(playerIdSession,this.socket)
             }
             playerController.setSocket(playerIdSession, this.socket)
+            gameController.sendPlayerStatus(gameIdSession)
         } else { // user is unknown
             console.log(`\t[wsConnect.js - initSocketNew] - UNknown user ======================================`.red);
             /*  "visitor" shall be redirected to "home" 
@@ -83,81 +66,10 @@ class Connection {
         } 
     }
 
-
-    socketCbDisconnect(socket) {
-        // console.log(`\n==> ***DISCONNECT** user has disconnected from server. \tID:"${socket.id}" `);
-        let userObj = stateChatServer.findUserBySocketId(socket.id)
-
-        if (userObj === undefined) { return }
-        userObj.status = 'offline'
-        // send info who is still in that room to each client
-        let roomNameLeaving = userObj?.room?.name
-        if (roomNameLeaving){
-            userObj.roomOld = roomNameLeaving
-        }
-
-        
-        // will delete the userObj after a given waiting period
-        console.log(`Setting timer to remove UserObj:(id=${userObj.id},name:${userObj.name}). t=${DELAY_DELETE_USER_OBJECT/1000}sec`);
-        userObj.fcnTimeOutRemoveUser = setTimeout( () => {
-            this.handleUserDisconnect(socket, userObj, roomNameLeaving)}
-            , DELAY_DELETE_USER_OBJECT)
-
-    }
-
-    handleUserDisconnect(socket, userObj, roomNameLeaving){
-        /*   function will be executed after user has been 
-        *    disconnected from server for longer than a few seconds
-        */ 
-        console.log(`${DELAY_DELETE_USER_OBJECT/1000}sec have passed -> deleting user:${userObj.toString()} now`);
-
-        if (roomNameLeaving){ this.handleLeaveRoom(socket, roomNameLeaving) }
-
-        try{
-            stateChatServer.rooms['general'].removeUser(userObj.id)
-            stateChatServer.removeUser(userObj.id)
-
-        }catch(err){
-            console.error(`[handleUserDisconnect-ERROR] ${err}`);
-        }
-    }
-
-    updateRelationUserAndRoom(userIdSocket, roomName, method) {
-        // update stateServer object
-        let roomObj = stateChatServer.rooms[roomName]
-        let userObj = stateChatServer.findUserBySocketId(userIdSocket)
-
-        if (roomObj === undefined){
-            console.log(`cannot find room "${roomName}" in stateChatServer.`);
-            console.log(`\tKnown rooms: ${Object.keys(stateChatServer.rooms)}`);
-        }
-
-        if (method === 'add') {
-            // 1. update room instance -> room.users
-            roomObj.addUser(userObj)
-            // 2. update user instance -> user.rooms
-            userObj.addRoom(roomObj)
-        } else {//"remove" / "leave"
-            try {
-                delete (roomObj.users[userObj.id])
-                userObj.room = undefined
-
-                let userInChat = roomObj.calcNumUserAct()
-                if (userInChat === 0) {
-                    delete (stateChatServer.rooms[roomName])
-                }
-            } catch (err) {
-                console.log(err);
-            }
-        }
-    }
-
-
 } // closing class Connection
 
 const wsConnect = (io) =>{
 
-    gameController.setSocketConnection(io)
 
     io.on('connection', (socket)=>{
         console.log(`NEW connection`);
@@ -168,4 +80,4 @@ const wsConnect = (io) =>{
     })
 }
 
-module.exports = { wsConnect, stateChatServer}
+module.exports = { wsConnect}
